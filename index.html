@@ -62,6 +62,7 @@
 <!-- BARRA LATERAL ESQUERDA -->
 <aside id="sideBar" class="sidebar">
   <div class="sidebar-brand">🐂</div>
+  <div class="sidebar-brand-name">Boitel<br>Analytics</div>
   <div class="sidebar-user">
     <div class="sidebar-avatar" id="sideAvatar">U</div>
     <div class="sidebar-name" id="sideName">Usuário</div>
@@ -73,6 +74,9 @@
   </nav>
   <button class="side-item side-theme" data-theme-toggle onclick="toggleTheme()" title="Alternar tema"></button>
 </aside>
+
+<!-- FUNDO ESCURECIDO QUANDO UM PAINEL ABRE -->
+<div id="panelBackdrop" class="panel-backdrop" onclick="closeSection()"></div>
 
 <!-- PAINEL: PERFIL -->
 <div id="profilePanel" class="side-panel">

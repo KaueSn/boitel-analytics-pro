@@ -1751,4 +1751,72 @@
 
     /* Suaviza a troca de tema */
     body, .card, .sidebar, .side-panel, .kpi, header { transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease; }
+
+    /* ============================================
+       FUNDO DOS PAINÉIS (backdrop) + ACABAMENTO
+       ============================================ */
+    body { overflow-x: hidden; }
+
+    .panel-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 6, 12, 0.55);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+      z-index: 890;
+    }
+
+    .panel-backdrop.active { opacity: 1; visibility: visible; }
+    body.panel-open #guideAvatar { display: none !important; }
+
+    /* Nome da marca na barra lateral */
+    .sidebar-brand-name {
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.15;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    /* Cabeçalho como barra profissional */
+    header {
+      margin-bottom: 24px;
+      padding: 18px 22px;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .header-content h1 { font-size: 1.6rem; }
+
+    /* Indicador do item ativo na barra lateral */
+    .side-item { position: relative; }
+    .side-item.active::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 20%;
+      height: 60%;
+      width: 3px;
+      border-radius: 2px;
+      background: var(--primary-gradient);
+    }
+
+    /* Impressão: cabeçalho volta ao estilo limpo de PDF */
+    @media print {
+      header {
+        border: none !important;
+        border-bottom: 2px solid #e5e7eb !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+      }
+      .panel-backdrop { display: none !important; }
+    }
   

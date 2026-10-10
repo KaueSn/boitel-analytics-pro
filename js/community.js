@@ -9,8 +9,16 @@ function openSection(nome) {
   btns.forEach(b => b.classList.remove('active'));
   if (btns[ordem[nome]]) btns[ordem[nome]].classList.add('active');
 
-  document.getElementById('profilePanel').classList.toggle('active', nome === 'perfil');
-  document.getElementById('communityPanel').classList.toggle('active', nome === 'comunidade');
+  const abrirPerfil = nome === 'perfil';
+  const abrirComunidade = nome === 'comunidade';
+  document.getElementById('profilePanel').classList.toggle('active', abrirPerfil);
+  document.getElementById('communityPanel').classList.toggle('active', abrirComunidade);
+
+  // Fundo escurecido + esconde o avatar-guia enquanto um painel estiver aberto
+  const algumAberto = abrirPerfil || abrirComunidade;
+  const backdrop = document.getElementById('panelBackdrop');
+  if (backdrop) backdrop.classList.toggle('active', algumAberto);
+  document.body.classList.toggle('panel-open', algumAberto);
 
   if (nome === 'perfil') carregarPerfil();
   if (nome === 'comunidade') iniciarComunidade();
@@ -19,6 +27,9 @@ function openSection(nome) {
 function closeSection() {
   document.getElementById('profilePanel').classList.remove('active');
   document.getElementById('communityPanel').classList.remove('active');
+  const backdrop = document.getElementById('panelBackdrop');
+  if (backdrop) backdrop.classList.remove('active');
+  document.body.classList.remove('panel-open');
   document.querySelectorAll('.side-item').forEach((b, i) => b.classList.toggle('active', i === 0));
 }
 
