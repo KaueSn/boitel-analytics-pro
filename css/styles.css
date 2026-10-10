@@ -1354,7 +1354,7 @@
     }
 
     .guide-eyes {
-      transform-origin: 50px 46px;
+      transform-origin: 50px 56px;
       animation: guideBlink 4.2s infinite;
     }
 
@@ -1491,7 +1491,13 @@
       backdrop-filter: blur(8px);
     }
 
-    .sidebar-brand { font-size: 1.4rem; margin-bottom: 6px; }
+    .sidebar-brand-img {
+      width: 40px;
+      height: 40px;
+      display: block;
+      margin-bottom: 8px;
+      border-radius: 11px;
+    }
     .sidebar-user { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 14px; }
 
     .sidebar-avatar {
@@ -1914,11 +1920,8 @@
       width: 46px;
       height: 46px;
       border-radius: 14px;
-      background: var(--primary-gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
+      display: block;
+      object-fit: cover;
       box-shadow: var(--shadow-md);
       flex: none;
     }

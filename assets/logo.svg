@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Stratum Agro">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d9488"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="grain" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8e9b0"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fundo (badge arredondado) -->
+  <rect x="1" y="1" width="62" height="62" rx="16" fill="url(#bg)"/>
+  <rect x="2.2" y="2.2" width="59.6" height="59.6" rx="14.8" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.4"/>
+
+  <!-- Caule do trigo -->
+  <path d="M32 54 V19" stroke="#0b5f59" stroke-width="2.6" stroke-linecap="round"/>
+
+  <!-- Folha -->
+  <path d="M32 51 C21.5 48.5 17.5 40 20 32.5 C29.5 35 33.5 42.5 32.5 51 Z" fill="#8fe3d4" opacity="0.95"/>
+
+  <!-- Grãos -->
+  <g fill="url(#grain)">
+    <ellipse cx="32" cy="15.5" rx="3.2" ry="4.6"/>
+    <ellipse cx="32" cy="23.5" rx="3.4" ry="4.6"/>
+    <ellipse cx="32" cy="31.5" rx="3.4" ry="4.6"/>
+    <ellipse cx="25.2" cy="21.5" rx="4.6" ry="2.9" transform="rotate(-33 25.2 21.5)"/>
+    <ellipse cx="38.8" cy="21.5" rx="4.6" ry="2.9" transform="rotate(33 38.8 21.5)"/>
+    <ellipse cx="23.4" cy="28.5" rx="4.9" ry="3.1" transform="rotate(-31 23.4 28.5)"/>
+    <ellipse cx="40.6" cy="28.5" rx="4.9" ry="3.1" transform="rotate(31 40.6 28.5)"/>
+    <ellipse cx="22" cy="35.5" rx="5.1" ry="3.3" transform="rotate(-29 22 35.5)"/>
+    <ellipse cx="42" cy="35.5" rx="5.1" ry="3.3" transform="rotate(29 42 35.5)"/>
+  </g>
+</svg>

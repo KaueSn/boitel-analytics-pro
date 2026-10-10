@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stratum Agro | Inteligência e Consultoria Agropecuária</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
   
@@ -24,7 +25,7 @@
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-header">
-      <div class="logo-mark login-logo">🐂</div>
+      <img class="logo-mark login-logo" src="assets/logo.svg" alt="Stratum Agro">
       <h1>Stratum Agro</h1>
       <p>Plataforma de inteligência e consultoria agropecuária</p>
     </div>
@@ -66,7 +67,7 @@
 
 <!-- BARRA LATERAL ESQUERDA -->
 <aside id="sideBar" class="sidebar">
-  <div class="sidebar-brand">🐂</div>
+  <img class="sidebar-brand-img" src="assets/logo.svg" alt="Stratum Agro">
   <div class="sidebar-brand-name">Stratum<br>Agro</div>
   <div class="sidebar-user">
     <div class="sidebar-avatar" id="sideAvatar">U</div>
@@ -143,7 +144,7 @@
   <header>
     <div class="header-content">
       <div class="brand-row">
-        <div class="logo-mark">🐂</div>
+        <img class="logo-mark" src="assets/logo.svg" alt="Stratum Agro">
         <h1>Stratum Agro <span class="badge">Boitel Analytics · Safra 2026/2027</span></h1>
       </div>
       <p class="subtitle">Consultoria e inteligência para alocação de capital no agronegócio · Confinamento bovino de terceiros (Base: Grande SP)</p>
@@ -465,7 +466,7 @@
     </div>
 
     <footer class="app-footer">
-      <span>🐂 <strong>Stratum Agro</strong> — Inteligência e consultoria em confinamento bovino</span>
+      <span>🌾 <strong>Stratum Agro</strong> — Inteligência e consultoria agropecuária</span>
       <span>Dados de referência (ICBC/CEPEA, 2025) · Não constitui recomendação de investimento.</span>
     </footer>
   </div>
@@ -546,34 +547,28 @@
   <button class="guide-character" id="guideCharacter" onclick="guideBubbleToggle()" title="Abrir tutorial do Boi-Guia" aria-label="Abrir tutorial">
     <span class="guide-ping"></span>
     <svg viewBox="0 0 100 100" width="76" height="76" role="img" aria-hidden="true">
-      <!-- chifres dourados -->
-      <path d="M20 34 C6 30 4 14 16 8 C13 20 18 27 27 30 Z" fill="#d4af37"/>
-      <path d="M80 34 C94 30 96 14 84 8 C87 20 82 27 73 30 Z" fill="#d4af37"/>
-      <!-- orelhas -->
-      <ellipse cx="15" cy="47" rx="9" ry="6.5" fill="#0f766e"/>
-      <ellipse cx="85" cy="47" rx="9" ry="6.5" fill="#0f766e"/>
-      <!-- cabeça -->
-      <circle cx="50" cy="52" r="33" fill="#14b8a6"/>
-      <circle cx="50" cy="52" r="33" fill="url(#ghead)" opacity="0.25"/>
-      <!-- topete -->
-      <path d="M42 21 C47 13 53 13 58 21 C53 19 47 19 42 21 Z" fill="#0d9488"/>
-      <!-- focinho -->
-      <ellipse cx="50" cy="66" rx="18" ry="13" fill="#e7f6f4"/>
-      <ellipse cx="44" cy="66" rx="3" ry="2.6" fill="#0f766e"/>
-      <ellipse cx="56" cy="66" rx="3" ry="2.6" fill="#0f766e"/>
-      <!-- olhos -->
-      <g class="guide-eyes">
-        <circle cx="38" cy="46" r="5.6" fill="#0a0e17"/>
-        <circle cx="62" cy="46" r="5.6" fill="#0a0e17"/>
-        <circle cx="39.8" cy="44.2" r="1.9" fill="#ffffff"/>
-        <circle cx="63.8" cy="44.2" r="1.9" fill="#ffffff"/>
+      <!-- caule -->
+      <path d="M50 95 V46" stroke="#bd8f28" stroke-width="5" stroke-linecap="round"/>
+      <!-- folhas (braços) -->
+      <path d="M50 88 C34 86 27 75 31 66 C43 70 50 78 50 88 Z" fill="#d4af37"/>
+      <path d="M50 88 C66 86 73 75 69 66 C57 70 50 78 50 88 Z" fill="#e8c75f"/>
+      <!-- grãos (cabeça) -->
+      <g fill="#f2dd93">
+        <ellipse cx="50" cy="19" rx="5.2" ry="7.4"/>
+        <ellipse cx="50" cy="32" rx="5.4" ry="7.4"/>
+        <ellipse cx="38.5" cy="25.5" rx="7.4" ry="4.7" transform="rotate(-34 38.5 25.5)"/>
+        <ellipse cx="61.5" cy="25.5" rx="7.4" ry="4.7" transform="rotate(34 61.5 25.5)"/>
+        <ellipse cx="35.5" cy="37" rx="7.6" ry="4.9" transform="rotate(-32 35.5 37)"/>
+        <ellipse cx="64.5" cy="37" rx="7.6" ry="4.9" transform="rotate(32 64.5 37)"/>
       </g>
-      <defs>
-        <radialGradient id="ghead" cx="0.35" cy="0.3" r="0.75">
-          <stop offset="0%" stop-color="#ffffff"/>
-          <stop offset="100%" stop-color="#0d9488"/>
-        </radialGradient>
-      </defs>
+      <!-- rosto -->
+      <g class="guide-eyes">
+        <circle cx="43.5" cy="56" r="4.6" fill="#0a0e17"/>
+        <circle cx="56.5" cy="56" r="4.6" fill="#0a0e17"/>
+        <circle cx="45.1" cy="54.4" r="1.6" fill="#ffffff"/>
+        <circle cx="58.1" cy="54.4" r="1.6" fill="#ffffff"/>
+      </g>
+      <path d="M44 64 Q50 69 56 64" stroke="#0a0e17" stroke-width="2.4" fill="none" stroke-linecap="round"/>
     </svg>
   </button>
 </div>
