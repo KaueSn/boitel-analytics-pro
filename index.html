@@ -11,6 +11,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   
   <style>
     /* ============================================
@@ -1200,6 +1201,224 @@
       outline: 2px solid var(--primary);
       outline-offset: 2px;
     }
+
+    /* ============================================
+       ADMIN PANEL STYLES
+       ============================================ */
+    .admin-badge {
+      background: var(--warning-gradient);
+      color: white;
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .admin-stat-card {
+      background: var(--bg-card);
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .admin-stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-light);
+    }
+
+    .admin-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .user-table th {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      padding: 12px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .user-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .user-role-badge {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .user-role-badge.admin {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning-light);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .user-role-badge.user {
+      background: rgba(13, 148, 136, 0.2);
+      color: var(--primary-light);
+      border: 1px solid rgba(13, 148, 136, 0.3);
+    }
+
+    .user-role-badge.pending {
+      background: rgba(99, 102, 241, 0.2);
+      color: var(--accent-light);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .user-status-badge {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .user-status-badge.active {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success-light);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .user-status-badge.inactive {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger-light);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .action-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition-fast);
+      margin-right: 4px;
+    }
+
+    .action-btn.promote {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning-light);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .action-btn.promote:hover {
+      background: rgba(245, 158, 11, 0.3);
+    }
+
+    .action-btn.demote {
+      background: rgba(99, 102, 241, 0.2);
+      color: var(--accent-light);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .action-btn.demote:hover {
+      background: rgba(99, 102, 241, 0.3);
+    }
+
+    .action-btn.activate {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success-light);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .action-btn.activate:hover {
+      background: rgba(16, 185, 129, 0.3);
+    }
+
+    .action-btn.deactivate {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger-light);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .action-btn.deactivate:hover {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
+    .subscription-badge {
+      background: rgba(13, 148, 136, 0.15);
+      color: var(--primary-light);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid rgba(13, 148, 136, 0.3);
+    }
+
+    .subscription-badge.trial {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent-light);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .subscription-badge.expired {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger-light);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    #adminPanel {
+      display: none;
+    }
+
+    #adminPanel.active {
+      display: block;
+    }
+
+    .admin-tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: var(--transition-fast);
+    }
+
+    .admin-tab-btn:hover {
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+    }
+
+    .admin-tab-btn.active {
+      background: var(--accent-gradient);
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -1255,8 +1474,12 @@
     <div class="header-actions">
       <div class="user-info">
         <div class="user-avatar" id="userAvatar">U</div>
-        <span id="userEmail">usuario@email.com</span>
+        <div>
+          <span id="userEmail">usuario@email.com</span>
+          <span id="adminBadge" class="admin-badge" style="display: none; margin-left: 8px;">ADMIN</span>
+        </div>
       </div>
+      <button class="logout-btn" id="adminPanelBtn" onclick="toggleAdminPanel()" style="display: none;">Painel Admin</button>
       <button class="logout-btn" onclick="logout()">Sair</button>
       <button class="btn-export" onclick="exportarResumo()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1533,6 +1756,86 @@
               <p>Para operações maiores, considere hedge na B3 usando contratos futuros de boi gordo (BGI) para proteção contra quedas abruptas no preço da arroba.</p>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="adminPanel" class="card" style="margin-top: 24px;">
+      <h2>Painel Administrativo</h2>
+      
+      <div class="admin-header">
+        <div>
+          <h3 style="color: var(--text-primary); margin-bottom: 4px;">Gerenciamento de Usuários</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Gerencie usuários, roles e assinaturas</p>
+        </div>
+        <div class="admin-stats">
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="totalUsers">0</div>
+            <div class="admin-stat-label">Total Usuários</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="activeUsers">0</div>
+            <div class="admin-stat-label">Ativos</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="adminUsers">0</div>
+            <div class="admin-stat-label">Administradores</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="admin-tab-btn active" onclick="switchAdminTab('usersTab', this)">Usuários</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('addAdminTab', this)">Adicionar Admin</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('subscriptionsTab', this)">Assinaturas</button>
+      </div>
+
+      <div id="usersTab" class="tab-content active">
+        <div style="overflow-x: auto;">
+          <table class="user-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Assinatura</th>
+                <th>Criado em</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-muted);">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="addAdminTab" class="tab-content">
+        <div class="form-group">
+          <label>Email do usuário para promover a Admin</label>
+          <div class="input-wrap">
+            <input type="email" id="adminEmailInput" placeholder="usuario@email.com">
+          </div>
+        </div>
+        <button class="btn-primary" onclick="promoteToAdmin()">Promover a Administrador</button>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 12px;">
+          ⚠️ Apenas você pode promover usuários a administrador. Esta ação é irreversível.
+        </p>
+      </div>
+
+      <div id="subscriptionsTab" class="tab-content">
+        <p style="color: var(--text-muted); margin-bottom: 16px;">
+          Sistema de assinaturas será implementado em breve. Os usuários terão período de teste de 30 dias.
+        </p>
+        <div class="admin-stat-card" style="text-align: left;">
+          <h4 style="color: var(--text-primary); margin-bottom: 8px;">Status do Sistema de Assinaturas</h4>
+          <div style="color: var(--warning-light); font-size: 0.9rem;">🔧 Em desenvolvimento</div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+            Planejado: Integração com Stripe, planos mensais/anuais, gestão de pagamentos.
+          </p>
         </div>
       </div>
     </div>
@@ -1950,13 +2253,247 @@
 
   // Inicializar Firebase
   let isFirebaseConfigured = false;
+  let db = null;
+
   try {
     if (firebaseConfig.apiKey !== "SUA_API_KEY_AQUI") {
       firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
       isFirebaseConfigured = true;
     }
   } catch (error) {
     console.log("Firebase não configurado. Usando modo de demonstração.");
+  }
+
+  // ============================================
+  // USER DATA & ROLES
+  // ============================================
+  let currentUserData = null;
+  let isAdmin = false;
+  const ADMIN_EMAIL = "kauue.neves@gmail.com"; // Email do administrador principal
+
+  // ============================================
+  // USER MANAGEMENT FUNCTIONS
+  // ============================================
+  
+  async function createUserDocument(user) {
+    if (!isFirebaseConfigured || !db) return;
+
+    const userRef = db.collection('users').doc(user.uid);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      // Determinar role inicial
+      const initialRole = user.email === ADMIN_EMAIL ? 'admin' : 'user';
+      
+      await userRef.set({
+        email: user.email,
+        role: initialRole,
+        status: 'active',
+        subscription: 'trial',
+        subscriptionStart: new Date().toISOString(),
+        subscriptionEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 dias de trial
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+    }
+
+    return userRef.get();
+  }
+
+  async function getUserData(uid) {
+    if (!isFirebaseConfigured || !db) return null;
+
+    try {
+      const userDoc = await db.collection('users').doc(uid).get();
+      if (userDoc.exists) {
+        return userDoc.data();
+      }
+    } catch (error) {
+      console.error('Erro ao buscar dados do usuário:', error);
+    }
+    return null;
+  }
+
+  async function loadAllUsers() {
+    if (!isFirebaseConfigured || !db) return [];
+
+    try {
+      const usersSnapshot = await db.collection('users').get();
+      return usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      console.error('Erro ao carregar usuários:', error);
+      return [];
+    }
+  }
+
+  async function updateUserRole(uid, newRole) {
+    if (!isFirebaseConfigured || !db) return false;
+
+    try {
+      await db.collection('users').doc(uid).update({
+        role: newRole,
+        updatedAt: new Date().toISOString()
+      });
+      return true;
+    } catch (error) {
+      console.error('Erro ao atualizar role:', error);
+      return false;
+    }
+  }
+
+  async function updateUserStatus(uid, newStatus) {
+    if (!isFirebaseConfigured || !db) return false;
+
+    try {
+      await db.collection('users').doc(uid).update({
+        status: newStatus,
+        updatedAt: new Date().toISOString()
+      });
+      return true;
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error);
+      return false;
+    }
+  }
+
+  async function promoteToAdmin() {
+    const email = document.getElementById('adminEmailInput').value.trim();
+    
+    if (!email) {
+      alert('Por favor, insira um email válido.');
+      return;
+    }
+
+    if (!isFirebaseConfigured || !db) {
+      alert('Firebase não configurado.');
+      return;
+    }
+
+    try {
+      // Buscar usuário pelo email
+      const usersSnapshot = await db.collection('users').where('email', '==', email).get();
+      
+      if (usersSnapshot.empty) {
+        alert('Usuário não encontrado. Verifique o email.');
+        return;
+      }
+
+      const userDoc = usersSnapshot.docs[0];
+      const uid = userDoc.id;
+
+      // Promover a admin
+      await updateUserRole(uid, 'admin');
+      
+      alert(`Usuário ${email} promovido a Administrador com sucesso!`);
+      document.getElementById('adminEmailInput').value = '';
+      
+      // Recarregar tabela
+      loadUsersTable();
+    } catch (error) {
+      console.error('Erro ao promover usuário:', error);
+      alert('Erro ao promover usuário. Tente novamente.');
+    }
+  }
+
+  function loadUsersTable() {
+    const tbody = document.getElementById('usersTableBody');
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Carregando...</td></tr>';
+
+    loadAllUsers().then(users => {
+      if (users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Nenhum usuário encontrado.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = '';
+      users.forEach(user => {
+        const tr = document.createElement('tr');
+        
+        const roleBadge = user.role === 'admin' 
+          ? '<span class="user-role-badge admin">Admin</span>'
+          : '<span class="user-role-badge user">Usuário</span>';
+        
+        const statusBadge = user.status === 'active'
+          ? '<span class="user-status-badge active">Ativo</span>'
+          : '<span class="user-status-badge inactive">Inativo</span>';
+        
+        const subscriptionBadge = user.subscription === 'trial'
+          ? '<span class="subscription-badge trial">Trial</span>'
+          : user.subscription === 'premium'
+          ? '<span class="subscription-badge">Premium</span>'
+          : '<span class="subscription-badge expired">Expirado</span>';
+
+        const createdAt = new Date(user.createdAt).toLocaleDateString('pt-BR');
+        
+        // Ações baseadas no role atual
+        let actions = '';
+        if (user.role !== 'admin') {
+          actions += `<button class="action-btn promote" onclick="changeUserRole('${user.id}', 'admin')">Promover</button>`;
+        } else {
+          actions += `<button class="action-btn demote" onclick="changeUserRole('${user.id}', 'user')">Rebaixar</button>`;
+        }
+        
+        if (user.status === 'active') {
+          actions += `<button class="action-btn deactivate" onclick="changeUserStatus('${user.id}', 'inactive')">Desativar</button>`;
+        } else {
+          actions += `<button class="action-btn activate" onclick="changeUserStatus('${user.id}', 'active')">Ativar</button>`;
+        }
+
+        tr.innerHTML = `
+          <td>${user.email}</td>
+          <td>${roleBadge}</td>
+          <td>${statusBadge}</td>
+          <td>${subscriptionBadge}</td>
+          <td>${createdAt}</td>
+          <td>${actions}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Atualizar estatísticas
+      document.getElementById('totalUsers').textContent = users.length;
+      document.getElementById('activeUsers').textContent = users.filter(u => u.status === 'active').length;
+      document.getElementById('adminUsers').textContent = users.filter(u => u.role === 'admin').length;
+    });
+  }
+
+  async function changeUserRole(uid, newRole) {
+    if (!confirm(`Tem certeza que deseja alterar o role do usuário para ${newRole}?`)) return;
+    
+    const success = await updateUserRole(uid, newRole);
+    if (success) {
+      loadUsersTable();
+    } else {
+      alert('Erro ao alterar role. Tente novamente.');
+    }
+  }
+
+  async function changeUserStatus(uid, newStatus) {
+    if (!confirm(`Tem certeza que deseja ${newStatus === 'active' ? 'ativar' : 'desativar'} este usuário?`)) return;
+    
+    const success = await updateUserStatus(uid, newStatus);
+    if (success) {
+      loadUsersTable();
+    } else {
+      alert('Erro ao alterar status. Tente novamente.');
+    }
+  }
+
+  function toggleAdminPanel() {
+    const panel = document.getElementById('adminPanel');
+    panel.classList.toggle('active');
+    
+    if (panel.classList.contains('active')) {
+      loadUsersTable();
+    }
+  }
+
+  function switchAdminTab(tabId, btn) {
+    document.querySelectorAll('#adminPanel .tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.admin-tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
   }
 
   // ============================================
@@ -1995,12 +2532,34 @@
     document.getElementById('mainApp').classList.remove('active');
   }
 
-  function updateUserUI(user) {
+  async function updateUserUI(user) {
     if (user) {
       const email = user.email || 'Usuário';
       const initial = email.charAt(0).toUpperCase();
       document.getElementById('userEmail').textContent = email;
       document.getElementById('userAvatar').textContent = initial;
+
+      // Buscar dados do usuário do Firestore
+      currentUserData = await getUserData(user.uid);
+      
+      if (currentUserData) {
+        isAdmin = currentUserData.role === 'admin';
+        
+        // Mostrar badge de admin se for administrador
+        const adminBadge = document.getElementById('adminBadge');
+        if (isAdmin) {
+          adminBadge.style.display = 'inline-block';
+          document.getElementById('adminPanelBtn').style.display = 'block';
+        } else {
+          adminBadge.style.display = 'none';
+          document.getElementById('adminPanelBtn').style.display = 'none';
+        }
+      } else {
+        // Se não tiver dados, criar documento
+        await createUserDocument(user);
+        currentUserData = await getUserData(user.uid);
+        isAdmin = currentUserData.role === 'admin';
+      }
     }
   }
 
@@ -2104,12 +2663,14 @@
 
   // Observador de estado de autenticação
   if (isFirebaseConfigured) {
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        updateUserUI(user);
+        await updateUserUI(user);
         showMainApp();
       } else {
         showLoginScreen();
+        currentUserData = null;
+        isAdmin = false;
       }
     });
   } else {
@@ -2117,6 +2678,10 @@
     console.log('Modo de demonstração: Firebase não configurado');
     document.getElementById('userEmail').textContent = 'demo@boitel.com';
     document.getElementById('userAvatar').textContent = 'D';
+    currentUserData = { role: 'admin', email: 'demo@boitel.com' }; // Demo como admin
+    isAdmin = true;
+    document.getElementById('adminBadge').style.display = 'inline-block';
+    document.getElementById('adminPanelBtn').style.display = 'block';
     showMainApp();
   }
 
