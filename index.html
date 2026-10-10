@@ -12,6 +12,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   
   <link rel="stylesheet" href="css/styles.css">
+  <script src="js/theme.js"></script>
 </head>
 <body>
 
@@ -70,6 +71,7 @@
     <button class="side-item" onclick="openSection('perfil')" title="Meu Perfil">👤 <span>Meu Perfil</span></button>
     <button class="side-item" onclick="openSection('comunidade')" title="Comunidade">💬 <span>Comunidade</span></button>
   </nav>
+  <button class="side-item side-theme" data-theme-toggle onclick="toggleTheme()" title="Alternar tema"></button>
 </aside>
 
 <!-- PAINEL: PERFIL -->
@@ -130,7 +132,8 @@
         <div class="user-avatar" id="userAvatar">U</div>
         <span id="userEmail">usuario@email.com</span>
       </div>
-      <button class="help-btn" onclick="startTutorial(true)">🐂 Tutorial</button>
+      <button class="theme-btn" data-theme-toggle onclick="toggleTheme()" aria-label="Alternar tema"></button>
+    <button class="help-btn" onclick="startTutorial(true)">🐂 Tutorial</button>
       <button class="admin-btn" id="adminBtn" onclick="openAdminPanel()">⚙️ Painel Admin</button>
       <button class="logout-btn" onclick="logout()">Sair</button>
       <button class="btn-export" onclick="exportarResumo()">
