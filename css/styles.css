@@ -1819,4 +1819,27 @@
       }
       .panel-backdrop { display: none !important; }
     }
+
+    /* ============================================
+       TIPOGRAFIA PROFISSIONAL
+       ============================================ */
+    .kpi-value,
+    .dre-value,
+    .dre-total-value,
+    .sidebar-name,
+    table td,
+    .admin-stat .value {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kpi-value,
+    .dre-total-value,
+    .admin-stat .value {
+      font-family: 'JetBrains Mono', 'Inter', monospace;
+      letter-spacing: -0.01em;
+    }
+
+    h1, h2, h3, .logo {
+      letter-spacing: -0.02em;
+    }
   
