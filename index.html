@@ -2,7 +2,9 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="description" content="Simulador paramétrico institucional de alocação de capital em confinamento bovino de terceiros">
+  <meta name="theme-color" content="#0a0e17">
   <title>Boitel Analytics Pro 2.0 | Inteligência Pecuária Institucional</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   
@@ -63,6 +65,12 @@
       margin: 0;
       padding: 0;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -74,11 +82,13 @@
       background-image: 
         radial-gradient(ellipse at top, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
         radial-gradient(ellipse at bottom right, rgba(99, 102, 241, 0.06) 0%, transparent 50%);
+      overflow-x: hidden;
     }
 
     .container {
       max-width: 1400px;
       margin: 0 auto;
+      padding: 0 16px;
     }
 
     /* ============================================
@@ -909,6 +919,286 @@
       justify-content: center;
       font-weight: 600;
       font-size: 0.9rem;
+    }
+
+    /* ============================================
+       RESPONSIVE STYLES - MOBILE FIRST
+       ============================================ */
+    
+    /* Mobile (0-480px) */
+    @media (max-width: 480px) {
+      body {
+        padding: 16px;
+      }
+
+      .container {
+        padding: 0 12px;
+      }
+
+      .header-content h1 {
+        font-size: 1.4rem;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        font-size: 0.65rem;
+        padding: 4px 8px;
+      }
+
+      .subtitle {
+        font-size: 0.85rem;
+      }
+
+      .header-actions {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .user-info {
+        width: 100%;
+        justify-content: center;
+        order: 2;
+      }
+
+      .logout-btn {
+        width: 100%;
+        order: 3;
+      }
+
+      .btn-export {
+        width: 100%;
+        justify-content: center;
+        order: 1;
+      }
+
+      .results-hero {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .kpi {
+        padding: 16px;
+      }
+
+      .kpi-value {
+        font-size: 1.3rem;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 12px;
+      }
+
+      h2 {
+        font-size: 1.1rem;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      input[type="number"],
+      select {
+        padding: 12px 14px;
+        font-size: 16px; /* Previne zoom no iOS */
+      }
+
+      .login-card {
+        padding: 24px;
+        max-width: 100%;
+        margin: 16px;
+      }
+
+      .login-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .tab-btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+      }
+
+      table {
+        font-size: 0.75rem;
+      }
+
+      th, td {
+        padding: 10px 8px;
+      }
+
+      .tag-state {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+      }
+
+      .chart-container {
+        height: 250px;
+        padding: 12px;
+      }
+
+      .checklist-item {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .checklist-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+
+      .dre-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .dre-value {
+        align-self: flex-end;
+      }
+    }
+
+    /* Tablet (481-768px) */
+    @media (min-width: 481px) and (max-width: 768px) {
+      .header-content h1 {
+        font-size: 1.6rem;
+      }
+
+      .results-hero {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .kpi-value {
+        font-size: 1.4rem;
+      }
+
+      .login-card {
+        padding: 32px;
+      }
+
+      .chart-container {
+        height: 280px;
+      }
+    }
+
+    /* Tablet Landscape (769-1023px) */
+    @media (min-width: 769px) and (max-width: 1023px) {
+      .grid {
+        grid-template-columns: 350px 1fr;
+      }
+
+      .results-hero {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Desktop (1024px+) */
+    @media (min-width: 1024px) {
+      .grid {
+        grid-template-columns: 400px 1fr;
+      }
+
+      .results-hero {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+
+    /* Large Desktop (1440px+) */
+    @media (min-width: 1440px) {
+      .container {
+        max-width: 1600px;
+      }
+
+      .header-content h1 {
+        font-size: 2.2rem;
+      }
+
+      .kpi-value {
+        font-size: 1.6rem;
+      }
+    }
+
+    /* Extra Large (1920px+) */
+    @media (min-width: 1920px) {
+      .container {
+        max-width: 1800px;
+      }
+
+      .grid {
+        grid-template-columns: 450px 1fr;
+      }
+    }
+
+    /* ============================================
+       CROSS-BROWSER COMPATIBILITY
+       ============================================ */
+    
+    /* Safari/iOS specific */
+    @supports (-webkit-touch-callout: none) {
+      input[type="number"],
+      select {
+        -webkit-appearance: none;
+        border-radius: 10px;
+      }
+    }
+
+    /* Firefox specific */
+    @-moz-document url-prefix() {
+      .card {
+        backdrop-filter: none;
+      }
+    }
+
+    /* Edge specific */
+    @supports (-ms-ime-align: auto) {
+      .card {
+        backdrop-filter: none;
+      }
+    }
+
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .badge,
+      .tag-state {
+        -webkit-font-smoothing: antialiased;
+      }
+    }
+
+    /* Dark mode preference respect */
+    @media (prefers-color-scheme: dark) {
+      /* Already dark by default, but ensures consistency */
+    }
+
+    /* Reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Focus visible for keyboard navigation */
+    :focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
     }
   </style>
 </head>
