@@ -10,6 +10,20 @@ const estadosDB = [
 ];
 
 // ============================================
+// REFERÊNCIA DE DIÁRIA DE HOTELARIA POR REGIÃO
+// Fontes: ICBC / Scot Consultoria (ago/2025) e média nacional 2025.
+// São valores de REFERÊNCIA — confirme sempre com o boitel parceiro.
+// ============================================
+const DIARIA_REFERENCIA = {
+  SP:       { valor: 19.80, fonte: 'ICBC São Paulo, ago/2025' },
+  MG:       { valor: 18.50, fonte: 'estimativa Sudeste' },
+  GO:       { valor: 15.97, fonte: 'ICBC Goiás, ago/2025' },
+  MS:       { valor: 16.20, fonte: 'estimativa Centro-Oeste' },
+  MT:       { valor: 16.00, fonte: 'estimativa Centro-Oeste' },
+  NACIONAL: { valor: 14.78, fonte: 'média nacional 2025' }
+};
+
+// ============================================
 // VARIÁVEIS GLOBAIS PARA GRÁFICOS
 // ============================================
 let lucroChart = null;

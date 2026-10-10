@@ -126,19 +126,36 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="blocoDiaria">
           <label>Valor da Diária de Hotelaria</label>
           <div class="input-wrap">
             <input type="number" id="valorDiaria" value="" placeholder="Ex.: 14,00" step="0.5" oninput="calcular()">
             <span class="input-suffix">R$/cab/dia</span>
           </div>
+          <div class="diaria-avg">
+            <select id="regiaoDiaria" onchange="atualizarMediaDiaria()" title="Região de referência para a diária">
+              <option value="SP">São Paulo (SP)</option>
+              <option value="MG">Minas Gerais (MG)</option>
+              <option value="GO">Goiás (GO)</option>
+              <option value="MS">Mato Grosso do Sul (MS)</option>
+              <option value="MT">Mato Grosso (MT)</option>
+              <option value="NACIONAL">Média nacional</option>
+            </select>
+            <button type="button" class="btn-avg" onclick="usarMediaDiaria()">Usar média</button>
+          </div>
+          <div class="diaria-avg-info" id="diariaMediaInfo"></div>
         </div>
 
-        <div class="form-group">
-          <label>Bonificação Adicional (Ex: Boi China)</label>
+        <div class="form-group" id="blocoPremio">
+          <label>Bonificação Adicional (Ex: Boi China)
+            <button type="button" class="help-icon" onclick="toggleHelp('helpPremio')" title="O que é bonificação?">?</button>
+          </label>
           <div class="input-wrap">
             <input type="number" id="premioArroba" value="" placeholder="Ex.: 0,00" step="1.0" oninput="calcular()">
             <span class="input-suffix">R$/@</span>
+          </div>
+          <div class="help-box" id="helpPremio">
+            <strong>Bonificação adicional</strong> é um valor <em>extra por arroba</em> que o frigorífico paga acima da cotação base. Exemplos: <strong>prêmio Boi China</strong> (animal abatido com menos de 30 meses e requisitos sanitários), bonificação por <strong>qualidade de carcaça</strong>, <strong>origem rastreada</strong> ou boi "premiado". Ela <strong>aumenta a receita por cabeça</strong> sem mexer nos custos — por isso melhora direto o lucro e o ROIC.
           </div>
         </div>
       </div>

@@ -29,3 +29,6 @@ window.onload = function() {
     showMainApp();
   }
 };
+
+// Textos auxiliares do formulário (média de diária por região)
+if (typeof atualizarMediaDiaria === 'function') atualizarMediaDiaria();

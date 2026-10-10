@@ -1396,4 +1396,78 @@
     @media (max-width: 600px) {
       #guideAvatar { width: calc(100vw - 24px); left: 12px; bottom: 12px; }
     }
+
+    /* ============================================
+       MÉDIA DE DIÁRIA POR REGIÃO
+       ============================================ */
+    .diaria-avg {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .diaria-avg select { flex: 1; }
+
+    .btn-avg {
+      background: rgba(20, 184, 166, 0.15);
+      color: var(--primary-light);
+      border: 1px solid rgba(20, 184, 166, 0.4);
+      border-radius: 8px;
+      padding: 0 12px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition-fast);
+    }
+
+    .btn-avg:hover { background: rgba(20, 184, 166, 0.3); }
+
+    .diaria-avg-info {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .diaria-avg-info strong { color: var(--primary-light); }
+    .diaria-avg-info .src { color: var(--text-muted); font-style: italic; }
+
+    /* ============================================
+       AJUDA / TOOLTIP (bonificação)
+       ============================================ */
+    .help-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      margin-left: 6px;
+      border-radius: 50%;
+      border: 1px solid var(--primary);
+      background: rgba(13, 148, 136, 0.15);
+      color: var(--primary-light);
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      vertical-align: middle;
+      transition: var(--transition-fast);
+    }
+
+    .help-icon:hover { background: rgba(13, 148, 136, 0.35); }
+
+    .help-box {
+      display: none;
+      margin-top: 8px;
+      padding: 12px 14px;
+      background: rgba(13, 148, 136, 0.08);
+      border: 1px solid rgba(20, 184, 166, 0.3);
+      border-radius: 10px;
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+    }
+
+    .help-box.show { display: block; animation: fadeIn 0.2s ease; }
+    .help-box strong { color: var(--primary-light); }
   

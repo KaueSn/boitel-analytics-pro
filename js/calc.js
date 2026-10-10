@@ -457,3 +457,36 @@ function atualizarGraficos() {
 function exportarResumo() {
   window.print();
 }
+
+// ============================================
+// MÉDIA DE DIÁRIA POR REGIÃO
+// ============================================
+// Mostra a diária de referência da região selecionada
+function atualizarMediaDiaria() {
+  const select = document.getElementById('regiaoDiaria');
+  const info = document.getElementById('diariaMediaInfo');
+  if (!select || !info) return;
+  const ref = DIARIA_REFERENCIA[select.value];
+  if (!ref) { info.innerHTML = ''; return; }
+  const nome = select.options[select.selectedIndex].textContent;
+  info.innerHTML = `${nome}: referência de <strong>${formatMoney(ref.valor)}</strong>/cab/dia ` +
+    `<span class="src">(${ref.fonte})</span>`;
+}
+
+// Preenche o campo da diária com a média da região selecionada
+function usarMediaDiaria() {
+  const select = document.getElementById('regiaoDiaria');
+  const ref = DIARIA_REFERENCIA[select.value];
+  if (!ref) return;
+  document.getElementById('valorDiaria').value = ref.valor.toFixed(2);
+  calcular();
+  showToast('Diária preenchida com a média de referência.');
+}
+
+// ============================================
+// TOGGLE DE AJUDA (tooltips explicativos)
+// ============================================
+function toggleHelp(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('show');
+}
