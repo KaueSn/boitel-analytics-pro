@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stratum Agro | Inteligência e Consultoria Agropecuária</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
   
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -156,13 +157,13 @@
     <button class="help-btn" onclick="startTutorial(true)">🐂 Tutorial</button>
       <button class="admin-btn" id="adminBtn" onclick="openAdminPanel()">⚙️ Painel Admin</button>
       <button class="logout-btn" onclick="logout()">Sair</button>
-      <button class="btn-export" onclick="exportarResumo()">
+      <button class="btn-export" onclick="exportarPPT()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
           <polyline points="7 10 12 15 17 10"/>
           <line x1="12" y1="15" x2="12" y2="3"/>
         </svg>
-        Exportar Resumo
+        Exportar PPT
       </button>
     </div>
   </header>
@@ -174,7 +175,7 @@
     </div>
     <div class="welcome-actions">
       <button class="chip" onclick="startTutorial(true)">🎓 Fazer o tour</button>
-      <button class="chip" onclick="exportarResumo()">📄 Exportar resumo</button>
+      <button class="chip" onclick="exportarResumo()">📄 Exportar PDF</button>
     </div>
   </section>
 
@@ -585,6 +586,7 @@
 <script src="js/auth.js"></script>
 <script src="js/guide.js"></script>
 <script src="js/community.js"></script>
+<script src="js/export-ppt.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
