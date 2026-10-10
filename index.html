@@ -691,10 +691,18 @@
       #loginScreen,
       #adminPanel,
       #toastWrap,
+      #guideAvatar,
       .admin-btn,
+      .help-btn,
       .logout-btn,
       .user-info {
         display: none !important;
+      }
+
+      .guide-highlight {
+        outline: none !important;
+        box-shadow: none !important;
+        animation: none !important;
       }
     }
 
@@ -1201,6 +1209,207 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .btn-primary.loading { pointer-events: none; opacity: 0.8; }
+
+    /* ============================================
+       AVATAR GUIA — TUTORIAL INTERATIVO
+       ============================================ */
+    #guideAvatar {
+      position: fixed;
+      left: 24px;
+      bottom: 24px;
+      width: 300px;
+      max-width: calc(100vw - 32px);
+      z-index: 1500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+
+    #guideAvatar.hidden { display: none; }
+    #guideAvatar.minimized { width: auto; }
+
+    .guide-bubble {
+      pointer-events: auto;
+      position: relative;
+      width: 100%;
+      background: linear-gradient(160deg, #16243a, #0f1826);
+      border: 1px solid rgba(20, 184, 166, 0.45);
+      border-radius: 16px;
+      padding: 16px 16px 14px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(212, 175, 55, 0.12);
+      backdrop-filter: blur(8px);
+    }
+
+    .guide-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 16px;
+      height: 16px;
+      background: #0f1826;
+      border-right: 1px solid rgba(20, 184, 166, 0.45);
+      border-bottom: 1px solid rgba(20, 184, 166, 0.45);
+    }
+
+    #guideAvatar.minimized .guide-bubble { display: none; }
+
+    .guide-close {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .guide-close:hover { color: var(--danger-light); }
+
+    .guide-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 18px;
+    }
+
+    .guide-head strong { color: var(--primary-light); font-size: 0.95rem; }
+
+    .guide-text {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .guide-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+      gap: 8px;
+    }
+
+    .guide-step { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+    .guide-btns { display: flex; gap: 8px; }
+
+    .guide-btn {
+      background: var(--primary-gradient);
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .guide-btn.ghost {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .guide-btn:hover { transform: translateY(-1px); }
+
+    .guide-progress {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .guide-progress span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: var(--primary-gradient);
+      transition: width 0.4s ease;
+    }
+
+    .guide-character {
+      pointer-events: auto;
+      position: relative;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      animation: guideFloat 2.6s ease-in-out infinite;
+      filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.5));
+      transition: transform 0.2s ease;
+    }
+
+    .guide-character:hover { transform: scale(1.06); }
+
+    @keyframes guideFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .guide-ping {
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      border: 2px solid rgba(20, 184, 166, 0.5);
+      animation: guidePing 2s ease-out infinite;
+    }
+
+    @keyframes guidePing {
+      0% { transform: scale(0.8); opacity: 0.8; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+
+    .guide-eyes {
+      transform-origin: 50px 46px;
+      animation: guideBlink 4.2s infinite;
+    }
+
+    @keyframes guideBlink {
+      0%, 92%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.1); }
+    }
+
+    /* Destaque do elemento-alvo do tutorial */
+    .guide-highlight {
+      position: relative;
+      z-index: 1400;
+      outline: 2px solid var(--primary-light);
+      outline-offset: 4px;
+      border-radius: 12px;
+      animation: guidePulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes guidePulse {
+      0%, 100% { box-shadow: 0 0 0 6px rgba(20, 184, 166, 0.15), 0 0 24px rgba(20, 184, 166, 0.25); }
+      50% { box-shadow: 0 0 0 10px rgba(20, 184, 166, 0.08), 0 0 40px rgba(20, 184, 166, 0.5); }
+    }
+
+    /* Botão de ajuda (reabrir tutorial) */
+    .help-btn {
+      background: rgba(20, 184, 166, 0.15);
+      color: var(--primary-light);
+      border: 1px solid rgba(20, 184, 166, 0.4);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .help-btn:hover { background: rgba(20, 184, 166, 0.28); transform: translateY(-1px); }
+
+    @media (max-width: 600px) {
+      #guideAvatar { width: calc(100vw - 24px); left: 12px; bottom: 12px; }
+    }
   </style>
 </head>
 <body>
@@ -1258,6 +1467,7 @@
         <div class="user-avatar" id="userAvatar">U</div>
         <span id="userEmail">usuario@email.com</span>
       </div>
+      <button class="help-btn" onclick="startTutorial(true)">🐂 Tutorial</button>
       <button class="admin-btn" id="adminBtn" onclick="openAdminPanel()">⚙️ Painel Admin</button>
       <button class="logout-btn" onclick="logout()">Sair</button>
       <button class="btn-export" onclick="exportarResumo()">
@@ -1276,13 +1486,13 @@
     <div class="card">
       <h2>Parâmetros do Investidor</h2>
       
-      <div class="form-section">
+      <div class="form-section" id="blocoCapital">
         <div class="section-title">Capital e Lote</div>
         
         <div class="form-group">
           <label>Capital Disponível</label>
           <div class="input-wrap">
-            <input type="number" id="capital" value="200000" step="5000" oninput="calcular()">
+            <input type="number" id="capital" value="" placeholder="Ex.: 200000" step="5000" oninput="calcular()">
             <span class="input-suffix">R$</span>
           </div>
         </div>
@@ -1290,13 +1500,13 @@
         <div class="form-group">
           <label>Tamanho do Lote (Cabeças)</label>
           <div class="input-wrap">
-            <input type="number" id="cabecas" value="30" step="1" oninput="calcular()">
+            <input type="number" id="cabecas" value="" placeholder="Ex.: 30" step="1" oninput="calcular()">
             <span class="input-suffix">cab</span>
           </div>
         </div>
       </div>
 
-      <div class="form-section">
+      <div class="form-section" id="blocoBoitel">
         <div class="section-title">Condições do Boitel</div>
         
         <div class="form-group">
@@ -1310,7 +1520,7 @@
         <div class="form-group">
           <label>Dias de Confinamento (Cocho)</label>
           <div class="input-wrap">
-            <input type="number" id="diasCocho" value="106" step="1" oninput="calcular()">
+            <input type="number" id="diasCocho" value="" placeholder="Ex.: 106" step="1" oninput="calcular()">
             <span class="input-suffix">dias</span>
           </div>
         </div>
@@ -1318,7 +1528,7 @@
         <div class="form-group">
           <label>Valor da Diária de Hotelaria</label>
           <div class="input-wrap">
-            <input type="number" id="valorDiaria" value="14.00" step="0.5" oninput="calcular()">
+            <input type="number" id="valorDiaria" value="" placeholder="Ex.: 14,00" step="0.5" oninput="calcular()">
             <span class="input-suffix">R$/cab/dia</span>
           </div>
         </div>
@@ -1326,19 +1536,19 @@
         <div class="form-group">
           <label>Bonificação Adicional (Ex: Boi China)</label>
           <div class="input-wrap">
-            <input type="number" id="premioArroba" value="0.00" step="1.0" oninput="calcular()">
+            <input type="number" id="premioArroba" value="" placeholder="Ex.: 0,00" step="1.0" oninput="calcular()">
             <span class="input-suffix">R$/@</span>
           </div>
         </div>
       </div>
 
-      <div class="form-section">
+      <div class="form-section" id="blocoRiscos">
         <div class="section-title">Riscos e Oportunidade</div>
         
         <div class="form-group">
           <label>Mortalidade/Refugo Estimado</label>
           <div class="input-wrap">
-            <input type="number" id="mortalidade" value="2.0" step="0.5" min="0" max="10" oninput="calcular()">
+            <input type="number" id="mortalidade" value="" placeholder="Ex.: 2" step="0.5" min="0" max="10" oninput="calcular()">
             <span class="input-suffix">%</span>
           </div>
         </div>
@@ -1346,7 +1556,7 @@
         <div class="form-group">
           <label>Custo de Oportunidade (CDI)</label>
           <div class="input-wrap">
-            <input type="number" id="cdi" value="10.75" step="0.25" min="0" oninput="calcular()">
+            <input type="number" id="cdi" value="" placeholder="Ex.: 10,75" step="0.25" min="0" oninput="calcular()">
             <span class="input-suffix">% a.a.</span>
           </div>
         </div>
@@ -1354,7 +1564,7 @@
         <div class="form-group">
           <label>Imposto sobre o Lucro</label>
           <div class="input-wrap">
-            <input type="number" id="impostoLucro" value="15.0" step="1.0" min="0" max="35" oninput="calcular()">
+            <input type="number" id="impostoLucro" value="" placeholder="Ex.: 15" step="1.0" min="0" max="35" oninput="calcular()">
             <span class="input-suffix">%</span>
           </div>
         </div>
@@ -1367,22 +1577,22 @@
       <div class="results-hero">
         <div class="kpi">
           <div class="kpi-title">Melhor Estado</div>
-          <div class="kpi-value blue" id="bestState">São Paulo (SP)</div>
-          <div class="kpi-subtitle" id="bestRegion">Noroeste / Barretos</div>
+          <div class="kpi-value blue" id="bestState">—</div>
+          <div class="kpi-subtitle" id="bestRegion">Aguardando dados</div>
         </div>
         <div class="kpi">
           <div class="kpi-title">Lucro Líquido Projetado</div>
-          <div class="kpi-value green" id="bestProfit">R$ 20.334,90</div>
-          <div class="kpi-subtitle" id="profitPerCab">R$ 677,83/cab</div>
+          <div class="kpi-value green" id="bestProfit">—</div>
+          <div class="kpi-subtitle" id="profitPerCab">Preencha os parâmetros</div>
         </div>
         <div class="kpi">
           <div class="kpi-title">ROIC do Período</div>
-          <div class="kpi-value green" id="bestRoic">9,84%</div>
-          <div class="kpi-subtitle" id="roicAnualizado">33,8% a.a.</div>
+          <div class="kpi-value green" id="bestRoic">—</div>
+          <div class="kpi-subtitle" id="roicAnualizado">—</div>
         </div>
         <div class="kpi">
           <div class="kpi-title">Caixa Livre Imediato</div>
-          <div class="kpi-value blue" id="freeCash">R$ 37.850,00</div>
+          <div class="kpi-value blue" id="freeCash">—</div>
           <div class="kpi-subtitle">Disponível em D0</div>
         </div>
       </div>
@@ -1594,6 +1804,60 @@
   </div>
 </div>
 
+<!-- AVATAR GUIA — TUTORIAL INTERATIVO -->
+<div id="guideAvatar" class="hidden" aria-live="polite">
+  <div class="guide-bubble" id="guideBubble">
+    <button class="guide-close" onclick="guideSkip()" title="Fechar tutorial" aria-label="Fechar tutorial">×</button>
+    <div class="guide-head">
+      <span class="guide-emoji">💬</span>
+      <strong id="guideTitle">Bem-vindo!</strong>
+    </div>
+    <p class="guide-text" id="guideText"></p>
+    <div class="guide-controls">
+      <span class="guide-step" id="guideStep">1/1</span>
+      <div class="guide-btns">
+        <button class="guide-btn ghost" id="guidePrev" onclick="guidePrev()">Voltar</button>
+        <button class="guide-btn" id="guideNext" onclick="guideNext()">Próximo</button>
+      </div>
+    </div>
+    <div class="guide-progress"><span id="guideProgressBar"></span></div>
+  </div>
+
+  <button class="guide-character" id="guideCharacter" onclick="guideBubbleToggle()" title="Abrir tutorial do Boi-Guia" aria-label="Abrir tutorial">
+    <span class="guide-ping"></span>
+    <svg viewBox="0 0 100 100" width="76" height="76" role="img" aria-hidden="true">
+      <!-- chifres dourados -->
+      <path d="M20 34 C6 30 4 14 16 8 C13 20 18 27 27 30 Z" fill="#d4af37"/>
+      <path d="M80 34 C94 30 96 14 84 8 C87 20 82 27 73 30 Z" fill="#d4af37"/>
+      <!-- orelhas -->
+      <ellipse cx="15" cy="47" rx="9" ry="6.5" fill="#0f766e"/>
+      <ellipse cx="85" cy="47" rx="9" ry="6.5" fill="#0f766e"/>
+      <!-- cabeça -->
+      <circle cx="50" cy="52" r="33" fill="#14b8a6"/>
+      <circle cx="50" cy="52" r="33" fill="url(#ghead)" opacity="0.25"/>
+      <!-- topete -->
+      <path d="M42 21 C47 13 53 13 58 21 C53 19 47 19 42 21 Z" fill="#0d9488"/>
+      <!-- focinho -->
+      <ellipse cx="50" cy="66" rx="18" ry="13" fill="#e7f6f4"/>
+      <ellipse cx="44" cy="66" rx="3" ry="2.6" fill="#0f766e"/>
+      <ellipse cx="56" cy="66" rx="3" ry="2.6" fill="#0f766e"/>
+      <!-- olhos -->
+      <g class="guide-eyes">
+        <circle cx="38" cy="46" r="5.6" fill="#0a0e17"/>
+        <circle cx="62" cy="46" r="5.6" fill="#0a0e17"/>
+        <circle cx="39.8" cy="44.2" r="1.9" fill="#ffffff"/>
+        <circle cx="63.8" cy="44.2" r="1.9" fill="#ffffff"/>
+      </g>
+      <defs>
+        <radialGradient id="ghead" cx="0.35" cy="0.3" r="0.75">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#0d9488"/>
+        </radialGradient>
+      </defs>
+    </svg>
+  </button>
+</div>
+
 <!-- TOASTS -->
 <div id="toastWrap"></div>
 
@@ -1660,6 +1924,9 @@
     impostoLucro: { min: 0,    max: 100,   msg: 'Imposto deve estar entre 0% e 100%.' }
   };
 
+  // Campos que precisam estar preenchidos para simular
+  const CAMPOS_OBRIGATORIOS = ['capital', 'cabecas', 'diasCocho', 'valorDiaria'];
+
   function lerInputs() {
     const num = (id) => {
       const v = parseFloat(document.getElementById(id).value);
@@ -1678,18 +1945,24 @@
       impostoPct: num('impostoLucro')
     };
 
-    // Validação visual campo a campo
+    // Validação visual (só marca inválido se o campo tiver valor fora da faixa)
+    // e detecção de campos obrigatórios ainda vazios.
     let valido = true;
+    let completo = true;
     Object.keys(REGRAS_INPUT).forEach(id => {
       const el = document.getElementById(id);
       const regra = REGRAS_INPUT[id];
-      const v = parseFloat(el.value);
-      const invalido = isNaN(v) || v < regra.min || v > regra.max;
-      el.classList.toggle('invalid', invalido);
-      if (invalido) valido = false;
+      const raw = el.value.trim();
+      const vazio = raw === '';
+      const v = parseFloat(raw);
+      const fora = !vazio && (isNaN(v) || v < regra.min || v > regra.max);
+      el.classList.toggle('invalid', fora);
+      if (fora) valido = false;
+      if (CAMPOS_OBRIGATORIOS.includes(id) && (vazio || v <= 0)) completo = false;
     });
 
     inputs.valido = valido;
+    inputs.completo = completo && valido;
     return inputs;
   }
 
@@ -1773,12 +2046,54 @@
   }
 
   // ============================================
+  // ESTADO VAZIO (enquanto faltam parâmetros obrigatórios)
+  // ============================================
+  function renderEstadoVazio() {
+    document.getElementById('bestState').innerText = '—';
+    document.getElementById('bestRegion').innerText = 'Aguardando dados';
+    document.getElementById('bestProfit').innerText = '—';
+    document.getElementById('profitPerCab').innerText = 'Preencha os parâmetros';
+    document.getElementById('bestRoic').innerText = '—';
+    document.getElementById('roicAnualizado').innerText = '—';
+    const freeCashEl = document.getElementById('freeCash');
+    freeCashEl.innerText = '—';
+    freeCashEl.className = 'kpi-value blue';
+
+    document.getElementById('rankingBody').innerHTML =
+      '<tr><td colspan="8" style="text-align:center; color: var(--text-muted); padding: 32px;">' +
+      'Preencha os parâmetros obrigatórios para ver o ranking dos estados.</td></tr>';
+
+    // DRE / CDI em branco
+    ['dreFaturamento', 'dreAnimais', 'dreBoitel', 'dreFrete', 'dreFunrural',
+     'dreMortalidade', 'dreImposto', 'dreLiquido', 'retornoCDI', 'spreadCDI']
+      .forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = '—';
+      });
+    const spreadEl = document.getElementById('spreadCDI');
+    if (spreadEl) spreadEl.style.color = 'var(--text-muted)';
+    document.getElementById('dreNotaFluxo').innerText =
+      'Informe capital, tamanho do lote, dias de confinamento e valor da diária para iniciar a simulação.';
+
+    // Remove gráficos antigos
+    if (lucroChart) { lucroChart.destroy(); lucroChart = null; }
+    if (custosChart) { custosChart.destroy(); custosChart = null; }
+    if (roicChart) { roicChart.destroy(); roicChart = null; }
+  }
+
+  // ============================================
   // FUNÇÃO PRINCIPAL DE CÁLCULO
   // ============================================
   function calcular() {
     const inputs = lerInputs();
-    const { capital, cabecas, dias, modelo, cdi } = inputs;
 
+    // Ainda faltam campos obrigatórios: mostra estado vazio
+    if (!inputs.completo) {
+      renderEstadoVazio();
+      return;
+    }
+
+    const { capital, cabecas, dias, modelo, cdi } = inputs;
     const { ranking, melhor, custoBoitelTotal, cabecasEfetivas } = calcularRanking(inputs);
 
     // ============================================
@@ -1873,6 +2188,15 @@
   function atualizarGraficos() {
     // Reutiliza o núcleo de cálculo (mesma fonte de verdade do calcular())
     const inputs = lerInputs();
+
+    // Sem dados suficientes: garante que não fiquem gráficos antigos na tela
+    if (!inputs.completo) {
+      if (lucroChart) { lucroChart.destroy(); lucroChart = null; }
+      if (custosChart) { custosChart.destroy(); custosChart = null; }
+      if (roicChart) { roicChart.destroy(); roicChart = null; }
+      return;
+    }
+
     const { ranking, melhor } = calcularRanking(inputs);
 
     // Configuração comum de gráficos
@@ -2073,6 +2397,7 @@
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('mainApp').classList.add('active');
     calcular();
+    maybeStartTutorial();
   }
 
   function showLoginScreen() {
@@ -2316,6 +2641,8 @@
     }
     currentUserData = null;
     document.getElementById('adminBtn').classList.remove('show');
+    document.getElementById('guideAvatar').classList.add('hidden');
+    document.querySelectorAll('.guide-highlight').forEach(el => el.classList.remove('guide-highlight'));
     showLoginScreen();
   }
 
@@ -2436,6 +2763,137 @@
     try { await updateUserSubscription(uid, 'expired'); showToast('Assinatura expirada.'); loadUsersTable(); }
     catch (e) { showToast('Erro ao expirar assinatura.', 'error'); }
   }
+
+  // ============================================
+  // AVATAR GUIA — TUTORIAL PASSO A PASSO
+  // ============================================
+  const TUTORIAL_KEY = 'boitel_tutorial_v1';
+  let guideStepIndex = 0;
+  let guideAtivo = false;
+
+  const PASSOS_TUTORIAL = [
+    { alvo: 'header', tab: null, titulo: 'Olá! Eu sou o Boi-Guia 🐂', texto: 'Vou te mostrar em poucos passos como usar o simulador. É rapidinho — no fim você já vai saber projetar o lucro do confinamento em boitel.' },
+    { alvo: '#blocoCapital', tab: null, titulo: 'Capital e lote', texto: 'Comece informando o capital disponível e o tamanho do lote (número de cabeças). São os dois primeiros números que definem a simulação.' },
+    { alvo: '#blocoBoitel', tab: null, titulo: 'Condições do Boitel', texto: 'Escolha a modalidade de pagamento, os dias de cocho, o valor da diária de hotelaria e a bonificação (ex.: Boi China). Cada alteração recalcula tudo na hora.' },
+    { alvo: '#blocoRiscos', tab: null, titulo: 'Riscos e oportunidade', texto: 'Ajuste a mortalidade/refugo, o CDI (custo de oportunidade) e o imposto sobre o lucro. É aqui que a análise fica realista.' },
+    { alvo: '.results-hero', tab: null, titulo: 'Indicadores-chave', texto: 'Conforme você preenche, estes cartões mostram o melhor estado, o lucro líquido projetado, o ROIC e o caixa livre em D0.' },
+    { alvo: '.tabs', tab: 'rankingTab', titulo: 'Ranking dos estados', texto: 'Comparamos SP, MG, GO, MS e MT: preço da arroba, custo do animal, frete, lucro por cabeça e ROIC — ordenado do melhor para o pior.' },
+    { alvo: '#fluxoTab', tab: 'fluxoTab', titulo: 'DRE & fluxo de caixa', texto: 'Aqui você vê o resultado linha a linha, o desembolso no D0/D+106 e a comparação com a renda fixa (spread vs CDI).' },
+    { alvo: '#graficosTab', tab: 'graficosTab', titulo: 'Análise gráfica', texto: 'Os gráficos mostram o lucro por estado, a composição dos custos e o ROIC comparativo — tudo se atualiza enquanto você digita.' },
+    { alvo: '#contratosTab', tab: 'contratosTab', titulo: 'Contratos & alertas', texto: 'Checklist com boas práticas: plataformas digitais, GTA digital, peso de balança e jejum, hedge na B3 e trava de preço.' },
+    { alvo: '.btn-export', tab: null, titulo: 'Pronto! 🎉', texto: 'Ao terminar, use "Exportar Resumo" para gerar o PDF do relatório. Se quiser rever o tutorial, clique no Boi-Guia a qualquer momento. Bom trabalho!' }
+  ];
+
+  function guideAbrirTab(tabId) {
+    const btn = document.querySelector('.tab-btn[onclick*="' + tabId + '"]');
+    if (tabId && btn) switchTab(tabId, btn);
+  }
+
+  function guidePosicionar(alvoSel) {
+    const guide = document.getElementById('guideAvatar');
+    const largura = guide.offsetWidth || 300;
+    const margem = 16;
+    const alvo = alvoSel ? document.querySelector(alvoSel) : null;
+    if (!alvo) {
+      guide.style.left = (window.innerWidth - largura - margem) + 'px';
+      return;
+    }
+    const r = alvo.getBoundingClientRect();
+    let left = r.left + (r.width / 2) - (largura / 2);
+    left = Math.max(margem, Math.min(left, window.innerWidth - largura - margem));
+    guide.style.left = left + 'px';
+  }
+
+  function guideDestacar(alvoSel) {
+    document.querySelectorAll('.guide-highlight').forEach(el => el.classList.remove('guide-highlight'));
+    const alvo = alvoSel ? document.querySelector(alvoSel) : null;
+    if (!alvo) { guidePosicionar(null); return; }
+    alvo.classList.add('guide-highlight');
+    alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function guideRenderStep() {
+    const p = PASSOS_TUTORIAL[guideStepIndex];
+    document.getElementById('guideTitle').textContent = p.titulo;
+    document.getElementById('guideText').textContent = p.texto;
+    document.getElementById('guideStep').textContent = (guideStepIndex + 1) + '/' + PASSOS_TUTORIAL.length;
+    document.getElementById('guidePrev').style.visibility = guideStepIndex === 0 ? 'hidden' : 'visible';
+    document.getElementById('guideNext').textContent =
+      guideStepIndex === PASSOS_TUTORIAL.length - 1 ? 'Concluir' : 'Próximo';
+    document.getElementById('guideProgressBar').style.width =
+      Math.round(guideStepIndex / (PASSOS_TUTORIAL.length - 1) * 100) + '%';
+
+    if (p.tab) guideAbrirTab(p.tab);
+    setTimeout(() => {
+      guideDestacar(p.alvo);
+      guidePosicionar(p.alvo);
+    }, p.tab ? 200 : 40);
+  }
+
+  function guideNext() {
+    if (guideStepIndex >= PASSOS_TUTORIAL.length - 1) { guideConcluir(); return; }
+    guideStepIndex++;
+    guideRenderStep();
+  }
+
+  function guidePrev() {
+    if (guideStepIndex === 0) return;
+    guideStepIndex--;
+    guideRenderStep();
+  }
+
+  function guideSkip() { guideConcluir(); }
+
+  function guideBubbleToggle() { startTutorial(); }
+
+  // Inicia o tutorial (usado pelo botão do personagem e pelo botão de ajuda)
+  function startTutorial() {
+    guideAtivo = true;
+    guideStepIndex = 0;
+    const guide = document.getElementById('guideAvatar');
+    guide.classList.remove('hidden');
+    guide.classList.remove('minimized');
+    guideRenderStep();
+  }
+
+  function guideConcluir() {
+    guideAtivo = false;
+    document.querySelectorAll('.guide-highlight').forEach(el => el.classList.remove('guide-highlight'));
+    try { localStorage.setItem(TUTORIAL_KEY, '1'); } catch (e) {}
+    guideAbrirTab('rankingTab');
+    guideMinimizar();
+    showToast('Tutorial concluído! Bons negócios 🐂');
+  }
+
+  // Deixa apenas o personagem visível (canto inferior direito), sem o balão
+  function guideMinimizar() {
+    const guide = document.getElementById('guideAvatar');
+    if (!guide) return;
+    guide.classList.remove('hidden');
+    guide.classList.add('minimized');
+    requestAnimationFrame(() => {
+      const largura = guide.offsetWidth || 84;
+      guide.style.left = (window.innerWidth - largura - 20) + 'px';
+    });
+  }
+
+  // Chamado ao entrar no app: inicia na 1ª vez ou mantém minimizado
+  function maybeStartTutorial() {
+    let visto = false;
+    try { visto = localStorage.getItem(TUTORIAL_KEY) === '1'; } catch (e) {}
+    if (visto) {
+      guideMinimizar();
+    } else {
+      setTimeout(startTutorial, 700);
+    }
+  }
+
+  window.addEventListener('resize', () => {
+    const guide = document.getElementById('guideAvatar');
+    if (!guide || guide.classList.contains('hidden')) return;
+    if (guideAtivo) guidePosicionar(PASSOS_TUTORIAL[guideStepIndex].alvo);
+    else guideMinimizar();
+  });
 
   // ============================================
   // OBSERVADOR DE AUTENTICAÇÃO
