@@ -54,6 +54,7 @@ function hideError() {
 function showMainApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('mainApp').classList.add('active');
+  if (typeof atualizarSidebar === 'function') atualizarSidebar();
   calcular();
   maybeStartTutorial();
 }

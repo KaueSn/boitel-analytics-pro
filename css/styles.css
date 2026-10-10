@@ -1470,4 +1470,216 @@
 
     .help-box.show { display: block; animation: fadeIn 0.2s ease; }
     .help-box strong { color: var(--primary-light); }
+
+    /* ============================================
+       BARRA LATERAL ESQUERDA
+       ============================================ */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 76px;
+      background: rgba(10, 15, 25, 0.96);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 18px 8px;
+      z-index: 900;
+      backdrop-filter: blur(8px);
+    }
+
+    .sidebar-brand { font-size: 1.4rem; margin-bottom: 6px; }
+    .sidebar-user { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 14px; }
+
+    .sidebar-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .sidebar-name {
+      font-size: 0.68rem;
+      color: var(--text-secondary);
+      max-width: 68px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .sidebar-nav { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+
+    .side-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      padding: 10px 4px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      font-weight: 600;
+    }
+
+    .side-item span { font-size: 0.62rem; letter-spacing: 0.02em; }
+    .side-item:hover { background: rgba(20, 184, 166, 0.12); color: var(--primary-light); }
+    .side-item.active { background: rgba(20, 184, 166, 0.18); color: var(--primary-light); }
+
+    #mainApp.active { padding-left: 76px; }
+
+    /* ============================================
+       PAINÉIS LATERAIS (drawer)
+       ============================================ */
+    .side-panel {
+      position: fixed;
+      top: 0;
+      left: 76px;
+      bottom: 0;
+      width: 430px;
+      max-width: calc(100vw - 76px);
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      transform: translateX(-108%);
+      transition: transform 0.3s ease;
+      z-index: 950;
+      overflow-y: auto;
+    }
+
+    .side-panel.active { transform: translateX(0); box-shadow: 0 0 50px rgba(0, 0, 0, 0.6); }
+    .side-panel-inner { padding: 20px; }
+
+    .side-panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .side-panel-head h2 { font-size: 1.1rem; }
+
+    .panel-close { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+    .panel-close:hover { color: var(--danger-light); }
+
+    .side-panel-body { display: flex; flex-direction: column; gap: 6px; }
+
+    .fld-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
+
+    .fld {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .fld:focus { border-color: var(--primary); }
+    .fld:disabled { opacity: 0.6; }
+    .fld-hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; }
+
+    /* ============================================
+       COMUNIDADE
+       ============================================ */
+    .community-new {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .community-new-row { display: flex; gap: 8px; }
+    .community-new-row select { max-width: 120px; }
+
+    .post-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .post-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .post-card:hover { border-color: var(--primary); transform: translateY(-1px); }
+    .post-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+
+    .post-tag { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; }
+    .post-tag.pergunta { background: rgba(99, 102, 241, 0.2); color: var(--accent-light); }
+    .post-tag.artigo { background: rgba(20, 184, 166, 0.2); color: var(--primary-light); }
+
+    .post-date { font-size: 0.7rem; color: var(--text-muted); }
+    .post-title { font-weight: 600; margin-bottom: 4px; }
+    .post-excerpt { font-size: 0.82rem; color: var(--text-secondary); }
+    .post-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 8px; }
+    .post-empty { font-size: 0.82rem; color: var(--text-muted); text-align: center; padding: 20px; }
+
+    .post-detail {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .post-detail-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .post-detail-title { font-size: 1.05rem; margin-bottom: 4px; }
+    .post-detail-meta { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 10px; }
+    .post-detail-text { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; white-space: pre-wrap; }
+
+    .answers { margin: 14px 0; display: flex; flex-direction: column; gap: 8px; }
+    .answers-title { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+
+    .answer {
+      background: var(--bg-secondary);
+      border-left: 2px solid var(--primary);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .answer-author { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; }
+
+    /* Responsivo: barra inferior em telas pequenas */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        left: 0;
+        right: 0;
+        top: auto;
+        bottom: 0;
+        height: 64px;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 0;
+        border-right: none;
+        border-top: 1px solid var(--border-color);
+      }
+      .sidebar-brand, .sidebar-user { display: none; }
+      .sidebar-nav { flex-direction: row; width: 100%; justify-content: space-around; }
+      .side-item { flex: 1; }
+      #mainApp.active { padding-left: 0; padding-bottom: 76px; }
+      .side-panel { left: 0; width: 100%; max-width: 100%; top: 0; bottom: 64px; }
+    }
+
+    /* Impressão: esconde a barra lateral e os painéis */
+    @media print {
+      #sideBar,
+      .side-panel { display: none !important; }
+      #mainApp.active { padding-left: 0 !important; }
+    }
   

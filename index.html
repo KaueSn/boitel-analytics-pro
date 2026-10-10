@@ -57,6 +57,68 @@
 
 <!-- APP PRINCIPAL -->
 <div id="mainApp">
+
+<!-- BARRA LATERAL ESQUERDA -->
+<aside id="sideBar" class="sidebar">
+  <div class="sidebar-brand">🐂</div>
+  <div class="sidebar-user">
+    <div class="sidebar-avatar" id="sideAvatar">U</div>
+    <div class="sidebar-name" id="sideName">Usuário</div>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="side-item active" onclick="openSection('simulador')" title="Simulador">🐂 <span>Simulador</span></button>
+    <button class="side-item" onclick="openSection('perfil')" title="Meu Perfil">👤 <span>Meu Perfil</span></button>
+    <button class="side-item" onclick="openSection('comunidade')" title="Comunidade">💬 <span>Comunidade</span></button>
+  </nav>
+</aside>
+
+<!-- PAINEL: PERFIL -->
+<div id="profilePanel" class="side-panel">
+  <div class="side-panel-inner">
+    <div class="side-panel-head">
+      <h2>👤 Meu Perfil</h2>
+      <button class="panel-close" onclick="closeSection()" aria-label="Fechar">×</button>
+    </div>
+    <div class="side-panel-body">
+      <label class="fld-label">Nome de exibição</label>
+      <input type="text" id="profileName" class="fld" placeholder="Seu nome">
+      <label class="fld-label">E-mail</label>
+      <input type="email" id="profileEmail" class="fld" disabled>
+      <label class="fld-label">Telefone (opcional)</label>
+      <input type="tel" id="profilePhone" class="fld" placeholder="(00) 00000-0000">
+      <label class="fld-label">Sobre você (opcional)</label>
+      <textarea id="profileBio" class="fld" rows="3" placeholder="Ex.: pecuarista em GO, focado em confinamento"></textarea>
+      <div class="fld-hint" id="profileSavedAt"></div>
+      <button class="btn-primary" onclick="salvarPerfil(this)">Salvar perfil</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAINEL: COMUNIDADE -->
+<div id="communityPanel" class="side-panel">
+  <div class="side-panel-inner">
+    <div class="side-panel-head">
+      <h2>💬 Comunidade</h2>
+      <button class="panel-close" onclick="closeSection()" aria-label="Fechar">×</button>
+    </div>
+    <div class="side-panel-body">
+      <div class="community-new">
+        <div class="community-new-row">
+          <select id="postType" class="fld">
+            <option value="pergunta">Pergunta</option>
+            <option value="artigo">Artigo</option>
+          </select>
+          <input type="text" id="postTitle" class="fld" placeholder="Título" maxlength="120">
+        </div>
+        <textarea id="postBody" class="fld" rows="3" placeholder="Escreva sua pergunta ou artigo sobre boitel, gado, contratos, frete..."></textarea>
+        <button class="btn-primary" onclick="publicarPost(this)">Publicar</button>
+      </div>
+      <div id="postDetail" class="post-detail" style="display:none;"></div>
+      <div id="postList" class="post-list"></div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <header>
     <div class="header-content">
@@ -483,6 +545,7 @@
 <script src="js/calc.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/guide.js"></script>
+<script src="js/community.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
