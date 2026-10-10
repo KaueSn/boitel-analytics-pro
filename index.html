@@ -71,9 +71,18 @@
     <div class="sidebar-name" id="sideName">Usuário</div>
   </div>
   <nav class="sidebar-nav">
-    <button class="side-item active" onclick="openSection('simulador')" title="Simulador">🐂 <span>Simulador</span></button>
-    <button class="side-item" onclick="openSection('perfil')" title="Meu Perfil">👤 <span>Meu Perfil</span></button>
-    <button class="side-item" onclick="openSection('comunidade')" title="Comunidade">💬 <span>Comunidade</span></button>
+    <button class="side-item active" onclick="openSection('simulador')" title="Simulador">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7h-4M21 7v4"/></svg>
+      <span>Simulador</span>
+    </button>
+    <button class="side-item" onclick="openSection('perfil')" title="Meu Perfil">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      <span>Meu Perfil</span>
+    </button>
+    <button class="side-item" onclick="openSection('comunidade')" title="Comunidade">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-5A8 8 0 1 1 21 12z"/></svg>
+      <span>Comunidade</span>
+    </button>
   </nav>
   <button class="side-item side-theme" data-theme-toggle onclick="toggleTheme()" title="Alternar tema"></button>
 </aside>
@@ -153,6 +162,17 @@
       </button>
     </div>
   </header>
+
+  <section class="welcome-strip">
+    <div>
+      <h2 class="welcome-title">Bem-vindo, <span id="welcomeName">Investidor</span> 👋</h2>
+      <p class="welcome-sub">Simule, compare os estados e monte a melhor estratégia de confinamento em minutos.</p>
+    </div>
+    <div class="welcome-actions">
+      <button class="chip" onclick="startTutorial(true)">🎓 Fazer o tour</button>
+      <button class="chip" onclick="exportarResumo()">📄 Exportar resumo</button>
+    </div>
+  </section>
 
   <div class="grid">
     <!-- LEFT COLUMN: INPUT PARAMETERS -->
@@ -438,6 +458,11 @@
         </div>
       </div>
     </div>
+
+    <footer class="app-footer">
+      <span>🐂 <strong>Boitel Analytics Pro</strong> — Simulador institucional de confinamento bovino</span>
+      <span>Dados de referência (ICBC/CEPEA, 2025) · Não constitui recomendação de investimento.</span>
+    </footer>
   </div>
 </div>
 

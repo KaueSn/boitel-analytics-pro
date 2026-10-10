@@ -1842,4 +1842,66 @@
     h1, h2, h3, .logo {
       letter-spacing: -0.02em;
     }
+
+    /* ============================================
+       FAIXA DE BOAS-VINDAS · RODAPÉ · ÍCONES SVG
+       ============================================ */
+    .ic { width: 22px; height: 22px; }
+
+    .welcome-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      padding: 20px 24px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      background: linear-gradient(135deg, rgba(13, 148, 136, 0.14), rgba(99, 102, 241, 0.10));
+      box-shadow: var(--shadow-md);
+    }
+
+    .welcome-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      border: none;
+      padding: 0;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+
+    .welcome-title::before { display: none; }
+    .welcome-sub { color: var(--text-secondary); font-size: 0.9rem; }
+    .welcome-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .chip:hover { border-color: var(--primary); transform: translateY(-1px); color: var(--primary-light); }
+
+    .app-footer {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    @media print {
+      .welcome-actions { display: none !important; }
+    }
   
