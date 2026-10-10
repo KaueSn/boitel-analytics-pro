@@ -2,9 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <meta name="description" content="Simulador paramétrico institucional de alocação de capital em confinamento bovino de terceiros">
-  <meta name="theme-color" content="#0a0e17">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Boitel Analytics Pro 2.0 | Inteligência Pecuária Institucional</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   
@@ -66,12 +64,6 @@
       margin: 0;
       padding: 0;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    html {
-      scroll-behavior: smooth;
     }
 
     body {
@@ -83,13 +75,11 @@
       background-image: 
         radial-gradient(ellipse at top, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
         radial-gradient(ellipse at bottom right, rgba(99, 102, 241, 0.06) 0%, transparent 50%);
-      overflow-x: hidden;
     }
 
     .container {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 0 16px;
     }
 
     /* ============================================
@@ -696,6 +686,16 @@
         background: white;
         border: 1px solid #e5e7eb;
       }
+
+      /* Elementos que não devem sair no PDF */
+      #loginScreen,
+      #adminPanel,
+      #toastWrap,
+      .admin-btn,
+      .logout-btn,
+      .user-info {
+        display: none !important;
+      }
     }
 
     /* ============================================
@@ -923,502 +923,284 @@
     }
 
     /* ============================================
-       RESPONSIVE STYLES - MOBILE FIRST
+       BOTÃO ADMIN (visível apenas para admins)
        ============================================ */
-    
-    /* Mobile (0-480px) */
-    @media (max-width: 480px) {
-      body {
-        padding: 16px;
-      }
-
-      .container {
-        padding: 0 12px;
-      }
-
-      .header-content h1 {
-        font-size: 1.4rem;
-        flex-wrap: wrap;
-      }
-
-      .badge {
-        font-size: 0.65rem;
-        padding: 4px 8px;
-      }
-
-      .subtitle {
-        font-size: 0.85rem;
-      }
-
-      .header-actions {
-        width: 100%;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .user-info {
-        width: 100%;
-        justify-content: center;
-        order: 2;
-      }
-
-      .logout-btn {
-        width: 100%;
-        order: 3;
-      }
-
-      .btn-export {
-        width: 100%;
-        justify-content: center;
-        order: 1;
-      }
-
-      .results-hero {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-
-      .kpi {
-        padding: 16px;
-      }
-
-      .kpi-value {
-        font-size: 1.3rem;
-      }
-
-      .card {
-        padding: 16px;
-        border-radius: 12px;
-      }
-
-      h2 {
-        font-size: 1.1rem;
-      }
-
-      .form-group {
-        margin-bottom: 16px;
-      }
-
-      input[type="number"],
-      select {
-        padding: 12px 14px;
-        font-size: 16px; /* Previne zoom no iOS */
-      }
-
-      .login-card {
-        padding: 24px;
-        max-width: 100%;
-        margin: 16px;
-      }
-
-      .login-header h1 {
-        font-size: 1.5rem;
-      }
-
-      .tabs {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .tab-btn {
-        padding: 8px 16px;
-        font-size: 0.85rem;
-        flex-shrink: 0;
-      }
-
-      table {
-        font-size: 0.75rem;
-      }
-
-      th, td {
-        padding: 10px 8px;
-      }
-
-      .tag-state {
-        font-size: 0.7rem;
-        padding: 2px 6px;
-      }
-
-      .chart-container {
-        height: 250px;
-        padding: 12px;
-      }
-
-      .checklist-item {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .checklist-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2rem;
-      }
-
-      .dre-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-      }
-
-      .dre-value {
-        align-self: flex-end;
-      }
-    }
-
-    /* Tablet (481-768px) */
-    @media (min-width: 481px) and (max-width: 768px) {
-      .header-content h1 {
-        font-size: 1.6rem;
-      }
-
-      .results-hero {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .kpi-value {
-        font-size: 1.4rem;
-      }
-
-      .login-card {
-        padding: 32px;
-      }
-
-      .chart-container {
-        height: 280px;
-      }
-    }
-
-    /* Tablet Landscape (769-1023px) */
-    @media (min-width: 769px) and (max-width: 1023px) {
-      .grid {
-        grid-template-columns: 350px 1fr;
-      }
-
-      .results-hero {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    /* Desktop (1024px+) */
-    @media (min-width: 1024px) {
-      .grid {
-        grid-template-columns: 400px 1fr;
-      }
-
-      .results-hero {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      }
-    }
-
-    /* Large Desktop (1440px+) */
-    @media (min-width: 1440px) {
-      .container {
-        max-width: 1600px;
-      }
-
-      .header-content h1 {
-        font-size: 2.2rem;
-      }
-
-      .kpi-value {
-        font-size: 1.6rem;
-      }
-    }
-
-    /* Extra Large (1920px+) */
-    @media (min-width: 1920px) {
-      .container {
-        max-width: 1800px;
-      }
-
-      .grid {
-        grid-template-columns: 450px 1fr;
-      }
-    }
-
-    /* ============================================
-       CROSS-BROWSER COMPATIBILITY
-       ============================================ */
-    
-    /* Safari/iOS specific */
-    @supports (-webkit-touch-callout: none) {
-      input[type="number"],
-      select {
-        -webkit-appearance: none;
-        border-radius: 10px;
-      }
-    }
-
-    /* Firefox specific */
-    @-moz-document url-prefix() {
-      .card {
-        backdrop-filter: none;
-      }
-    }
-
-    /* Edge specific */
-    @supports (-ms-ime-align: auto) {
-      .card {
-        backdrop-filter: none;
-      }
-    }
-
-    /* High DPI displays */
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-      .badge,
-      .tag-state {
-        -webkit-font-smoothing: antialiased;
-      }
-    }
-
-    /* Dark mode preference respect */
-    @media (prefers-color-scheme: dark) {
-      /* Already dark by default, but ensures consistency */
-    }
-
-    /* Reduced motion preference */
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    /* Focus visible for keyboard navigation */
-    :focus-visible {
-      outline: 2px solid var(--primary);
-      outline-offset: 2px;
-    }
-
-    button:focus-visible,
-    input:focus-visible,
-    select:focus-visible {
-      outline: 2px solid var(--primary);
-      outline-offset: 2px;
-    }
-
-    /* ============================================
-       ADMIN PANEL STYLES
-       ============================================ */
-    .admin-badge {
-      background: var(--warning-gradient);
-      color: white;
-      font-size: 0.7rem;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .admin-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding: 16px;
-      background: var(--bg-secondary);
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-    }
-
-    .admin-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .admin-stat-card {
-      background: var(--bg-card);
-      padding: 16px;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-      text-align: center;
-    }
-
-    .admin-stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary-light);
-    }
-
-    .admin-stat-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .user-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-
-    .user-table th {
-      background: var(--bg-secondary);
-      color: var(--text-secondary);
-      padding: 12px;
-      font-weight: 600;
-      border-bottom: 2px solid var(--border-color);
-    }
-
-    .user-table td {
-      padding: 12px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .user-role-badge {
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .user-role-badge.admin {
-      background: rgba(245, 158, 11, 0.2);
-      color: var(--warning-light);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-
-    .user-role-badge.user {
-      background: rgba(13, 148, 136, 0.2);
-      color: var(--primary-light);
-      border: 1px solid rgba(13, 148, 136, 0.3);
-    }
-
-    .user-role-badge.pending {
-      background: rgba(99, 102, 241, 0.2);
-      color: var(--accent-light);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-    }
-
-    .user-status-badge {
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .user-status-badge.active {
-      background: rgba(16, 185, 129, 0.2);
-      color: var(--success-light);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .user-status-badge.inactive {
-      background: rgba(239, 68, 68, 0.2);
-      color: var(--danger-light);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .action-btn {
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: var(--transition-fast);
-      margin-right: 4px;
-    }
-
-    .action-btn.promote {
-      background: rgba(245, 158, 11, 0.2);
-      color: var(--warning-light);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-
-    .action-btn.promote:hover {
-      background: rgba(245, 158, 11, 0.3);
-    }
-
-    .action-btn.demote {
-      background: rgba(99, 102, 241, 0.2);
-      color: var(--accent-light);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-    }
-
-    .action-btn.demote:hover {
-      background: rgba(99, 102, 241, 0.3);
-    }
-
-    .action-btn.activate {
-      background: rgba(16, 185, 129, 0.2);
-      color: var(--success-light);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .action-btn.activate:hover {
-      background: rgba(16, 185, 129, 0.3);
-    }
-
-    .action-btn.deactivate {
-      background: rgba(239, 68, 68, 0.2);
-      color: var(--danger-light);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .action-btn.deactivate:hover {
-      background: rgba(239, 68, 68, 0.3);
-    }
-
-    .subscription-badge {
-      background: rgba(13, 148, 136, 0.15);
-      color: var(--primary-light);
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      border: 1px solid rgba(13, 148, 136, 0.3);
-    }
-
-    .subscription-badge.trial {
+    .admin-btn {
       background: rgba(99, 102, 241, 0.15);
       color: var(--accent-light);
-      border: 1px solid rgba(99, 102, 241, 0.3);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      display: none;
+      align-items: center;
+      gap: 8px;
     }
 
-    .subscription-badge.expired {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--danger-light);
-      border: 1px solid rgba(239, 68, 68, 0.3);
+    .admin-btn.show {
+      display: inline-flex;
     }
 
+    .admin-btn:hover {
+      background: rgba(99, 102, 241, 0.28);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================
+       PAINEL ADMINISTRATIVO
+       ============================================ */
     #adminPanel {
       display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 7, 12, 0.92);
+      backdrop-filter: blur(6px);
+      z-index: 1100;
+      overflow-y: auto;
+      padding: 32px 24px;
     }
 
     #adminPanel.active {
       display: block;
+      animation: fadeIn 0.25s ease;
     }
 
-    .admin-tab-btn {
-      background: none;
-      border: none;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .admin-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+    }
+
+    .admin-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border-color);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(13, 148, 136, 0.08));
+      flex-wrap: wrap;
+    }
+
+    .admin-head h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-head p {
       color: var(--text-muted);
       font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .admin-close {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger-light);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 9px 16px;
+      border-radius: 8px;
       font-weight: 600;
-      padding: 8px 16px;
+      font-size: 0.85rem;
       cursor: pointer;
-      border-radius: 6px;
       transition: var(--transition-fast);
     }
 
-    .admin-tab-btn:hover {
-      color: var(--text-secondary);
-      background: var(--bg-secondary);
+    .admin-close:hover { background: rgba(239, 68, 68, 0.28); }
+
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .admin-tab-btn.active {
-      background: var(--accent-gradient);
-      color: white;
+    .admin-stat {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 18px;
     }
+
+    .admin-stat .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .admin-stat .value {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--primary-light);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .admin-body {
+      padding: 24px 28px 32px;
+    }
+
+    .admin-body h3 {
+      font-size: 1rem;
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+
+    .admin-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      min-width: 760px;
+    }
+
+    .admin-table th {
+      background: var(--bg-secondary);
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .admin-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(45, 58, 79, 0.5);
+      vertical-align: middle;
+    }
+
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .pill.admin { background: rgba(99, 102, 241, 0.2); color: var(--accent-light); }
+    .pill.user { background: rgba(148, 163, 184, 0.15); color: var(--text-secondary); }
+    .pill.active { background: rgba(16, 185, 129, 0.18); color: var(--success-light); }
+    .pill.inactive { background: rgba(239, 68, 68, 0.18); color: var(--danger-light); }
+    .pill.premium { background: rgba(212, 175, 55, 0.2); color: #f0d98a; }
+    .pill.trial { background: rgba(245, 158, 11, 0.18); color: var(--warning-light); }
+    .pill.expired { background: rgba(239, 68, 68, 0.18); color: var(--danger-light); }
+
+    .admin-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-mini {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-mini:hover { border-color: var(--primary); color: var(--primary-light); }
+    .btn-mini.danger:hover { border-color: var(--danger); color: var(--danger-light); }
+    .btn-mini:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ============================================
+       TOAST NOTIFICATIONS
+       ============================================ */
+    #toastWrap {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 2000;
+    }
+
+    .toast {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--primary);
+      color: var(--text-primary);
+      padding: 14px 18px;
+      border-radius: 10px;
+      box-shadow: var(--shadow-lg);
+      font-size: 0.85rem;
+      min-width: 240px;
+      animation: toastIn 0.25s ease;
+    }
+
+    .toast.error { border-left-color: var(--danger); }
+    .toast.warning { border-left-color: var(--warning); }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ============================================
+       UTILITÁRIOS DE VALIDAÇÃO / LOADING
+       ============================================ */
+    input.invalid {
+      border-color: var(--danger) !important;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+    }
+
+    .field-error {
+      color: var(--danger-light);
+      font-size: 0.72rem;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .field-error.show { display: block; }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-primary.loading { pointer-events: none; opacity: 0.8; }
   </style>
 </head>
 <body>
@@ -1436,8 +1218,8 @@
     <div class="login-form" id="loginForm">
       <input type="email" id="loginEmail" placeholder="E-mail" required>
       <input type="password" id="loginPassword" placeholder="Senha" required>
-      <button class="btn-primary" onclick="loginWithEmail()">Entrar com E-mail</button>
-      <button class="btn-google" onclick="loginWithGoogle()">
+      <button class="btn-primary" onclick="loginWithEmail(this)">Entrar com E-mail</button>
+      <button class="btn-google" onclick="loginWithGoogle(this)">
         <svg width="20" height="20" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -1452,7 +1234,7 @@
       <input type="email" id="registerEmail" placeholder="E-mail" required>
       <input type="password" id="registerPassword" placeholder="Senha (mínimo 6 caracteres)" required>
       <input type="password" id="registerPasswordConfirm" placeholder="Confirmar Senha" required>
-      <button class="btn-primary" onclick="registerWithEmail()">Criar Conta</button>
+      <button class="btn-primary" onclick="registerWithEmail(this)">Criar Conta</button>
     </div>
     
     <div class="login-footer">
@@ -1474,12 +1256,9 @@
     <div class="header-actions">
       <div class="user-info">
         <div class="user-avatar" id="userAvatar">U</div>
-        <div>
-          <span id="userEmail">usuario@email.com</span>
-          <span id="adminBadge" class="admin-badge" style="display: none; margin-left: 8px;">ADMIN</span>
-        </div>
+        <span id="userEmail">usuario@email.com</span>
       </div>
-      <button class="logout-btn" id="adminPanelBtn" onclick="toggleAdminPanel()" style="display: none;">Painel Admin</button>
+      <button class="admin-btn" id="adminBtn" onclick="openAdminPanel()">⚙️ Painel Admin</button>
       <button class="logout-btn" onclick="logout()">Sair</button>
       <button class="btn-export" onclick="exportarResumo()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1759,88 +1538,64 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- ADMIN PANEL -->
-    <div id="adminPanel" class="card" style="margin-top: 24px;">
-      <h2>Painel Administrativo</h2>
-      
-      <div class="admin-header">
-        <div>
-          <h3 style="color: var(--text-primary); margin-bottom: 4px;">Gerenciamento de Usuários</h3>
-          <p style="color: var(--text-muted); font-size: 0.85rem;">Gerencie usuários, roles e assinaturas</p>
-        </div>
-        <div class="admin-stats">
-          <div class="admin-stat-card">
-            <div class="admin-stat-value" id="totalUsers">0</div>
-            <div class="admin-stat-label">Total Usuários</div>
-          </div>
-          <div class="admin-stat-card">
-            <div class="admin-stat-value" id="activeUsers">0</div>
-            <div class="admin-stat-label">Ativos</div>
-          </div>
-          <div class="admin-stat-card">
-            <div class="admin-stat-value" id="adminUsers">0</div>
-            <div class="admin-stat-label">Administradores</div>
-          </div>
-        </div>
+<!-- PAINEL ADMINISTRATIVO -->
+<div id="adminPanel">
+  <div class="admin-shell">
+    <div class="admin-head">
+      <div>
+        <h2>⚙️ Gerenciamento de Usuários</h2>
+        <p>Controle de acesso, permissões e assinaturas da plataforma</p>
       </div>
+      <button class="admin-close" onclick="closeAdminPanel()">Fechar</button>
+    </div>
 
-      <div class="tabs">
-        <button class="admin-tab-btn active" onclick="switchAdminTab('usersTab', this)">Usuários</button>
-        <button class="admin-tab-btn" onclick="switchAdminTab('addAdminTab', this)">Adicionar Admin</button>
-        <button class="admin-tab-btn" onclick="switchAdminTab('subscriptionsTab', this)">Assinaturas</button>
+    <div class="admin-stats">
+      <div class="admin-stat">
+        <div class="label">Total de Usuários</div>
+        <div class="value" id="statTotal">—</div>
       </div>
-
-      <div id="usersTab" class="tab-content active">
-        <div style="overflow-x: auto;">
-          <table class="user-table">
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Assinatura</th>
-                <th>Criado em</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="usersTableBody">
-              <tr>
-                <td colspan="6" style="text-align: center; color: var(--text-muted);">Carregando...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="admin-stat">
+        <div class="label">Ativos</div>
+        <div class="value" id="statActive" style="color: var(--success-light);">—</div>
       </div>
-
-      <div id="addAdminTab" class="tab-content">
-        <div class="form-group">
-          <label>Email do usuário para promover a Admin</label>
-          <div class="input-wrap">
-            <input type="email" id="adminEmailInput" placeholder="usuario@email.com">
-          </div>
-        </div>
-        <button class="btn-primary" onclick="promoteToAdmin()">Promover a Administrador</button>
-        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 12px;">
-          ⚠️ Apenas você pode promover usuários a administrador. Esta ação é irreversível.
-        </p>
+      <div class="admin-stat">
+        <div class="label">Assinantes Premium</div>
+        <div class="value" id="statPremium" style="color: #f0d98a;">—</div>
       </div>
+      <div class="admin-stat">
+        <div class="label">Administradores</div>
+        <div class="value" id="statAdmins" style="color: var(--accent-light);">—</div>
+      </div>
+    </div>
 
-      <div id="subscriptionsTab" class="tab-content">
-        <p style="color: var(--text-muted); margin-bottom: 16px;">
-          Sistema de assinaturas será implementado em breve. Os usuários terão período de teste de 30 dias.
-        </p>
-        <div class="admin-stat-card" style="text-align: left;">
-          <h4 style="color: var(--text-primary); margin-bottom: 8px;">Status do Sistema de Assinaturas</h4>
-          <div style="color: var(--warning-light); font-size: 0.9rem;">🔧 Em desenvolvimento</div>
-          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
-            Planejado: Integração com Stripe, planos mensais/anuais, gestão de pagamentos.
-          </p>
-        </div>
+    <div class="admin-body">
+      <h3>Usuários Cadastrados</h3>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>E-mail</th>
+              <th>Permissão</th>
+              <th>Status</th>
+              <th>Assinatura</th>
+              <th>Expira em</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="adminUsersBody">
+            <tr><td colspan="6" style="text-align:center; color: var(--text-muted); padding: 32px;">Carregando usuários...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
+
+<!-- TOASTS -->
+<div id="toastWrap"></div>
 
 <script>
   // ============================================
@@ -1869,7 +1624,10 @@
   }
 
   function formatPercent(val) {
-    return val.toFixed(2) + '%';
+    return val.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }) + '%';
   }
 
   // ============================================
@@ -1888,55 +1646,96 @@
   }
 
   // ============================================
-  // FUNÇÃO PRINCIPAL DE CÁLCULO
+  // COLETA E VALIDAÇÃO DE INPUTS
   // ============================================
-  function calcular() {
-    // Coleta de inputs
-    const capital = parseFloat(document.getElementById('capital').value) || 0;
-    const cabecas = parseInt(document.getElementById('cabecas').value) || 0;
-    const dias = parseInt(document.getElementById('diasCocho').value) || 0;
-    const diaria = parseFloat(document.getElementById('valorDiaria').value) || 0;
-    const premio = parseFloat(document.getElementById('premioArroba').value) || 0;
-    const modelo = document.getElementById('modeloBoitel').value;
-    const mortalidadePct = parseFloat(document.getElementById('mortalidade').value) || 0;
-    const cdi = parseFloat(document.getElementById('cdi').value) || 0;
-    const impostoPct = parseFloat(document.getElementById('impostoLucro').value) || 0;
+  // Regras de faixa (min/max) para cada parâmetro do formulário
+  const REGRAS_INPUT = {
+    capital:      { min: 0,    max: 1e9,   msg: 'Capital deve ser um valor positivo.' },
+    cabecas:      { min: 1,    max: 10000, msg: 'O lote deve ter ao menos 1 cabeça.' },
+    diasCocho:    { min: 1,    max: 730,   msg: 'O período deve ficar entre 1 e 730 dias.' },
+    valorDiaria:  { min: 0,    max: 1000,  msg: 'Valor de diária fora da faixa aceita.' },
+    premioArroba: { min: -500, max: 500,   msg: 'Bonificação fora da faixa aceita.' },
+    mortalidade:  { min: 0,    max: 100,   msg: 'Mortalidade deve estar entre 0% e 100%.' },
+    cdi:          { min: 0,    max: 100,   msg: 'CDI deve estar entre 0% e 100%.' },
+    impostoLucro: { min: 0,    max: 100,   msg: 'Imposto deve estar entre 0% e 100%.' }
+  };
 
-    // Constantes do modelo
-    const pesoSaidaArroba = 20.33;
+  function lerInputs() {
+    const num = (id) => {
+      const v = parseFloat(document.getElementById(id).value);
+      return isNaN(v) ? 0 : v;
+    };
+
+    const inputs = {
+      capital: num('capital'),
+      cabecas: parseInt(document.getElementById('cabecas').value) || 0,
+      dias: parseInt(document.getElementById('diasCocho').value) || 0,
+      diaria: num('valorDiaria'),
+      premio: num('premioArroba'),
+      modelo: document.getElementById('modeloBoitel').value,
+      mortalidadePct: num('mortalidade'),
+      cdi: num('cdi'),
+      impostoPct: num('impostoLucro')
+    };
+
+    // Validação visual campo a campo
+    let valido = true;
+    Object.keys(REGRAS_INPUT).forEach(id => {
+      const el = document.getElementById(id);
+      const regra = REGRAS_INPUT[id];
+      const v = parseFloat(el.value);
+      const invalido = isNaN(v) || v < regra.min || v > regra.max;
+      el.classList.toggle('invalid', invalido);
+      if (invalido) valido = false;
+    });
+
+    inputs.valido = valido;
+    return inputs;
+  }
+
+  // ============================================
+  // NÚCLEO DE CÁLCULO (reutilizado por calcular() e atualizarGraficos())
+  // ============================================
+  const PESO_SAIDA_ARROBA = 20.33;   // arrobas de carcaça por animal terminado
+  const FUNRURAL_TAXA = 0.015;       // 1,5% sobre a receita bruta
+  const FRETE_D0_FRACAO = 0.7;       // 70% do frete pago no embarque (D0)
+
+  function calcularRanking(inputs) {
+    const { cabecas, dias, diaria, premio, mortalidadePct, impostoPct } = inputs;
     const custoBoitelPorCab = dias * diaria;
     const custoBoitelTotal = custoBoitelPorCab * cabecas;
     const cabecasEfetivas = cabecas * (1 - mortalidadePct / 100);
 
-    // Cálculo para cada estado
-    let ranking = estadosDB.map(est => {
+    const ranking = estadosDB.map(est => {
       const precoVendaArrobaEfetivo = est.arrobaVenda + premio;
-      const receitaBrutaCab = pesoSaidaArroba * precoVendaArrobaEfetivo;
-      const funruralCab = receitaBrutaCab * 0.015;
-      
+      const receitaBrutaCab = PESO_SAIDA_ARROBA * precoVendaArrobaEfetivo;
+      const funruralCab = receitaBrutaCab * FUNRURAL_TAXA;
+
       const custoAnimal = est.boiMagro;
       const custoFrete = est.freteCab;
       const custoTotalCab = custoAnimal + custoBoitelPorCab + custoFrete + funruralCab;
-      
+
       // Lucro antes de mortalidade e impostos
       const lucroBrutoCab = receitaBrutaCab - custoTotalCab;
       const lucroBrutoLote = lucroBrutoCab * cabecas;
-      
+
       // Ajuste por mortalidade
       const perdaMortalidadeCab = lucroBrutoCab * (mortalidadePct / 100);
       const perdaMortalidadeLote = perdaMortalidadeCab * cabecas;
-      
+
       // Lucro após mortalidade
       const lucroAposMortalidadeCab = lucroBrutoCab - perdaMortalidadeCab;
       const lucroAposMortalidadeLote = lucroAposMortalidadeCab * cabecasEfetivas;
-      
+
       // Imposto sobre o lucro
       const impostoLote = lucroAposMortalidadeLote * (impostoPct / 100);
-      
+
       // Lucro líquido final
-      const lucroLiquidoCab = lucroAposMortalidadeCab - (impostoLote / cabecasEfetivas);
+      const lucroLiquidoCab = cabecasEfetivas > 0
+        ? (lucroAposMortalidadeCab - (impostoLote / cabecasEfetivas))
+        : 0;
       const lucroLiquidoLote = lucroAposMortalidadeLote - impostoLote;
-      
+
       // ROIC sobre capital investido
       const capitalInvestido = custoTotalCab * cabecas;
       const roic = capitalInvestido > 0 ? ((lucroLiquidoLote / capitalInvestido) * 100) : 0;
@@ -1947,6 +1746,7 @@
         receitaBrutaCab,
         funruralCab,
         custoTotalCab,
+        custoBoitelPorCab,
         lucroBrutoCab,
         lucroBrutoLote,
         perdaMortalidadeCab,
@@ -1957,14 +1757,29 @@
         lucroLiquidoCab,
         lucroLiquidoLote,
         roic,
-        capitalInvestido
+        capitalInvestido,
+        // Custos agregados do lote (usados nos gráficos)
+        custoAnimalLote: custoAnimal * cabecas,
+        custoBoitelLote: custoBoitelPorCab * cabecas,
+        custoFreteLote: custoFrete * cabecas,
+        custoFunruralLote: funruralCab * cabecasEfetivas
       };
     });
 
     // Ordenar por lucro líquido do lote
     ranking.sort((a, b) => b.lucroLiquidoLote - a.lucroLiquidoLote);
 
-    const melhor = ranking[0];
+    return { ranking, melhor: ranking[0], custoBoitelTotal, cabecasEfetivas };
+  }
+
+  // ============================================
+  // FUNÇÃO PRINCIPAL DE CÁLCULO
+  // ============================================
+  function calcular() {
+    const inputs = lerInputs();
+    const { capital, cabecas, dias, modelo, cdi } = inputs;
+
+    const { ranking, melhor, custoBoitelTotal, cabecasEfetivas } = calcularRanking(inputs);
 
     // ============================================
     // ATUALIZAR KPIs DE TOPO
@@ -1976,11 +1791,11 @@
     document.getElementById('bestRoic').innerText = formatPercent(melhor.roic);
     
     // ROIC anualizado (considerando 106 dias = ~3.44 ciclos/ano)
-    const roicAnualizado = Math.pow(1 + melhor.roic / 100, 365 / dias) - 1;
+    const roicAnualizado = dias > 0 ? Math.pow(1 + melhor.roic / 100, 365 / dias) - 1 : 0;
     document.getElementById('roicAnualizado').innerText = formatPercent(roicAnualizado * 100) + ' a.a.';
 
-    // Cálculo de caixa livre
-    let desembolsoD0 = (melhor.boiMagro * cabecas) + (melhor.freteCab * cabecas * 0.7);
+    // Cálculo de caixa livre (desembolso em D0)
+    let desembolsoD0 = (melhor.boiMagro * cabecas) + (melhor.freteCab * cabecas * FRETE_D0_FRACAO);
     if (modelo === 'avista') {
       desembolsoD0 += custoBoitelTotal;
     }
@@ -2056,46 +1871,9 @@
   // ATUALIZAÇÃO DE GRÁFICOS
   // ============================================
   function atualizarGraficos() {
-    const cabecas = parseInt(document.getElementById('cabecas').value) || 0;
-    const dias = parseInt(document.getElementById('diasCocho').value) || 0;
-    const diaria = parseFloat(document.getElementById('valorDiaria').value) || 0;
-    const mortalidadePct = parseFloat(document.getElementById('mortalidade').value) || 0;
-    const impostoPct = parseFloat(document.getElementById('impostoLucro').value) || 0;
-    const custoBoitelPorCab = dias * diaria;
-    const cabecasEfetivas = cabecas * (1 - mortalidadePct / 100);
-
-    // Recalcular ranking para gráficos
-    const pesoSaidaArroba = 20.33;
-    let ranking = estadosDB.map(est => {
-      const premio = parseFloat(document.getElementById('premioArroba').value) || 0;
-      const precoVendaArrobaEfetivo = est.arrobaVenda + premio;
-      const receitaBrutaCab = pesoSaidaArroba * precoVendaArrobaEfetivo;
-      const funruralCab = receitaBrutaCab * 0.015;
-      const custoAnimal = est.boiMagro;
-      const custoFrete = est.freteCab;
-      const custoTotalCab = custoAnimal + custoBoitelPorCab + custoFrete + funruralCab;
-      const lucroBrutoCab = receitaBrutaCab - custoTotalCab;
-      const perdaMortalidadeCab = lucroBrutoCab * (mortalidadePct / 100);
-      const lucroAposMortalidadeCab = lucroBrutoCab - perdaMortalidadeCab;
-      const lucroAposMortalidadeLote = lucroAposMortalidadeCab * cabecasEfetivas;
-      const impostoLote = lucroAposMortalidadeLote * (impostoPct / 100);
-      const lucroLiquidoLote = lucroAposMortalidadeLote - impostoLote;
-      const capitalInvestido = custoTotalCab * cabecas;
-      const roic = capitalInvestido > 0 ? ((lucroLiquidoLote / capitalInvestido) * 100) : 0;
-
-      return {
-        ...est,
-        lucroLiquidoLote,
-        roic,
-        custoAnimal: custoAnimal * cabecas,
-        custoBoitel: custoBoitelPorCab * cabecas,
-        custoFrete: custoFrete * cabecas,
-        custoFunrural: funruralCab * cabecasEfetivas
-      };
-    });
-
-    ranking.sort((a, b) => b.lucroLiquidoLote - a.lucroLiquidoLote);
-    const melhor = ranking[0];
+    // Reutiliza o núcleo de cálculo (mesma fonte de verdade do calcular())
+    const inputs = lerInputs();
+    const { ranking, melhor } = calcularRanking(inputs);
 
     // Configuração comum de gráficos
     const chartColors = {
@@ -2158,10 +1936,10 @@
         labels: ['Compra de Animais', 'Hotelaria (Boitel)', 'Frete', 'Funrural'],
         datasets: [{
           data: [
-            melhor.custoAnimal,
-            melhor.custoBoitel,
-            melhor.custoFrete,
-            melhor.custoFunrural
+            melhor.custoAnimalLote,
+            melhor.custoBoitelLote,
+            melhor.custoFreteLote,
+            melhor.custoFunruralLote
           ],
           backgroundColor: [
             chartColors.accent,
@@ -2241,259 +2019,29 @@
   // ============================================
   // FIREBASE CONFIGURATION
   // ============================================
-  // SUBSTITUA ESTES VALORES COM AS CREDENCIAIS DO SEU PROJETO FIREBASE
   const firebaseConfig = {
-    apiKey: "SUA_API_KEY_AQUI",
-    authDomain: "SEU_PROJETO.firebaseapp.com",
-    projectId: "SEU_PROJECT_ID",
-    storageBucket: "SEU_PROJETO.appspot.com",
-    messagingSenderId: "SEU_SENDER_ID",
-    appId: "SEU_APP_ID"
+    apiKey: "AIzaSyBg0DmU04eMjqssFFX6_xNOFTb7viCsWw4",
+    authDomain: "boitel-analytics.firebaseapp.com",
+    projectId: "boitel-analytics",
+    storageBucket: "boitel-analytics.firebasestorage.app",
+    messagingSenderId: "644965055666",
+    appId: "1:644965055666:web:4a4712f99a178d7eda5dab"
   };
+
+  // Admin principal (atribuído automaticamente na criação da conta)
+  const ADMIN_EMAIL = "kauue.neves@gmail.com";
 
   // Inicializar Firebase
   let isFirebaseConfigured = false;
   let db = null;
-
   try {
-    if (firebaseConfig.apiKey !== "SUA_API_KEY_AQUI") {
+    if (firebaseConfig.apiKey !== "SUA_API_KEY_AQUI" && typeof firebase !== 'undefined') {
       firebase.initializeApp(firebaseConfig);
       db = firebase.firestore();
       isFirebaseConfigured = true;
     }
   } catch (error) {
-    console.log("Firebase não configurado. Usando modo de demonstração.");
-  }
-
-  // ============================================
-  // USER DATA & ROLES
-  // ============================================
-  let currentUserData = null;
-  let isAdmin = false;
-  const ADMIN_EMAIL = "kauue.neves@gmail.com"; // Email do administrador principal
-
-  // ============================================
-  // USER MANAGEMENT FUNCTIONS
-  // ============================================
-  
-  async function createUserDocument(user) {
-    if (!isFirebaseConfigured || !db) return;
-
-    const userRef = db.collection('users').doc(user.uid);
-    const userDoc = await userRef.get();
-
-    if (!userDoc.exists) {
-      // Determinar role inicial
-      const initialRole = user.email === ADMIN_EMAIL ? 'admin' : 'user';
-      
-      await userRef.set({
-        email: user.email,
-        role: initialRole,
-        status: 'active',
-        subscription: 'trial',
-        subscriptionStart: new Date().toISOString(),
-        subscriptionEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 dias de trial
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      });
-    }
-
-    return userRef.get();
-  }
-
-  async function getUserData(uid) {
-    if (!isFirebaseConfigured || !db) return null;
-
-    try {
-      const userDoc = await db.collection('users').doc(uid).get();
-      if (userDoc.exists) {
-        return userDoc.data();
-      }
-    } catch (error) {
-      console.error('Erro ao buscar dados do usuário:', error);
-    }
-    return null;
-  }
-
-  async function loadAllUsers() {
-    if (!isFirebaseConfigured || !db) return [];
-
-    try {
-      const usersSnapshot = await db.collection('users').get();
-      return usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (error) {
-      console.error('Erro ao carregar usuários:', error);
-      return [];
-    }
-  }
-
-  async function updateUserRole(uid, newRole) {
-    if (!isFirebaseConfigured || !db) return false;
-
-    try {
-      await db.collection('users').doc(uid).update({
-        role: newRole,
-        updatedAt: new Date().toISOString()
-      });
-      return true;
-    } catch (error) {
-      console.error('Erro ao atualizar role:', error);
-      return false;
-    }
-  }
-
-  async function updateUserStatus(uid, newStatus) {
-    if (!isFirebaseConfigured || !db) return false;
-
-    try {
-      await db.collection('users').doc(uid).update({
-        status: newStatus,
-        updatedAt: new Date().toISOString()
-      });
-      return true;
-    } catch (error) {
-      console.error('Erro ao atualizar status:', error);
-      return false;
-    }
-  }
-
-  async function promoteToAdmin() {
-    const email = document.getElementById('adminEmailInput').value.trim();
-    
-    if (!email) {
-      alert('Por favor, insira um email válido.');
-      return;
-    }
-
-    if (!isFirebaseConfigured || !db) {
-      alert('Firebase não configurado.');
-      return;
-    }
-
-    try {
-      // Buscar usuário pelo email
-      const usersSnapshot = await db.collection('users').where('email', '==', email).get();
-      
-      if (usersSnapshot.empty) {
-        alert('Usuário não encontrado. Verifique o email.');
-        return;
-      }
-
-      const userDoc = usersSnapshot.docs[0];
-      const uid = userDoc.id;
-
-      // Promover a admin
-      await updateUserRole(uid, 'admin');
-      
-      alert(`Usuário ${email} promovido a Administrador com sucesso!`);
-      document.getElementById('adminEmailInput').value = '';
-      
-      // Recarregar tabela
-      loadUsersTable();
-    } catch (error) {
-      console.error('Erro ao promover usuário:', error);
-      alert('Erro ao promover usuário. Tente novamente.');
-    }
-  }
-
-  function loadUsersTable() {
-    const tbody = document.getElementById('usersTableBody');
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Carregando...</td></tr>';
-
-    loadAllUsers().then(users => {
-      if (users.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Nenhum usuário encontrado.</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = '';
-      users.forEach(user => {
-        const tr = document.createElement('tr');
-        
-        const roleBadge = user.role === 'admin' 
-          ? '<span class="user-role-badge admin">Admin</span>'
-          : '<span class="user-role-badge user">Usuário</span>';
-        
-        const statusBadge = user.status === 'active'
-          ? '<span class="user-status-badge active">Ativo</span>'
-          : '<span class="user-status-badge inactive">Inativo</span>';
-        
-        const subscriptionBadge = user.subscription === 'trial'
-          ? '<span class="subscription-badge trial">Trial</span>'
-          : user.subscription === 'premium'
-          ? '<span class="subscription-badge">Premium</span>'
-          : '<span class="subscription-badge expired">Expirado</span>';
-
-        const createdAt = new Date(user.createdAt).toLocaleDateString('pt-BR');
-        
-        // Ações baseadas no role atual
-        let actions = '';
-        if (user.role !== 'admin') {
-          actions += `<button class="action-btn promote" onclick="changeUserRole('${user.id}', 'admin')">Promover</button>`;
-        } else {
-          actions += `<button class="action-btn demote" onclick="changeUserRole('${user.id}', 'user')">Rebaixar</button>`;
-        }
-        
-        if (user.status === 'active') {
-          actions += `<button class="action-btn deactivate" onclick="changeUserStatus('${user.id}', 'inactive')">Desativar</button>`;
-        } else {
-          actions += `<button class="action-btn activate" onclick="changeUserStatus('${user.id}', 'active')">Ativar</button>`;
-        }
-
-        tr.innerHTML = `
-          <td>${user.email}</td>
-          <td>${roleBadge}</td>
-          <td>${statusBadge}</td>
-          <td>${subscriptionBadge}</td>
-          <td>${createdAt}</td>
-          <td>${actions}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      // Atualizar estatísticas
-      document.getElementById('totalUsers').textContent = users.length;
-      document.getElementById('activeUsers').textContent = users.filter(u => u.status === 'active').length;
-      document.getElementById('adminUsers').textContent = users.filter(u => u.role === 'admin').length;
-    });
-  }
-
-  async function changeUserRole(uid, newRole) {
-    if (!confirm(`Tem certeza que deseja alterar o role do usuário para ${newRole}?`)) return;
-    
-    const success = await updateUserRole(uid, newRole);
-    if (success) {
-      loadUsersTable();
-    } else {
-      alert('Erro ao alterar role. Tente novamente.');
-    }
-  }
-
-  async function changeUserStatus(uid, newStatus) {
-    if (!confirm(`Tem certeza que deseja ${newStatus === 'active' ? 'ativar' : 'desativar'} este usuário?`)) return;
-    
-    const success = await updateUserStatus(uid, newStatus);
-    if (success) {
-      loadUsersTable();
-    } else {
-      alert('Erro ao alterar status. Tente novamente.');
-    }
-  }
-
-  function toggleAdminPanel() {
-    const panel = document.getElementById('adminPanel');
-    panel.classList.toggle('active');
-    
-    if (panel.classList.contains('active')) {
-      loadUsersTable();
-    }
-  }
-
-  function switchAdminTab(tabId, btn) {
-    document.querySelectorAll('#adminPanel .tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.admin-tab-btn').forEach(el => el.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    btn.classList.add('active');
+    console.log("Firebase não configurado. Usando modo de demonstração.", error);
   }
 
   // ============================================
@@ -2532,45 +2080,160 @@
     document.getElementById('mainApp').classList.remove('active');
   }
 
-  async function updateUserUI(user) {
+  // Estado global do usuário autenticado (documento do Firestore)
+  let currentUserData = null;
+
+  function updateUserUI(user) {
     if (user) {
       const email = user.email || 'Usuário';
       const initial = email.charAt(0).toUpperCase();
       document.getElementById('userEmail').textContent = email;
       document.getElementById('userAvatar').textContent = initial;
+    }
+  }
 
-      // Buscar dados do usuário do Firestore
-      currentUserData = await getUserData(user.uid);
-      
-      if (currentUserData) {
-        isAdmin = currentUserData.role === 'admin';
-        
-        // Mostrar badge de admin se for administrador
-        const adminBadge = document.getElementById('adminBadge');
-        if (isAdmin) {
-          adminBadge.style.display = 'inline-block';
-          document.getElementById('adminPanelBtn').style.display = 'block';
-        } else {
-          adminBadge.style.display = 'none';
-          document.getElementById('adminPanelBtn').style.display = 'none';
-        }
-      } else {
-        // Se não tiver dados, criar documento
-        await createUserDocument(user);
-        currentUserData = await getUserData(user.uid);
-        isAdmin = currentUserData.role === 'admin';
+  // ============================================
+  // TOASTS
+  // ============================================
+  function showToast(message, type = 'info') {
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast' + (type !== 'info' ? ' ' + type : '');
+    el.textContent = message;
+    wrap.appendChild(el);
+    setTimeout(() => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(30px)';
+      el.style.transition = 'all 0.25s ease';
+      setTimeout(() => el.remove(), 250);
+    }, 3200);
+  }
+
+  // ============================================
+  // LOADING STATE EM BOTÕES
+  // ============================================
+  function setLoading(btn, isLoading, label) {
+    if (!btn) return;
+    if (isLoading) {
+      if (!btn.dataset.originalText) btn.dataset.originalText = btn.innerHTML;
+      btn.classList.add('loading');
+      btn.innerHTML = '<span class="spinner"></span> ' + (label || 'Aguarde...');
+    } else {
+      btn.classList.remove('loading');
+      if (btn.dataset.originalText) {
+        btn.innerHTML = btn.dataset.originalText;
+        delete btn.dataset.originalText;
       }
     }
   }
 
+  // ============================================
+  // GERENCIAMENTO DE USUÁRIOS (FIRESTORE)
+  // ============================================
+  // Cria o documento do usuário no Firestore caso ainda não exista
+  async function createUserDocument(user) {
+    if (!db) return null;
+    const ref = db.collection('users').doc(user.uid);
+    const snap = await ref.get();
+    if (snap.exists) return { id: snap.id, ...snap.data() };
+
+    const isAdmin = (user.email || '').toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    const now = new Date();
+    const trialEnd = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 dias de trial
+
+    const doc = {
+      email: user.email || '',
+      role: isAdmin ? 'admin' : 'user',
+      status: 'active',
+      subscription: 'trial',
+      subscriptionStart: now.toISOString(),
+      subscriptionEnd: trialEnd.toISOString(),
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString()
+    };
+    await ref.set(doc);
+    return { id: user.uid, ...doc };
+  }
+
+  async function getUserData(uid) {
+    if (!db) return null;
+    const snap = await db.collection('users').doc(uid).get();
+    return snap.exists ? { id: snap.id, ...snap.data() } : null;
+  }
+
+  async function loadAllUsers() {
+    if (!db) return [];
+    const snap = await db.collection('users').get();
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
+
+  async function updateUserRole(uid, role) {
+    await db.collection('users').doc(uid).update({ role, updatedAt: new Date().toISOString() });
+  }
+
+  async function updateUserStatus(uid, status) {
+    await db.collection('users').doc(uid).update({ status, updatedAt: new Date().toISOString() });
+  }
+
+  async function updateUserSubscription(uid, subscription, dias = 30) {
+    const end = new Date(Date.now() + dias * 24 * 60 * 60 * 1000);
+    await db.collection('users').doc(uid).update({
+      subscription,
+      subscriptionStart: new Date().toISOString(),
+      subscriptionEnd: subscription === 'expired' ? new Date().toISOString() : end.toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+  }
+
+  // ============================================
+  // ENFORCEMENT DE ASSINATURA / STATUS
+  // ============================================
+  function isSubscriptionActive(data) {
+    if (!data) return true;                   // sem dados (demo/legado): não bloquear
+    if (data.role === 'admin') return true;   // admin sempre tem acesso
+    if (data.status === 'inactive') return false;
+    const fim = data.subscriptionEnd ? new Date(data.subscriptionEnd) : null;
+    if (data.subscription && data.subscription !== 'expired' && fim && fim.getTime() < Date.now()) {
+      return false;                           // trial/premium vencido
+    }
+    return data.subscription !== 'expired';
+  }
+
+  // Aplica a sessão do usuário: carrega dados, valida acesso e ajusta a UI
+  async function applyUserSession(user) {
+    updateUserUI(user);
+
+    if (db) {
+      try {
+        currentUserData = await getUserData(user.uid) || await createUserDocument(user);
+      } catch (e) {
+        console.warn('Falha ao carregar dados do usuário:', e);
+      }
+    }
+
+    // Bloqueio por conta inativa ou assinatura expirada
+    if (!isSubscriptionActive(currentUserData)) {
+      showLoginScreen();
+      showError('Acesso bloqueado: sua conta está inativa ou a assinatura expirou. Contate o administrador.');
+      if (isFirebaseConfigured) await firebase.auth().signOut();
+      return;
+    }
+
+    // Botão do painel admin apenas para administradores
+    const adminBtn = document.getElementById('adminBtn');
+    if (adminBtn) adminBtn.classList.toggle('show', !!currentUserData && currentUserData.role === 'admin');
+
+    showMainApp();
+  }
+
   // Login com e-mail e senha
-  async function loginWithEmail() {
+  async function loginWithEmail(btn) {
     if (!isFirebaseConfigured) {
       showError('Firebase não configurado. Configure as credenciais no código.');
       return;
     }
 
-    const email = document.getElementById('loginEmail').value;
+    const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
 
     if (!email || !password) {
@@ -2578,22 +2241,26 @@
       return;
     }
 
+    hideError();
+    setLoading(btn, true, 'Entrando...');
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password);
-      showMainApp();
+      // A transição de tela é feita pelo observador onAuthStateChanged
     } catch (error) {
       showError(getAuthErrorMessage(error.code));
+    } finally {
+      setLoading(btn, false);
     }
   }
 
   // Registro com e-mail e senha
-  async function registerWithEmail() {
+  async function registerWithEmail(btn) {
     if (!isFirebaseConfigured) {
       showError('Firebase não configurado. Configure as credenciais no código.');
       return;
     }
 
-    const email = document.getElementById('registerEmail').value;
+    const email = document.getElementById('registerEmail').value.trim();
     const password = document.getElementById('registerPassword').value;
     const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
 
@@ -2612,28 +2279,33 @@
       return;
     }
 
+    hideError();
+    setLoading(btn, true, 'Criando conta...');
     try {
       await firebase.auth().createUserWithEmailAndPassword(email, password);
-      showMainApp();
     } catch (error) {
       showError(getAuthErrorMessage(error.code));
+    } finally {
+      setLoading(btn, false);
     }
   }
 
   // Login com Google
-  async function loginWithGoogle() {
+  async function loginWithGoogle(btn) {
     if (!isFirebaseConfigured) {
       showError('Firebase não configurado. Configure as credenciais no código.');
       return;
     }
 
     const provider = new firebase.auth.GoogleAuthProvider();
-    
+    hideError();
+    setLoading(btn, true, 'Conectando...');
     try {
       await firebase.auth().signInWithPopup(provider);
-      showMainApp();
     } catch (error) {
       showError(getAuthErrorMessage(error.code));
+    } finally {
+      setLoading(btn, false);
     }
   }
 
@@ -2642,6 +2314,8 @@
     if (isFirebaseConfigured) {
       await firebase.auth().signOut();
     }
+    currentUserData = null;
+    document.getElementById('adminBtn').classList.remove('show');
     showLoginScreen();
   }
 
@@ -2656,32 +2330,133 @@
       'auth/invalid-credential': 'Credenciais inválidas.',
       'auth/popup-closed-by-user': 'Login cancelado pelo usuário.',
       'auth/account-exists-with-different-credential': 'Já existe uma conta com este e-mail usando outro método de login.',
-      'auth/popup-blocked': 'O popup foi bloqueado pelo navegador. Permita popups para este site.'
+      'auth/popup-blocked': 'O popup foi bloqueado pelo navegador. Permita popups para este site.',
+      'auth/network-request-failed': 'Falha de rede. Verifique sua conexão.'
     };
     return errorMessages[code] || 'Erro na autenticação. Tente novamente.';
   }
 
-  // Observador de estado de autenticação
+  // ============================================
+  // PAINEL ADMINISTRATIVO
+  // ============================================
+  function openAdminPanel() {
+    if (!currentUserData || currentUserData.role !== 'admin') {
+      showToast('Acesso restrito a administradores.', 'error');
+      return;
+    }
+    document.getElementById('adminPanel').classList.add('active');
+    loadUsersTable();
+  }
+
+  function closeAdminPanel() {
+    document.getElementById('adminPanel').classList.remove('active');
+  }
+
+  async function loadUsersTable() {
+    const body = document.getElementById('adminUsersBody');
+    if (!db) {
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted); padding:32px;">Firestore indisponível no modo demonstração.</td></tr>';
+      return;
+    }
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted); padding:32px;">Carregando usuários...</td></tr>';
+    try {
+      const users = await loadAllUsers();
+      renderAdminStats(users);
+      renderUsersTable(users);
+    } catch (e) {
+      console.error(e);
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--danger-light); padding:32px;">Erro ao carregar usuários. Verifique as regras do Firestore.</td></tr>';
+    }
+  }
+
+  function renderAdminStats(users) {
+    document.getElementById('statTotal').textContent = users.length;
+    document.getElementById('statActive').textContent = users.filter(u => u.status === 'active').length;
+    document.getElementById('statPremium').textContent = users.filter(u => u.subscription === 'premium').length;
+    document.getElementById('statAdmins').textContent = users.filter(u => u.role === 'admin').length;
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    try { return new Date(iso).toLocaleDateString('pt-BR'); } catch { return '—'; }
+  }
+
+  function renderUsersTable(users) {
+    const body = document.getElementById('adminUsersBody');
+    if (!users.length) {
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted); padding:32px;">Nenhum usuário cadastrado.</td></tr>';
+      return;
+    }
+    body.innerHTML = users.map(u => {
+      const isSelf = currentUserData && u.email === currentUserData.email;
+      const nextRole = u.role === 'admin' ? 'user' : 'admin';
+      const nextStatus = u.status === 'active' ? 'inactive' : 'active';
+      const nextSub = u.subscription === 'premium' ? 'trial' : 'premium';
+      return `
+        <tr>
+          <td>${u.email}${isSelf ? ' <span class="pill user">você</span>' : ''}</td>
+          <td><span class="pill ${u.role}">${u.role}</span></td>
+          <td><span class="pill ${u.status}">${u.status}</span></td>
+          <td><span class="pill ${u.subscription}">${u.subscription}</span></td>
+          <td>${fmtDate(u.subscriptionEnd)}</td>
+          <td>
+            <div class="admin-actions">
+              <button class="btn-mini" ${isSelf ? 'disabled' : ''} onclick="changeUserRole('${u.id}','${nextRole}')">${u.role === 'admin' ? 'Rebaixar' : 'Promover'}</button>
+              <button class="btn-mini ${u.status === 'active' ? 'danger' : ''}" ${isSelf ? 'disabled' : ''} onclick="changeUserStatus('${u.id}','${nextStatus}')">${u.status === 'active' ? 'Desativar' : 'Ativar'}</button>
+              <button class="btn-mini" onclick="changeUserSubscription('${u.id}','${nextSub}')">${u.subscription === 'premium' ? '→ Trial' : '→ Premium'}</button>
+              <button class="btn-mini danger" onclick="expireUser('${u.id}')">Expirar</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function changeUserRole(uid, role) {
+    try { await updateUserRole(uid, role); showToast('Permissão atualizada.'); loadUsersTable(); }
+    catch (e) { showToast('Erro ao atualizar permissão.', 'error'); }
+  }
+
+  async function changeUserStatus(uid, status) {
+    try { await updateUserStatus(uid, status); showToast('Status atualizado.'); loadUsersTable(); }
+    catch (e) { showToast('Erro ao atualizar status.', 'error'); }
+  }
+
+  async function changeUserSubscription(uid, sub) {
+    try {
+      await updateUserSubscription(uid, sub, sub === 'premium' ? 365 : 30);
+      showToast('Assinatura atualizada.');
+      loadUsersTable();
+    } catch (e) {
+      showToast('Erro ao atualizar assinatura.', 'error');
+    }
+  }
+
+  async function expireUser(uid) {
+    try { await updateUserSubscription(uid, 'expired'); showToast('Assinatura expirada.'); loadUsersTable(); }
+    catch (e) { showToast('Erro ao expirar assinatura.', 'error'); }
+  }
+
+  // ============================================
+  // OBSERVADOR DE AUTENTICAÇÃO
+  // ============================================
   if (isFirebaseConfigured) {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        await updateUserUI(user);
-        showMainApp();
+        await applyUserSession(user);
       } else {
-        showLoginScreen();
         currentUserData = null;
-        isAdmin = false;
+        document.getElementById('adminBtn').classList.remove('show');
+        showLoginScreen();
       }
     });
   } else {
-    // Modo de demonstração - entrar automaticamente
+    // Modo de demonstração - entra automaticamente como admin
     console.log('Modo de demonstração: Firebase não configurado');
     document.getElementById('userEmail').textContent = 'demo@boitel.com';
     document.getElementById('userAvatar').textContent = 'D';
-    currentUserData = { role: 'admin', email: 'demo@boitel.com' }; // Demo como admin
-    isAdmin = true;
-    document.getElementById('adminBadge').style.display = 'inline-block';
-    document.getElementById('adminPanelBtn').style.display = 'block';
+    currentUserData = { email: 'demo@boitel.com', role: 'admin', status: 'active', subscription: 'premium' };
+    document.getElementById('adminBtn').classList.add('show');
     showMainApp();
   }
 
