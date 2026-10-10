@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boitel Analytics Pro 2.0 | Inteligência Pecuária Institucional</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  
+  <style>
+    /* ============================================
+       ROOT VARIABLES - Premium Executive Palette
+       ============================================ */
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: #1a2332;
+      --bg-card-hover: #242f42;
+      --border-color: #2d3a4f;
+      --border-light: #3a4a63;
+      
+      --primary: #0d9488;
+      --primary-light: #14b8a6;
+      --primary-dark: #0f766e;
+      --primary-gradient: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+      
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+      
+      --success: #10b981;
+      --success-light: #34d399;
+      --warning: #f59e0b;
+      --warning-light: #fbbf24;
+      --danger: #ef4444;
+      --danger-light: #f87171;
+      
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      
+      --glass-bg: rgba(26, 35, 50, 0.8);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.3s ease;
+      --transition-slow: 0.5s ease;
+    }
+
+    /* ============================================
+       BASE STYLES & RESET
+       ============================================ */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 24px;
+      line-height: 1.6;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(ellipse at top, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(99, 102, 241, 0.06) 0%, transparent 50%);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* ============================================
+       HEADER SECTION
+       ============================================ */
+    header {
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-content h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .badge {
+      background: rgba(13, 148, 136, 0.15);
+      color: var(--primary-light);
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 1px solid rgba(13, 148, 136, 0.3);
+      -webkit-text-fill-color: var(--primary-light);
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-top: 8px;
+      max-width: 600px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-export {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition-normal);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-export:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-export:active {
+      transform: translateY(0);
+    }
+
+    /* ============================================
+       GRID LAYOUT
+       ============================================ */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 1024px) {
+      .grid {
+        grid-template-columns: 400px 1fr;
+      }
+    }
+
+    /* ============================================
+       CARD COMPONENT
+       ============================================ */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition-normal);
+      backdrop-filter: blur(10px);
+    }
+
+    .card:hover {
+      border-color: var(--border-light);
+      box-shadow: var(--shadow-xl);
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h2::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
+    }
+
+    /* ============================================
+       FORM STYLES
+       ============================================ */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      transition: var(--transition-fast);
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="number"],
+    select {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      transition: var(--transition-fast);
+    }
+
+    input[type="number"]:focus,
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+    }
+
+    input[type="number"]:hover,
+    select:hover {
+      border-color: var(--border-light);
+    }
+
+    .input-suffix {
+      position: absolute;
+      right: 16px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+
+    .form-section {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    /* ============================================
+       KPI CARDS
+       ============================================ */
+    .results-hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary-gradient);
+      opacity: 0;
+      transition: var(--transition-normal);
+    }
+
+    .kpi:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-light);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi:hover::before {
+      opacity: 1;
+    }
+
+    .kpi-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .kpi-value.green {
+      color: var(--success);
+    }
+
+    .kpi-value.blue {
+      color: var(--accent-light);
+    }
+
+    .kpi-value.red {
+      color: var(--danger);
+    }
+
+    .kpi-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ============================================
+       TABLE STYLES
+       ============================================ */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+      margin-top: 12px;
+    }
+
+    th {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      padding: 14px 16px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border-color);
+      position: sticky;
+      top: 0;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-color);
+      transition: var(--transition-fast);
+    }
+
+    tr:hover td {
+      background: var(--bg-card-hover);
+    }
+
+    .rank-win {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .tag-state {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent-light);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    /* ============================================
+       TABS
+       ============================================ */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+    }
+
+    .tab-btn.active {
+      background: var(--primary-gradient);
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================
+       DRE SECTION
+       ============================================ */
+    .dre-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.95rem;
+    }
+
+    .dre-item:last-child {
+      border-bottom: none;
+    }
+
+    .dre-label {
+      color: var(--text-secondary);
+    }
+
+    .dre-value {
+      font-weight: 600;
+    }
+
+    .dre-value.income {
+      color: var(--success);
+    }
+
+    .dre-value.expense {
+      color: var(--danger);
+    }
+
+    .dre-total {
+      background: var(--bg-secondary);
+      padding: 16px;
+      border-radius: 10px;
+      margin-top: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    .dre-total-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .dre-total-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    .dre-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 3px solid var(--warning);
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* ============================================
+       CHECKLIST
+       ============================================ */
+    .checklist-item {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      background: var(--bg-secondary);
+      padding: 16px;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent);
+      transition: var(--transition-normal);
+    }
+
+    .checklist-item:hover {
+      background: var(--bg-card-hover);
+      transform: translateX(4px);
+    }
+
+    .checklist-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-gradient);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .checklist-content h4 {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .checklist-content p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ============================================
+       CHARTS
+       ============================================ */
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin: 20px 0;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .chart-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* ============================================
+       PRINT STYLES
+       ============================================ */
+    @media print {
+      body {
+        background: white;
+        color: black;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 100%;
+      }
+
+      .card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        box-shadow: none;
+        page-break-inside: avoid;
+      }
+
+      header {
+        border-bottom: 2px solid #e5e7eb;
+      }
+
+      .header-actions,
+      .btn-export {
+        display: none;
+      }
+
+      h1 {
+        color: black;
+        -webkit-text-fill-color: black;
+      }
+
+      .badge {
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        -webkit-text-fill-color: #374151;
+      }
+
+      input[type="number"],
+      select {
+        background: white;
+        border: 1px solid #d1d5db;
+        color: black;
+      }
+
+      .kpi {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+      }
+
+      .kpi-value {
+        color: black;
+      }
+
+      .kpi-value.green {
+        color: #059669;
+      }
+
+      .kpi-value.blue {
+        color: #4f46e5;
+      }
+
+      table {
+        border: 1px solid #e5e7eb;
+      }
+
+      th {
+        background: #f3f4f6;
+        color: #374151;
+        border-bottom: 2px solid #d1d5db;
+      }
+
+      td {
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .tab-content {
+        display: block !important;
+      }
+
+      .tabs {
+        display: none;
+      }
+
+      .checklist-item {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+      }
+
+      .chart-container {
+        background: white;
+        border: 1px solid #e5e7eb;
+      }
+    }
+
+    /* ============================================
+       SCROLLBAR
+       ============================================ */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border-light);
+    }
+
+    /* ============================================
+       LOGIN SCREEN STYLES
+       ============================================ */
+    #loginScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      background-image: 
+        radial-gradient(ellipse at top, rgba(13, 148, 136, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(99, 102, 241, 0.08) 0%, transparent 50%);
+    }
+
+    .login-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-xl);
+      backdrop-filter: blur(10px);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .login-header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .login-header p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .login-form input[type="email"],
+    .login-form input[type="password"] {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      transition: var(--transition-fast);
+      margin-bottom: 16px;
+    }
+
+    .login-form input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition-normal);
+      box-shadow: var(--shadow-md);
+      margin-bottom: 12px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-google {
+      width: 100%;
+      background: white;
+      color: #374151;
+      border: 1px solid var(--border-color);
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition-normal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn-google:hover {
+      background: #f9fafb;
+      border-color: var(--border-light);
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: var(--accent-light);
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    .btn-link:hover {
+      color: var(--accent);
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .login-footer p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .error-message {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--danger-light);
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    #mainApp {
+      display: none;
+    }
+
+    #mainApp.active {
+      display: block;
+    }
+
+    .logout-btn {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger-light);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .logout-btn:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- TELA DE LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Boitel Analytics Pro</h1>
+      <p>Entre para acessar o simulador</p>
+    </div>
+    
+    <div class="error-message" id="errorMessage"></div>
+    
+    <div class="login-form" id="loginForm">
+      <input type="email" id="loginEmail" placeholder="E-mail" required>
+      <input type="password" id="loginPassword" placeholder="Senha" required>
+      <button class="btn-primary" onclick="loginWithEmail()">Entrar com E-mail</button>
+      <button class="btn-google" onclick="loginWithGoogle()">
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Entrar com Google
+      </button>
+    </div>
+    
+    <div class="login-form" id="registerForm" style="display: none;">
+      <input type="email" id="registerEmail" placeholder="E-mail" required>
+      <input type="password" id="registerPassword" placeholder="Senha (mínimo 6 caracteres)" required>
+      <input type="password" id="registerPasswordConfirm" placeholder="Confirmar Senha" required>
+      <button class="btn-primary" onclick="registerWithEmail()">Criar Conta</button>
+    </div>
+    
+    <div class="login-footer">
+      <p id="toggleAuth">
+        Não tem conta? <button class="btn-link" onclick="toggleAuthMode()">Criar conta</button>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- APP PRINCIPAL -->
+<div id="mainApp">
+<div class="container">
+  <header>
+    <div class="header-content">
+      <h1>Boitel Analytics Pro 2.0 <span class="badge">Safra 2026/2027</span></h1>
+      <p class="subtitle">Simulador paramétrico institucional de alocação de capital em confinamento bovino de terceiros (Base: Grande SP)</p>
+    </div>
+    <div class="header-actions">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span id="userEmail">usuario@email.com</span>
+      </div>
+      <button class="logout-btn" onclick="logout()">Sair</button>
+      <button class="btn-export" onclick="exportarResumo()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Exportar Resumo
+      </button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- LEFT COLUMN: INPUT PARAMETERS -->
+    <div class="card">
+      <h2>Parâmetros do Investidor</h2>
+      
+      <div class="form-section">
+        <div class="section-title">Capital e Lote</div>
+        
+        <div class="form-group">
+          <label>Capital Disponível</label>
+          <div class="input-wrap">
+            <input type="number" id="capital" value="200000" step="5000" oninput="calcular()">
+            <span class="input-suffix">R$</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Tamanho do Lote (Cabeças)</label>
+          <div class="input-wrap">
+            <input type="number" id="cabecas" value="30" step="1" oninput="calcular()">
+            <span class="input-suffix">cab</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-title">Condições do Boitel</div>
+        
+        <div class="form-group">
+          <label>Modalidade de Pagamento</label>
+          <select id="modeloBoitel" onchange="calcular()">
+            <option value="gancho">Acerto no Gancho (Abate - D+106)</option>
+            <option value="avista">Pagamento Mensal / À Vista (D0 a D106)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Dias de Confinamento (Cocho)</label>
+          <div class="input-wrap">
+            <input type="number" id="diasCocho" value="106" step="1" oninput="calcular()">
+            <span class="input-suffix">dias</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Valor da Diária de Hotelaria</label>
+          <div class="input-wrap">
+            <input type="number" id="valorDiaria" value="14.00" step="0.5" oninput="calcular()">
+            <span class="input-suffix">R$/cab/dia</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Bonificação Adicional (Ex: Boi China)</label>
+          <div class="input-wrap">
+            <input type="number" id="premioArroba" value="0.00" step="1.0" oninput="calcular()">
+            <span class="input-suffix">R$/@</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-title">Riscos e Oportunidade</div>
+        
+        <div class="form-group">
+          <label>Mortalidade/Refugo Estimado</label>
+          <div class="input-wrap">
+            <input type="number" id="mortalidade" value="2.0" step="0.5" min="0" max="10" oninput="calcular()">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Custo de Oportunidade (CDI)</label>
+          <div class="input-wrap">
+            <input type="number" id="cdi" value="10.75" step="0.25" min="0" oninput="calcular()">
+            <span class="input-suffix">% a.a.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Imposto sobre o Lucro</label>
+          <div class="input-wrap">
+            <input type="number" id="impostoLucro" value="15.0" step="1.0" min="0" max="35" oninput="calcular()">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: RESULTS -->
+    <div>
+      <!-- KPI HERO -->
+      <div class="results-hero">
+        <div class="kpi">
+          <div class="kpi-title">Melhor Estado</div>
+          <div class="kpi-value blue" id="bestState">São Paulo (SP)</div>
+          <div class="kpi-subtitle" id="bestRegion">Noroeste / Barretos</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-title">Lucro Líquido Projetado</div>
+          <div class="kpi-value green" id="bestProfit">R$ 20.334,90</div>
+          <div class="kpi-subtitle" id="profitPerCab">R$ 677,83/cab</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-title">ROIC do Período</div>
+          <div class="kpi-value green" id="bestRoic">9,84%</div>
+          <div class="kpi-subtitle" id="roicAnualizado">33,8% a.a.</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-title">Caixa Livre Imediato</div>
+          <div class="kpi-value blue" id="freeCash">R$ 37.850,00</div>
+          <div class="kpi-subtitle">Disponível em D0</div>
+        </div>
+      </div>
+
+      <!-- TABS PANEL -->
+      <div class="card">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('rankingTab', this)">Ranking dos Estados</button>
+          <button class="tab-btn" onclick="switchTab('fluxoTab', this)">DRE & Fluxo de Caixa</button>
+          <button class="tab-btn" onclick="switchTab('graficosTab', this)">Análise Gráfica</button>
+          <button class="tab-btn" onclick="switchTab('contratosTab', this)">Contratos & Alertas</button>
+        </div>
+
+        <!-- RANKING TAB -->
+        <div id="rankingTab" class="tab-content active">
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">
+            Considera frete a partir da base em Francisco Morato/SP, custo de reposição local, diária, mortalidade estimada e cotação da arroba na praça de abate.
+          </p>
+          <div style="overflow-x: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Pos.</th>
+                  <th>Estado</th>
+                  <th>@ Venda</th>
+                  <th>Custo Animal</th>
+                  <th>Frete Total</th>
+                  <th>Lucro Líq./Cab</th>
+                  <th>Lucro do Lote</th>
+                  <th>ROIC</th>
+                </tr>
+              </thead>
+              <tbody id="rankingBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- DRE TAB -->
+        <div id="fluxoTab" class="tab-content">
+          <div class="dre-item">
+            <span class="dre-label">Faturamento Bruto</span>
+            <span class="dre-value income" id="dreFaturamento"></span>
+          </div>
+          <div class="dre-item">
+            <span class="dre-label">(-) Compra de Bois Magros</span>
+            <span class="dre-value expense" id="dreAnimais"></span>
+          </div>
+          <div class="dre-item">
+            <span class="dre-label">(-) Custo Total de Hotelaria (Boitel)</span>
+            <span class="dre-value expense" id="dreBoitel"></span>
+          </div>
+          <div class="dre-item">
+            <span class="dre-label">(-) Frete Rodoviário e Sanidade</span>
+            <span class="dre-value expense" id="dreFrete"></span>
+          </div>
+          <div class="dre-item">
+            <span class="dre-label">(-) Funrural & Taxas (1,5%)</span>
+            <span class="dre-value expense" id="dreFunrural"></span>
+          </div>
+          <div class="dre-item">
+            <span class="dre-label">(-) Perda por Mortalidade/Refugo</span>
+            <span class="dre-value expense" id="dreMortalidade"></span>
+          </div>
+          <div class="dre-item">
+            <span class="dre-label">(-) Imposto sobre o Lucro</span>
+            <span class="dre-value expense" id="dreImposto"></span>
+          </div>
+          
+          <div class="dre-total">
+            <div class="dre-total-label">Resultado Líquido Final</div>
+            <div class="dre-total-value" id="dreLiquido"></div>
+          </div>
+
+          <div class="dre-note" id="dreNotaFluxo"></div>
+          
+          <div style="margin-top: 20px; padding: 16px; background: var(--bg-secondary); border-radius: 10px; border: 1px solid var(--border-color);">
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Comparação com Renda Fixa (CDI)</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: var(--text-secondary);">Retorno CDI no período:</span>
+              <span style="font-weight: 600; color: var(--accent-light);" id="retornoCDI"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+              <span style="color: var(--text-secondary);">Spread vs CDI:</span>
+              <span style="font-weight: 700;" id="spreadCDI"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GRAPHS TAB -->
+        <div id="graficosTab" class="tab-content">
+          <div class="chart-row">
+            <div>
+              <h3 style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 12px;">Lucro por Estado</h3>
+              <div class="chart-container">
+                <canvas id="lucroChart"></canvas>
+              </div>
+            </div>
+            <div>
+              <h3 style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 12px;">Distribuição de Custos</h3>
+              <div class="chart-container">
+                <canvas id="custosChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="chart-row" style="margin-top: 20px;">
+            <div>
+              <h3 style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 12px;">ROIC Comparativo</h3>
+              <div class="chart-container">
+                <canvas id="roicChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTRACTS TAB -->
+        <div id="contratosTab" class="tab-content">
+          <div class="checklist-item">
+            <div class="checklist-icon">📱</div>
+            <div class="checklist-content">
+              <h4>Plataformas Digitais de Compra e Abate</h4>
+              <p>É possível contratar 100% online pelos apps <strong>Friboi Pecuarista (JBS)</strong> e <strong>Minerva Pecuarista</strong>. Ambos disponibilizam contratos a termo com assinatura eletrônica via Clicksign/DocuSign.</p>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-icon">📋</div>
+            <div class="checklist-content">
+              <h4>Guia de Trânsito Animal (GTA) Digital</h4>
+              <p>A emissão de GTA em São Paulo é feita digitalmente pelo sistema <strong>GEDAVE</strong> da Defesa Agropecuária, sem necessidade de ir presencialmente ao órgão.</p>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-icon">🔒</div>
+            <div class="checklist-content">
+              <h4>Trava de Preço e Risco de Base</h4>
+              <p>No contrato a termo direto com o frigorífico, o preço é fixo na nota fiscal, zerando o risco de base da B3 e dispensando chamadas diárias de margem.</p>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-icon">⚖️</div>
+            <div class="checklist-content">
+              <h4>Atenção ao Peso de Balança e Jejum</h4>
+              <p>Ao comprar o boi magro, exija balança com aferição do Inmetro e jejum hídrico/alimentar regulamentar de 12 horas para não comprar peso falso de rúmen.</p>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-icon">💡</div>
+            <div class="checklist-content">
+              <h4>Hedge com Contratos Futuros (Opcional)</h4>
+              <p>Para operações maiores, considere hedge na B3 usando contratos futuros de boi gordo (BGI) para proteção contra quedas abruptas no preço da arroba.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================
+  // DATABASE DE ESTADOS - Cotações e Custos
+  // ============================================
+  const estadosDB = [
+    { nome: "São Paulo (SP)", sigla: "SP", arrobaVenda: 372.20, boiMagro: 5145.00, freteCab: 260.00, regiao: "Noroeste / Barretos" },
+    { nome: "Minas Gerais (MG)", sigla: "MG", arrobaVenda: 358.00, boiMagro: 4990.00, freteCab: 410.00, regiao: "Triângulo Mineiro" },
+    { nome: "Goiás (GO)", sigla: "GO", arrobaVenda: 349.80, boiMagro: 4966.00, freteCab: 580.00, regiao: "Sul Goiano" },
+    { nome: "Mato Grosso do Sul (MS)", sigla: "MS", arrobaVenda: 361.80, boiMagro: 5389.00, freteCab: 490.00, regiao: "Leste / Três Lagoas" },
+    { nome: "Mato Grosso (MT)", sigla: "MT", arrobaVenda: 344.00, boiMagro: 5188.00, freteCab: 850.00, regiao: "Rondonópolis" }
+  ];
+
+  // ============================================
+  // VARIÁVEIS GLOBAIS PARA GRÁFICOS
+  // ============================================
+  let lucroChart = null;
+  let custosChart = null;
+  let roicChart = null;
+
+  // ============================================
+  // FUNÇÕES DE FORMATAÇÃO
+  // ============================================
+  function formatMoney(val) {
+    return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  function formatPercent(val) {
+    return val.toFixed(2) + '%';
+  }
+
+  // ============================================
+  // CONTROLE DE ABAS
+  // ============================================
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+    
+    // Atualizar gráficos quando a aba de gráficos for aberta
+    if (tabId === 'graficosTab') {
+      setTimeout(atualizarGraficos, 100);
+    }
+  }
+
+  // ============================================
+  // FUNÇÃO PRINCIPAL DE CÁLCULO
+  // ============================================
+  function calcular() {
+    // Coleta de inputs
+    const capital = parseFloat(document.getElementById('capital').value) || 0;
+    const cabecas = parseInt(document.getElementById('cabecas').value) || 0;
+    const dias = parseInt(document.getElementById('diasCocho').value) || 0;
+    const diaria = parseFloat(document.getElementById('valorDiaria').value) || 0;
+    const premio = parseFloat(document.getElementById('premioArroba').value) || 0;
+    const modelo = document.getElementById('modeloBoitel').value;
+    const mortalidadePct = parseFloat(document.getElementById('mortalidade').value) || 0;
+    const cdi = parseFloat(document.getElementById('cdi').value) || 0;
+    const impostoPct = parseFloat(document.getElementById('impostoLucro').value) || 0;
+
+    // Constantes do modelo
+    const pesoSaidaArroba = 20.33;
+    const custoBoitelPorCab = dias * diaria;
+    const custoBoitelTotal = custoBoitelPorCab * cabecas;
+    const cabecasEfetivas = cabecas * (1 - mortalidadePct / 100);
+
+    // Cálculo para cada estado
+    let ranking = estadosDB.map(est => {
+      const precoVendaArrobaEfetivo = est.arrobaVenda + premio;
+      const receitaBrutaCab = pesoSaidaArroba * precoVendaArrobaEfetivo;
+      const funruralCab = receitaBrutaCab * 0.015;
+      
+      const custoAnimal = est.boiMagro;
+      const custoFrete = est.freteCab;
+      const custoTotalCab = custoAnimal + custoBoitelPorCab + custoFrete + funruralCab;
+      
+      // Lucro antes de mortalidade e impostos
+      const lucroBrutoCab = receitaBrutaCab - custoTotalCab;
+      const lucroBrutoLote = lucroBrutoCab * cabecas;
+      
+      // Ajuste por mortalidade
+      const perdaMortalidadeCab = lucroBrutoCab * (mortalidadePct / 100);
+      const perdaMortalidadeLote = perdaMortalidadeCab * cabecas;
+      
+      // Lucro após mortalidade
+      const lucroAposMortalidadeCab = lucroBrutoCab - perdaMortalidadeCab;
+      const lucroAposMortalidadeLote = lucroAposMortalidadeCab * cabecasEfetivas;
+      
+      // Imposto sobre o lucro
+      const impostoLote = lucroAposMortalidadeLote * (impostoPct / 100);
+      
+      // Lucro líquido final
+      const lucroLiquidoCab = lucroAposMortalidadeCab - (impostoLote / cabecasEfetivas);
+      const lucroLiquidoLote = lucroAposMortalidadeLote - impostoLote;
+      
+      // ROIC sobre capital investido
+      const capitalInvestido = custoTotalCab * cabecas;
+      const roic = capitalInvestido > 0 ? ((lucroLiquidoLote / capitalInvestido) * 100) : 0;
+
+      return {
+        ...est,
+        precoVenda: precoVendaArrobaEfetivo,
+        receitaBrutaCab,
+        funruralCab,
+        custoTotalCab,
+        lucroBrutoCab,
+        lucroBrutoLote,
+        perdaMortalidadeCab,
+        perdaMortalidadeLote,
+        lucroAposMortalidadeCab,
+        lucroAposMortalidadeLote,
+        impostoLote,
+        lucroLiquidoCab,
+        lucroLiquidoLote,
+        roic,
+        capitalInvestido
+      };
+    });
+
+    // Ordenar por lucro líquido do lote
+    ranking.sort((a, b) => b.lucroLiquidoLote - a.lucroLiquidoLote);
+
+    const melhor = ranking[0];
+
+    // ============================================
+    // ATUALIZAR KPIs DE TOPO
+    // ============================================
+    document.getElementById('bestState').innerText = melhor.nome;
+    document.getElementById('bestRegion').innerText = melhor.regiao;
+    document.getElementById('bestProfit').innerText = formatMoney(melhor.lucroLiquidoLote);
+    document.getElementById('profitPerCab').innerText = formatMoney(melhor.lucroLiquidoCab) + '/cab';
+    document.getElementById('bestRoic').innerText = formatPercent(melhor.roic);
+    
+    // ROIC anualizado (considerando 106 dias = ~3.44 ciclos/ano)
+    const roicAnualizado = Math.pow(1 + melhor.roic / 100, 365 / dias) - 1;
+    document.getElementById('roicAnualizado').innerText = formatPercent(roicAnualizado * 100) + ' a.a.';
+
+    // Cálculo de caixa livre
+    let desembolsoD0 = (melhor.boiMagro * cabecas) + (melhor.freteCab * cabecas * 0.7);
+    if (modelo === 'avista') {
+      desembolsoD0 += custoBoitelTotal;
+    }
+    const caixaLivre = capital - desembolsoD0;
+    document.getElementById('freeCash').innerText = formatMoney(caixaLivre);
+    
+    const freeCashEl = document.getElementById('freeCash');
+    freeCashEl.className = caixaLivre >= 0 ? 'kpi-value blue' : 'kpi-value red';
+
+    // ============================================
+    // ATUALIZAR TABELA DE RANKING
+    // ============================================
+    const tbody = document.getElementById('rankingBody');
+    tbody.innerHTML = '';
+    ranking.forEach((item, index) => {
+      const tr = document.createElement('tr');
+      const isWinner = index === 0;
+      tr.innerHTML = `
+        <td>${index === 0 ? '🏆 1º' : (index + 1) + 'º'}</td>
+        <td><span class="tag-state">${item.sigla}</span> ${item.nome}</td>
+        <td>${formatMoney(item.precoVenda)}</td>
+        <td>${formatMoney(item.boiMagro)}</td>
+        <td>${formatMoney(item.freteCab)}</td>
+        <td class="${isWinner ? 'rank-win' : ''}">${formatMoney(item.lucroLiquidoCab)}</td>
+        <td class="${isWinner ? 'rank-win' : ''}">${formatMoney(item.lucroLiquidoLote)}</td>
+        <td style="color:${item.roic > 0 ? 'var(--success)' : 'var(--danger)'}">${formatPercent(item.roic)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // ============================================
+    // ATUALIZAR DRE
+    // ============================================
+    const recTotal = melhor.receitaBrutaCab * cabecasEfetivas;
+    const custoAnimaisTotal = melhor.boiMagro * cabecas;
+    const freteTotal = melhor.freteCab * cabecas;
+    const funruralTotal = melhor.funruralCab * cabecasEfetivas;
+
+    document.getElementById('dreFaturamento').innerText = formatMoney(recTotal);
+    document.getElementById('dreAnimais').innerText = "- " + formatMoney(custoAnimaisTotal);
+    document.getElementById('dreBoitel').innerText = "- " + formatMoney(custoBoitelTotal);
+    document.getElementById('dreFrete').innerText = "- " + formatMoney(freteTotal);
+    document.getElementById('dreFunrural').innerText = "- " + formatMoney(funruralTotal);
+    document.getElementById('dreMortalidade').innerText = "- " + formatMoney(melhor.perdaMortalidadeLote);
+    document.getElementById('dreImposto').innerText = "- " + formatMoney(melhor.impostoLote);
+    document.getElementById('dreLiquido').innerText = formatMoney(melhor.lucroLiquidoLote);
+
+    // Nota sobre fluxo de caixa
+    const nota = modelo === 'gancho' 
+      ? `Modelo Acerto no Gancho: o valor de ${formatMoney(custoBoitelTotal)} do Boitel será retido diretamente no abate, preservando ${formatMoney(caixaLivre)} em caixa hoje.`
+      : `Modelo À Vista: todo o custo de ${formatMoney(custoBoitelTotal)} é desembolsado durante os ${dias} dias de confinamento.`;
+    document.getElementById('dreNotaFluxo').innerText = nota;
+
+    // Comparação com CDI
+    const cdiPeriodo = Math.pow(1 + cdi / 100, dias / 365) - 1;
+    const retornoCDI = capital * cdiPeriodo;
+    document.getElementById('retornoCDI').innerText = formatMoney(retornoCDI);
+    
+    const spread = melhor.roic - (cdiPeriodo * 100);
+    const spreadEl = document.getElementById('spreadCDI');
+    spreadEl.innerText = (spread >= 0 ? '+' : '') + formatPercent(spread);
+    spreadEl.style.color = spread >= 0 ? 'var(--success)' : 'var(--danger)';
+
+    // ============================================
+    // ATUALIZAR GRÁFICOS (se aba visível)
+    // ============================================
+    if (document.getElementById('graficosTab').classList.contains('active')) {
+      atualizarGraficos();
+    }
+  }
+
+  // ============================================
+  // ATUALIZAÇÃO DE GRÁFICOS
+  // ============================================
+  function atualizarGraficos() {
+    const cabecas = parseInt(document.getElementById('cabecas').value) || 0;
+    const dias = parseInt(document.getElementById('diasCocho').value) || 0;
+    const diaria = parseFloat(document.getElementById('valorDiaria').value) || 0;
+    const mortalidadePct = parseFloat(document.getElementById('mortalidade').value) || 0;
+    const impostoPct = parseFloat(document.getElementById('impostoLucro').value) || 0;
+    const custoBoitelPorCab = dias * diaria;
+    const cabecasEfetivas = cabecas * (1 - mortalidadePct / 100);
+
+    // Recalcular ranking para gráficos
+    const pesoSaidaArroba = 20.33;
+    let ranking = estadosDB.map(est => {
+      const premio = parseFloat(document.getElementById('premioArroba').value) || 0;
+      const precoVendaArrobaEfetivo = est.arrobaVenda + premio;
+      const receitaBrutaCab = pesoSaidaArroba * precoVendaArrobaEfetivo;
+      const funruralCab = receitaBrutaCab * 0.015;
+      const custoAnimal = est.boiMagro;
+      const custoFrete = est.freteCab;
+      const custoTotalCab = custoAnimal + custoBoitelPorCab + custoFrete + funruralCab;
+      const lucroBrutoCab = receitaBrutaCab - custoTotalCab;
+      const perdaMortalidadeCab = lucroBrutoCab * (mortalidadePct / 100);
+      const lucroAposMortalidadeCab = lucroBrutoCab - perdaMortalidadeCab;
+      const lucroAposMortalidadeLote = lucroAposMortalidadeCab * cabecasEfetivas;
+      const impostoLote = lucroAposMortalidadeLote * (impostoPct / 100);
+      const lucroLiquidoLote = lucroAposMortalidadeLote - impostoLote;
+      const capitalInvestido = custoTotalCab * cabecas;
+      const roic = capitalInvestido > 0 ? ((lucroLiquidoLote / capitalInvestido) * 100) : 0;
+
+      return {
+        ...est,
+        lucroLiquidoLote,
+        roic,
+        custoAnimal: custoAnimal * cabecas,
+        custoBoitel: custoBoitelPorCab * cabecas,
+        custoFrete: custoFrete * cabecas,
+        custoFunrural: funruralCab * cabecasEfetivas
+      };
+    });
+
+    ranking.sort((a, b) => b.lucroLiquidoLote - a.lucroLiquidoLote);
+    const melhor = ranking[0];
+
+    // Configuração comum de gráficos
+    const chartColors = {
+      primary: 'rgba(13, 148, 136, 0.8)',
+      primaryLight: 'rgba(20, 184, 166, 0.2)',
+      accent: 'rgba(99, 102, 241, 0.8)',
+      accentLight: 'rgba(129, 140, 248, 0.2)',
+      danger: 'rgba(239, 68, 68, 0.8)',
+      warning: 'rgba(245, 158, 11, 0.8)',
+      text: '#94a3b8',
+      grid: '#2d3a4f'
+    };
+
+    // Gráfico 1: Lucro por Estado (Barras)
+    const ctx1 = document.getElementById('lucroChart').getContext('2d');
+    if (lucroChart) lucroChart.destroy();
+    lucroChart = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: ranking.map(r => r.sigla),
+        datasets: [{
+          label: 'Lucro Líquido do Lote',
+          data: ranking.map(r => r.lucroLiquidoLote),
+          backgroundColor: ranking.map((r, i) => i === 0 ? chartColors.primary : chartColors.accent),
+          borderRadius: 6,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => formatMoney(ctx.raw)
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: chartColors.grid },
+            ticks: { color: chartColors.text, callback: (val) => 'R$ ' + val.toLocaleString('pt-BR') }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: chartColors.text }
+          }
+        }
+      }
+    });
+
+    // Gráfico 2: Distribuição de Custos (Rosca)
+    const ctx2 = document.getElementById('custosChart').getContext('2d');
+    if (custosChart) custosChart.destroy();
+    custosChart = new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: ['Compra de Animais', 'Hotelaria (Boitel)', 'Frete', 'Funrural'],
+        datasets: [{
+          data: [
+            melhor.custoAnimal,
+            melhor.custoBoitel,
+            melhor.custoFrete,
+            melhor.custoFunrural
+          ],
+          backgroundColor: [
+            chartColors.accent,
+            chartColors.primary,
+            chartColors.warning,
+            chartColors.danger
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: chartColors.text, padding: 15 }
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ctx.label + ': ' + formatMoney(ctx.raw)
+            }
+          }
+        }
+      }
+    });
+
+    // Gráfico 3: ROIC Comparativo (Barras Horizontais)
+    const ctx3 = document.getElementById('roicChart').getContext('2d');
+    if (roicChart) roicChart.destroy();
+    roicChart = new Chart(ctx3, {
+      type: 'bar',
+      data: {
+        labels: ranking.map(r => r.sigla),
+        datasets: [{
+          label: 'ROIC (%)',
+          data: ranking.map(r => r.roic),
+          backgroundColor: ranking.map((r, i) => i === 0 ? chartColors.primary : chartColors.accent),
+          borderRadius: 6,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => formatPercent(ctx.raw)
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            grid: { color: chartColors.grid },
+            ticks: { color: chartColors.text, callback: (val) => val.toFixed(1) + '%' }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: chartColors.text }
+          }
+        }
+      }
+    });
+  }
+
+  // ============================================
+  // EXPORTAÇÃO PARA PDF
+  // ============================================
+  function exportarResumo() {
+    window.print();
+  }
+
+  // ============================================
+  // FIREBASE CONFIGURATION
+  // ============================================
+  // SUBSTITUA ESTES VALORES COM AS CREDENCIAIS DO SEU PROJETO FIREBASE
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY_AQUI",
+    authDomain: "SEU_PROJETO.firebaseapp.com",
+    projectId: "SEU_PROJECT_ID",
+    storageBucket: "SEU_PROJETO.appspot.com",
+    messagingSenderId: "SEU_SENDER_ID",
+    appId: "SEU_APP_ID"
+  };
+
+  // Inicializar Firebase
+  let isFirebaseConfigured = false;
+  try {
+    if (firebaseConfig.apiKey !== "SUA_API_KEY_AQUI") {
+      firebase.initializeApp(firebaseConfig);
+      isFirebaseConfigured = true;
+    }
+  } catch (error) {
+    console.log("Firebase não configurado. Usando modo de demonstração.");
+  }
+
+  // ============================================
+  // AUTHENTICATION FUNCTIONS
+  // ============================================
+  let isLoginMode = true;
+
+  function toggleAuthMode() {
+    isLoginMode = !isLoginMode;
+    document.getElementById('loginForm').style.display = isLoginMode ? 'block' : 'none';
+    document.getElementById('registerForm').style.display = isLoginMode ? 'none' : 'block';
+    document.getElementById('toggleAuth').innerHTML = isLoginMode 
+      ? 'Não tem conta? <button class="btn-link" onclick="toggleAuthMode()">Criar conta</button>'
+      : 'Já tem conta? <button class="btn-link" onclick="toggleAuthMode()">Fazer login</button>';
+    hideError();
+  }
+
+  function showError(message) {
+    const errorEl = document.getElementById('errorMessage');
+    errorEl.textContent = message;
+    errorEl.classList.add('show');
+  }
+
+  function hideError() {
+    document.getElementById('errorMessage').classList.remove('show');
+  }
+
+  function showMainApp() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').classList.add('active');
+    calcular();
+  }
+
+  function showLoginScreen() {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('mainApp').classList.remove('active');
+  }
+
+  function updateUserUI(user) {
+    if (user) {
+      const email = user.email || 'Usuário';
+      const initial = email.charAt(0).toUpperCase();
+      document.getElementById('userEmail').textContent = email;
+      document.getElementById('userAvatar').textContent = initial;
+    }
+  }
+
+  // Login com e-mail e senha
+  async function loginWithEmail() {
+    if (!isFirebaseConfigured) {
+      showError('Firebase não configurado. Configure as credenciais no código.');
+      return;
+    }
+
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email || !password) {
+      showError('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    try {
+      await firebase.auth().signInWithEmailAndPassword(email, password);
+      showMainApp();
+    } catch (error) {
+      showError(getAuthErrorMessage(error.code));
+    }
+  }
+
+  // Registro com e-mail e senha
+  async function registerWithEmail() {
+    if (!isFirebaseConfigured) {
+      showError('Firebase não configurado. Configure as credenciais no código.');
+      return;
+    }
+
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+
+    if (!email || !password || !passwordConfirm) {
+      showError('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    if (password.length < 6) {
+      showError('A senha deve ter pelo menos 6 caracteres.');
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      showError('As senhas não coincidem.');
+      return;
+    }
+
+    try {
+      await firebase.auth().createUserWithEmailAndPassword(email, password);
+      showMainApp();
+    } catch (error) {
+      showError(getAuthErrorMessage(error.code));
+    }
+  }
+
+  // Login com Google
+  async function loginWithGoogle() {
+    if (!isFirebaseConfigured) {
+      showError('Firebase não configurado. Configure as credenciais no código.');
+      return;
+    }
+
+    const provider = new firebase.auth.GoogleAuthProvider();
+    
+    try {
+      await firebase.auth().signInWithPopup(provider);
+      showMainApp();
+    } catch (error) {
+      showError(getAuthErrorMessage(error.code));
+    }
+  }
+
+  // Logout
+  async function logout() {
+    if (isFirebaseConfigured) {
+      await firebase.auth().signOut();
+    }
+    showLoginScreen();
+  }
+
+  // Mapeamento de erros do Firebase
+  function getAuthErrorMessage(code) {
+    const errorMessages = {
+      'auth/user-not-found': 'Usuário não encontrado. Verifique o e-mail.',
+      'auth/wrong-password': 'Senha incorreta.',
+      'auth/email-already-in-use': 'Este e-mail já está em uso.',
+      'auth/weak-password': 'A senha é muito fraca. Use pelo menos 6 caracteres.',
+      'auth/invalid-email': 'E-mail inválido.',
+      'auth/invalid-credential': 'Credenciais inválidas.',
+      'auth/popup-closed-by-user': 'Login cancelado pelo usuário.',
+      'auth/account-exists-with-different-credential': 'Já existe uma conta com este e-mail usando outro método de login.',
+      'auth/popup-blocked': 'O popup foi bloqueado pelo navegador. Permita popups para este site.'
+    };
+    return errorMessages[code] || 'Erro na autenticação. Tente novamente.';
+  }
+
+  // Observador de estado de autenticação
+  if (isFirebaseConfigured) {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        updateUserUI(user);
+        showMainApp();
+      } else {
+        showLoginScreen();
+      }
+    });
+  } else {
+    // Modo de demonstração - entrar automaticamente
+    console.log('Modo de demonstração: Firebase não configurado');
+    document.getElementById('userEmail').textContent = 'demo@boitel.com';
+    document.getElementById('userAvatar').textContent = 'D';
+    showMainApp();
+  }
+
+  // ============================================
+  // INICIALIZAÇÃO
+  // ============================================
+  window.onload = function() {
+    if (!isFirebaseConfigured) {
+      showMainApp();
+    }
+  };
+</script>
+</body>
+</html>
