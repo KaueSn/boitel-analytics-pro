@@ -6,7 +6,7 @@ let guideStepIndex = 0;
 let guideAtivo = false;
 
 const PASSOS_TUTORIAL = [
-  { alvo: 'header', tab: null, titulo: 'Olá! Eu sou o Boi-Guia 🐂', texto: 'Vou te mostrar em poucos passos como usar o simulador. É rapidinho — no fim você já vai saber projetar o lucro do confinamento em boitel.' },
+  { alvo: 'header', tab: null, titulo: 'Olá! Eu sou o Boi-Guia da Stratum Agro 🐂', texto: 'Vou te mostrar em poucos passos como usar o simulador. É rapidinho — no fim você já vai saber projetar o lucro do confinamento em boitel.' },
   { alvo: '#blocoCapital', tab: null, titulo: 'Capital e lote', texto: 'Comece informando o capital disponível e o tamanho do lote (número de cabeças). São os dois primeiros números que definem a simulação.' },
   { alvo: '#blocoBoitel', tab: null, titulo: 'Condições do Boitel', texto: 'Escolha a modalidade de pagamento (acerto no gancho ou à vista) e os dias de confinamento (cocho). Cada alteração recalcula tudo na hora.' },
   { alvo: '#blocoDiaria', tab: null, titulo: 'Diária de hotelaria (média por região)', texto: 'Informe o valor da diária por cabeça/dia — ou use a média de referência: escolha o estado no seletor e clique em "Usar média". Os valores vêm de índices do setor (ICBC, 2025) e você pode ajustá-los.' },
