@@ -1,35 +1,57 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Stratum Agro">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0d9488"/>
-      <stop offset="100%" stop-color="#0f766e"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0e8a7d"/>
+      <stop offset="55%" stop-color="#0d7d70"/>
+      <stop offset="100%" stop-color="#0b5a52"/>
     </linearGradient>
+    <radialGradient id="sol" cx="0.5" cy="0.32" r="0.6">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
     <linearGradient id="grain" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#f8e9b0"/>
-      <stop offset="100%" stop-color="#d4af37"/>
+      <stop offset="0%" stop-color="#fdefb9"/>
+      <stop offset="60%" stop-color="#f4d67e"/>
+      <stop offset="100%" stop-color="#d9ab34"/>
     </linearGradient>
   </defs>
 
-  <!-- Fundo (badge arredondado) -->
-  <rect x="1" y="1" width="62" height="62" rx="16" fill="url(#bg)"/>
-  <rect x="2.2" y="2.2" width="59.6" height="59.6" rx="14.8" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.4"/>
+  <!-- Badge -->
+  <rect x="0" y="0" width="64" height="64" rx="16" fill="url(#bg)"/>
+  <rect x="0" y="0" width="64" height="64" rx="16" fill="url(#sol)"/>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="#f4d67e" stroke-opacity="0.35" stroke-width="1.2"/>
 
-  <!-- Caule do trigo -->
-  <path d="M32 54 V19" stroke="#0b5f59" stroke-width="2.6" stroke-linecap="round"/>
+  <!-- Camadas de solo (strata) -->
+  <path d="M3 47 Q32 42 61 47 L61 61 L3 61 Z" fill="#0a4a43" opacity="0.85"/>
+  <path d="M3 52 Q32 48 61 52 L61 61 L3 61 Z" fill="#083b36" opacity="0.85"/>
+  <path d="M3 57 Q32 54 61 57 L61 61 L3 61 Z" fill="#062e2a" opacity="0.85"/>
 
-  <!-- Folha -->
-  <path d="M32 51 C21.5 48.5 17.5 40 20 32.5 C29.5 35 33.5 42.5 32.5 51 Z" fill="#8fe3d4" opacity="0.95"/>
+  <!-- Folhas do trigo -->
+  <path d="M32 51 C21 49 14 40 13 29 C23 33 30 43 32 51 Z" fill="#79e6cf"/>
+  <path d="M32 51 C43 49 50 40 51 29 C41 33 34 43 32 51 Z" fill="#42d3a6"/>
 
-  <!-- Grãos -->
-  <g fill="url(#grain)">
-    <ellipse cx="32" cy="15.5" rx="3.2" ry="4.6"/>
-    <ellipse cx="32" cy="23.5" rx="3.4" ry="4.6"/>
-    <ellipse cx="32" cy="31.5" rx="3.4" ry="4.6"/>
-    <ellipse cx="25.2" cy="21.5" rx="4.6" ry="2.9" transform="rotate(-33 25.2 21.5)"/>
-    <ellipse cx="38.8" cy="21.5" rx="4.6" ry="2.9" transform="rotate(33 38.8 21.5)"/>
-    <ellipse cx="23.4" cy="28.5" rx="4.9" ry="3.1" transform="rotate(-31 23.4 28.5)"/>
-    <ellipse cx="40.6" cy="28.5" rx="4.9" ry="3.1" transform="rotate(31 40.6 28.5)"/>
-    <ellipse cx="22" cy="35.5" rx="5.1" ry="3.3" transform="rotate(-29 22 35.5)"/>
-    <ellipse cx="42" cy="35.5" rx="5.1" ry="3.3" transform="rotate(29 42 35.5)"/>
+  <!-- Caule -->
+  <path d="M32 53 V25" stroke="#d9ab34" stroke-width="2.3" stroke-linecap="round"/>
+
+  <!-- Grãos (espiga) -->
+  <g fill="url(#grain)" stroke="#c79a2b" stroke-width="0.4">
+    <ellipse cx="32" cy="13.5" rx="2.1" ry="3.5"/>
+    <ellipse cx="28.6" cy="18.5" rx="2.05" ry="3.5" transform="rotate(-38 28.6 18.5)"/>
+    <ellipse cx="35.4" cy="18.5" rx="2.05" ry="3.5" transform="rotate(38 35.4 18.5)"/>
+    <ellipse cx="28.3" cy="24" rx="2.15" ry="3.7" transform="rotate(-38 28.3 24)"/>
+    <ellipse cx="35.7" cy="24" rx="2.15" ry="3.7" transform="rotate(38 35.7 24)"/>
+    <ellipse cx="28.5" cy="29.6" rx="2.25" ry="3.8" transform="rotate(-38 28.5 29.6)"/>
+    <ellipse cx="35.5" cy="29.6" rx="2.25" ry="3.8" transform="rotate(38 35.5 29.6)"/>
+  </g>
+
+  <!-- Aristas (barbas) -->
+  <g stroke="#f7e29a" stroke-width="0.7" stroke-linecap="round" opacity="0.9">
+    <path d="M32 10.5 L32 4.5"/>
+    <path d="M27.6 15 L23.5 9"/>
+    <path d="M36.4 15 L40.5 9"/>
+    <path d="M26.8 20.5 L22 15"/>
+    <path d="M37.2 20.5 L42 15"/>
+    <path d="M26 26 L21 21"/>
+    <path d="M38 26 L43 21"/>
   </g>
 </svg>
