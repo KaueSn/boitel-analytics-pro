@@ -43,8 +43,6 @@ function atualizarSidebar() {
   const sideAvatar = document.getElementById('sideAvatar');
   if (sideName) sideName.textContent = nome;
   if (sideAvatar) sideAvatar.textContent = inicial;
-  const welcomeName = document.getElementById('welcomeName');
-  if (welcomeName) welcomeName.textContent = nome;
 }
 
 // ============================================

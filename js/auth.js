@@ -31,13 +31,30 @@ try {
 // ============================================
 let isLoginMode = true;
 
+// Aplica o modo atual (login ou cadastro) na tela
+function renderAuthMode() {
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+  if (loginForm) loginForm.style.display = isLoginMode ? 'block' : 'none';
+  if (registerForm) registerForm.style.display = isLoginMode ? 'none' : 'block';
+  const toggle = document.getElementById('toggleAuth');
+  if (toggle) {
+    toggle.innerHTML = isLoginMode
+      ? 'Não tem conta? <button class="btn-link" onclick="toggleAuthMode()">Criar conta</button>'
+      : 'Já tem conta? <button class="btn-link" onclick="toggleAuthMode()">Fazer login</button>';
+  }
+}
+
+// Sempre volta para o modo de login (ao abrir a tela ou ao sair)
+function resetAuthMode() {
+  isLoginMode = true;
+  renderAuthMode();
+  hideError();
+}
+
 function toggleAuthMode() {
   isLoginMode = !isLoginMode;
-  document.getElementById('loginForm').style.display = isLoginMode ? 'block' : 'none';
-  document.getElementById('registerForm').style.display = isLoginMode ? 'none' : 'block';
-  document.getElementById('toggleAuth').innerHTML = isLoginMode 
-    ? 'Não tem conta? <button class="btn-link" onclick="toggleAuthMode()">Criar conta</button>'
-    : 'Já tem conta? <button class="btn-link" onclick="toggleAuthMode()">Fazer login</button>';
+  renderAuthMode();
   hideError();
 }
 
@@ -60,6 +77,7 @@ function showMainApp() {
 }
 
 function showLoginScreen() {
+  resetAuthMode();
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('mainApp').classList.remove('active');
 }
@@ -287,7 +305,17 @@ async function loginWithGoogle(btn) {
   try {
     await firebase.auth().signInWithPopup(provider);
   } catch (error) {
-    showError(getAuthErrorMessage(error.code));
+    // Popup bloqueado ou indisponível: tenta o fluxo por redirecionamento
+    if (error.code === 'auth/popup-blocked' || error.code === 'auth/operation-not-supported-in-this-environment') {
+      try {
+        await firebase.auth().signInWithRedirect(provider);
+        return;
+      } catch (redirectError) {
+        showError(getAuthErrorMessage(redirectError.code));
+      }
+    } else {
+      showError(getAuthErrorMessage(error.code));
+    }
   } finally {
     setLoading(btn, false);
   }
@@ -317,7 +345,11 @@ function getAuthErrorMessage(code) {
     'auth/popup-closed-by-user': 'Login cancelado pelo usuário.',
     'auth/account-exists-with-different-credential': 'Já existe uma conta com este e-mail usando outro método de login.',
     'auth/popup-blocked': 'O popup foi bloqueado pelo navegador. Permita popups para este site.',
-    'auth/network-request-failed': 'Falha de rede. Verifique sua conexão.'
+    'auth/network-request-failed': 'Falha de rede. Verifique sua conexão.',
+    'auth/unauthorized-domain': 'Este domínio não está autorizado no Firebase. Adicione-o em Authentication → Settings → Authorized domains.',
+    'auth/operation-not-allowed': 'Método de login desabilitado no Firebase. Ative "E-mail/senha" e "Google" em Authentication → Sign-in method.',
+    'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
+    'auth/requires-recent-login': 'Faça login novamente para concluir esta ação.'
   };
   return errorMessages[code] || 'Erro na autenticação. Tente novamente.';
 }
