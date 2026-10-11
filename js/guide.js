@@ -6,7 +6,7 @@ let guideStepIndex = 0;
 let guideAtivo = false;
 
 const PASSOS_TUTORIAL = [
-  { alvo: 'header', tab: null, titulo: 'Olá! Eu sou o Triguinho da Stratum Agro 🌾', texto: 'Vou te mostrar em poucos passos como usar o simulador. É rapidinho — no fim você já vai saber projetar o lucro do confinamento em boitel.' },
+  { alvo: 'header', tab: null, titulo: 'Olá! Eu sou o Triguinho da Stratum Agro', texto: 'Vou te mostrar em poucos passos como usar o simulador. É rapidinho — no fim você já vai saber projetar o lucro do confinamento em boitel.' },
   { alvo: '#blocoCapital', tab: null, titulo: 'Capital e lote', texto: 'Comece informando o capital disponível e o tamanho do lote (número de cabeças). São os dois primeiros números que definem a simulação.' },
   { alvo: '#blocoBoitel', tab: null, titulo: 'Condições do Boitel', texto: 'Escolha a modalidade de pagamento (acerto no gancho ou à vista) e os dias de confinamento (cocho). Cada alteração recalcula tudo na hora.' },
   { alvo: '#blocoDiaria', tab: null, titulo: 'Diária de hotelaria (média por região)', texto: 'Informe o valor da diária por cabeça/dia — ou use a média de referência: escolha o estado no seletor e clique em "Usar média". Os valores vêm de índices do setor (ICBC, 2025) e você pode ajustá-los.' },
@@ -18,7 +18,7 @@ const PASSOS_TUTORIAL = [
   { alvo: '#fluxoTab', tab: 'fluxoTab', titulo: 'DRE & fluxo de caixa', texto: 'Aqui você vê o resultado linha a linha, o desembolso no D0/D+106 e a comparação com a renda fixa (spread vs CDI).' },
   { alvo: '#graficosTab', tab: 'graficosTab', titulo: 'Análise gráfica', texto: 'Os gráficos mostram o lucro por estado, a composição dos custos e o ROIC comparativo — tudo se atualiza enquanto você digita.' },
   { alvo: '#contratosTab', tab: 'contratosTab', titulo: 'Contratos & alertas', texto: 'Checklist com boas práticas: plataformas digitais, GTA digital, peso de balança e jejum, hedge na B3 e trava de preço.' },
-  { alvo: '.btn-export', tab: null, titulo: 'Pronto! 🎉', texto: 'Ao terminar, use "Exportar Resumo" para gerar o PDF do relatório. Se quiser rever o tutorial, clique no Boi-Guia a qualquer momento. Bom trabalho!' }
+  { alvo: '.btn-export', tab: null, titulo: 'Pronto!', texto: 'Ao terminar, use "Exportar Resumo" para gerar o PDF do relatório. E não deixe de abrir a aba "Materiais de apoio" na barra lateral: lá você encontra cursos completos e documentários sobre o agro. Se quiser rever o tutorial, clique no Triguinho a qualquer momento. Bom trabalho!' }
 ];
 
 function guideAbrirTab(tabId) {
@@ -99,7 +99,7 @@ function guideConcluir() {
   try { localStorage.setItem(TUTORIAL_KEY, '1'); } catch (e) {}
   guideAbrirTab('rankingTab');
   guideMinimizar();
-  showToast('Tutorial concluído! Bons negócios 🐂');
+  showToast('Tutorial concluído! Bons negócios.');
 }
 
 // Deixa apenas o personagem visível (canto inferior direito), sem o balão

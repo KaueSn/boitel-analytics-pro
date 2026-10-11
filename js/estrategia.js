@@ -117,21 +117,21 @@ function analisarObjetivo(btn) {
         : 'com estes números o cenário não fecha — renegocie a diária, busque bonificação ou melhore o preço da arroba antes de fechar.') + '</li>'
     ];
     cenario = '<div class="estrategia-card ' + (positivo ? 'destaque' : 'aviso') + '">' +
-      '<div class="estrategia-card-title">' + (positivo ? '📍 Melhor cenário com seus números' : '⚠️ Melhor cenário ainda não fecha') + '</div>' +
+      '<div class="estrategia-card-title">' + (positivo ? ic('pin') + ' Melhor cenário com seus números' : ic('warning') + ' Melhor cenário ainda não fecha') + '</div>' +
       '<ul class="estrategia-list">' + itens.join('') + '</ul></div>';
   } else {
-    cenario = '<div class="estrategia-card aviso"><div class="estrategia-card-title">⚠️ Faltam dados</div>' +
+    cenario = '<div class="estrategia-card aviso"><div class="estrategia-card-title">' + ic('warning') + ' Faltam dados</div>' +
       '<div class="estrategia-sub">Preencha os parâmetros obrigatórios (capital, lote, dias e diária) para eu calcular o melhor cenário com os seus números.</div></div>';
   }
 
   const html =
-    '<div class="estrategia-card"><div class="estrategia-card-title">🧭 Objetivos identificados</div>' +
+    '<div class="estrategia-card"><div class="estrategia-card-title">' + ic('compass') + ' Objetivos identificados</div>' +
     '<div class="theme-chips">' + chips + '</div></div>' +
     cenario +
-    '<div class="estrategia-card"><div class="estrategia-card-title">✅ Plano recomendado</div>' +
+    '<div class="estrategia-card"><div class="estrategia-card-title">' + ic('check') + ' Plano recomendado</div>' +
     '<ul class="estrategia-list">' + recs.map(x => '<li>' + x + '</li>').join('') + '</ul></div>' +
-    '<div class="estrategia-card"><div class="estrategia-card-title">🐾 Fale com o Triguinho</div>' +
-    '<div class="estrategia-sub">Dúvidas? Use o botão <strong>🐂 Tutorial</strong> ou escreva na <strong>Comunidade</strong> — outros usuários e a Stratum ajudam você a executar o plano.</div></div>';
+    '<div class="estrategia-card"><div class="estrategia-card-title">' + ic('paw') + ' Fale com o Triguinho</div>' +
+    '<div class="estrategia-sub">Dúvidas? Use o botão <strong>Tutorial</strong> ou escreva na <strong>Comunidade</strong> — outros usuários e a Stratum ajudam você a executar o plano.</div></div>';
 
   document.getElementById('estrategiaResultado').innerHTML = html;
 

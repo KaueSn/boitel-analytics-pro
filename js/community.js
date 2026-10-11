@@ -4,15 +4,21 @@
 
 // Abre a seção escolhida na barra lateral
 function openSection(nome) {
-  const ordem = { simulador: 0, perfil: 1, comunidade: 2 };
-  const btns = document.querySelectorAll('.side-item');
-  btns.forEach(b => b.classList.remove('active'));
-  if (btns[ordem[nome]]) btns[ordem[nome]].classList.add('active');
+  document.querySelectorAll('.side-item[data-section]').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-section') === nome);
+  });
 
   const abrirPerfil = nome === 'perfil';
   const abrirComunidade = nome === 'comunidade';
+  const abrirMateriais = nome === 'materiais';
+
   document.getElementById('profilePanel').classList.toggle('active', abrirPerfil);
   document.getElementById('communityPanel').classList.toggle('active', abrirComunidade);
+  if (abrirMateriais && typeof openMateriais === 'function') {
+    openMateriais();
+    return;
+  }
+  if (typeof closeMateriais === 'function') closeMateriais();
 
   // Fundo escurecido + esconde o avatar-guia enquanto um painel estiver aberto
   const algumAberto = abrirPerfil || abrirComunidade;
@@ -27,10 +33,13 @@ function openSection(nome) {
 function closeSection() {
   document.getElementById('profilePanel').classList.remove('active');
   document.getElementById('communityPanel').classList.remove('active');
+  if (typeof closeMateriais === 'function') closeMateriais();
   const backdrop = document.getElementById('panelBackdrop');
   if (backdrop) backdrop.classList.remove('active');
   document.body.classList.remove('panel-open');
-  document.querySelectorAll('.side-item').forEach((b, i) => b.classList.toggle('active', i === 0));
+  document.querySelectorAll('.side-item[data-section]').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-section') === 'simulador');
+  });
 }
 
 // Atualiza nome/avatar da barra lateral conforme o usuário logado

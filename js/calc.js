@@ -247,7 +247,7 @@ function calcular() {
     const tr = document.createElement('tr');
     const isWinner = index === 0;
     tr.innerHTML = `
-      <td>${index === 0 ? '🏆 1º' : (index + 1) + 'º'}</td>
+      <td>${index === 0 ? '<span class="rank-1">' + ic('trophy') + ' 1º</span>' : (index + 1) + 'º'}</td>
       <td><span class="tag-state">${item.sigla}</span> ${item.nome}</td>
       <td>${formatMoney(item.precoVenda)}</td>
       <td>${formatMoney(item.boiMagro)}</td>
