@@ -1479,7 +1479,7 @@
       top: 0;
       left: 0;
       bottom: 0;
-      width: 76px;
+      width: 84px;
       background: rgba(10, 15, 25, 0.96);
       border-right: 1px solid var(--border-color);
       display: flex;
@@ -1514,7 +1514,7 @@
     .sidebar-name {
       font-size: 0.68rem;
       color: var(--text-secondary);
-      max-width: 68px;
+      max-width: 76px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1548,7 +1548,7 @@
     .side-item:hover { background: rgba(20, 184, 166, 0.12); color: var(--primary-light); }
     .side-item.active { background: rgba(20, 184, 166, 0.18); color: var(--primary-light); }
 
-    #mainApp.active { padding-left: 76px; }
+    #mainApp.active { padding-left: 84px; }
 
     /* ============================================
        PAINÉIS LATERAIS (drawer)
@@ -1556,10 +1556,10 @@
     .side-panel {
       position: fixed;
       top: 0;
-      left: 76px;
+      left: 84px;
       bottom: 0;
       width: 430px;
-      max-width: calc(100vw - 76px);
+      max-width: calc(100vw - 84px);
       background: var(--bg-secondary);
       border-right: 1px solid var(--border-color);
       transform: translateX(-108%);
@@ -2091,7 +2091,21 @@
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: 14px;
+      flex-wrap: wrap;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
     }
+
+    /* Impede que conteúdo largo (tabela, abas, gráficos) estique as colunas
+       e provoque rolagem horizontal na página inteira */
+    .grid > *,
+    .chart-row > *,
+    .results-hero > *,
+    .card,
+    .tab-content { min-width: 0; }
+
+    .card table { min-width: 620px; }
 
     .tab-btn.active {
       background: var(--primary-gradient);
