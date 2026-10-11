@@ -415,10 +415,11 @@ function renderUsersTable(users) {
         <td>${u.email}${isSelf ? ' <span class="pill user">você</span>' : ''}</td>
         <td><span class="pill ${u.role}">${u.role}</span></td>
         <td><span class="pill ${u.status}">${u.status}</span></td>
-        <td><span class="pill ${u.subscription}">${u.subscription}</span></td>
+        <td><span class="pill ${u.subscription}">${u.subscription}</span> <span class="pill ${u.plan === 'pro' ? 'premium' : 'trial'}">${u.plan === 'pro' ? 'Pro' : 'Acess'}</span></td>
         <td>${fmtDate(u.subscriptionEnd)}</td>
         <td>
           <div class="admin-actions">
+            <button class="btn-mini" onclick="changeUserPlan('${u.id}','${u.plan === 'pro' ? 'acess' : 'pro'}')">${u.plan === 'pro' ? '→ Acess' : '→ Pro'}</button>
             <button class="btn-mini" ${isSelf ? 'disabled' : ''} onclick="changeUserRole('${u.id}','${nextRole}')">${u.role === 'admin' ? 'Rebaixar' : 'Promover'}</button>
             <button class="btn-mini ${u.status === 'active' ? 'danger' : ''}" ${isSelf ? 'disabled' : ''} onclick="changeUserStatus('${u.id}','${nextStatus}')">${u.status === 'active' ? 'Desativar' : 'Ativar'}</button>
             <button class="btn-mini" onclick="changeUserSubscription('${u.id}','${nextSub}')">${u.subscription === 'premium' ? '→ Trial' : '→ Premium'}</button>
@@ -433,6 +434,17 @@ function renderUsersTable(users) {
 async function changeUserRole(uid, role) {
   try { await updateUserRole(uid, role); showToast('Permissão atualizada.'); loadUsersTable(); }
   catch (e) { showToast('Erro ao atualizar permissão.', 'error'); }
+}
+
+// Define o plano do usuário: 'acess' (básico) ou 'pro' (recursos avançados)
+async function changeUserPlan(uid, plan) {
+  try {
+    await db.collection('users').doc(uid).update({ plan, updatedAt: new Date().toISOString() });
+    showToast('Plano atualizado: ' + (plan === 'pro' ? 'Pro' : 'Acess'));
+    loadUsersTable();
+  } catch (e) {
+    showToast('Erro ao atualizar o plano.', 'error');
+  }
 }
 
 async function changeUserStatus(uid, status) {

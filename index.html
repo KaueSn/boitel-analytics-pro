@@ -384,6 +384,8 @@
           <button class="tab-btn" onclick="switchTab('fluxoTab', this)"><svg class="ic"><use href="#i-money"></use></svg> DRE &amp; Fluxo de Caixa</button>
           <button class="tab-btn" onclick="switchTab('graficosTab', this)"><svg class="ic"><use href="#i-chart"></use></svg> Análise Gráfica</button>
           <button class="tab-btn" onclick="switchTab('contratosTab', this)"><svg class="ic"><use href="#i-clipboard"></use></svg> Contratos &amp; Alertas</button>
+          <button class="tab-btn" onclick="switchTab('cenariosTab', this)"><svg class="ic"><use href="#i-book"></use></svg> Cenários <span class="pro-tag">PRO</span></button>
+          <button class="tab-btn" onclick="switchTab('sensibilidadeTab', this)"><svg class="ic"><use href="#i-spark"></use></svg> Sensibilidade &amp; Hedge <span class="pro-tag">PRO</span></button>
         </div>
 
         <!-- RANKING TAB -->
@@ -532,6 +534,16 @@
               <p>Para operações maiores, considere hedge na B3 usando contratos futuros de boi gordo (BGI) para proteção contra quedas abruptas no preço da arroba.</p>
             </div>
           </div>
+        </div>
+
+        <!-- CENÁRIOS SALVOS (PRO) -->
+        <div id="cenariosTab" class="tab-content">
+          <div id="proCenariosWrap"></div>
+        </div>
+
+        <!-- SENSIBILIDADE E HEDGE (PRO) -->
+        <div id="sensibilidadeTab" class="tab-content">
+          <div id="proSensWrap"></div>
         </div>
       </div>
     </div>
@@ -697,6 +709,7 @@
 <script src="js/estrategia.js"></script>
 <script src="js/materiais-data.js"></script>
 <script src="js/materiais.js"></script>
+<script src="js/pro.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

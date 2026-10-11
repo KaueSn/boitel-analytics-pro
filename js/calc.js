@@ -25,6 +25,10 @@ function switchTab(tabId, btn) {
   if (tabId === 'graficosTab') {
     setTimeout(atualizarGraficos, 100);
   }
+
+  // Painéis Pro (cenários e sensibilidade) — só se o módulo estiver carregado
+  if (tabId === 'cenariosTab' && typeof renderCenarios === 'function') setTimeout(renderCenarios, 60);
+  if (tabId === 'sensibilidadeTab' && typeof renderPro === 'function') setTimeout(renderPro, 60);
 }
 
 // ============================================
@@ -298,6 +302,9 @@ function calcular() {
   if (document.getElementById('graficosTab').classList.contains('active')) {
     atualizarGraficos();
   }
+
+  // Mantém os painéis Pro sincronizados com a simulação atual
+  if (typeof aoRecalcularPro === 'function') aoRecalcularPro();
 }
 
 // ============================================
