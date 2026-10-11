@@ -137,6 +137,7 @@ function renderMateriais() {
           '<div class="mat-card-meta">' +
             '<span>' + ic('level') + c.aulas.length + ' aulas</span>' +
             '<span>' + ic('video') + 'Documentário</span>' +
+            '<span>' + ic('cert') + 'Quiz' + (matLerQuizScores()[c.id] ? ' · ' + matLerQuizScores()[c.id].acertos + '/' + matLerQuizScores()[c.id].total : '') + '</span>' +
           '</div>' +
           '<button class="mat-cta">' + ic('play') + (feitas ? 'Continuar estudando' : 'Abrir curso') + '</button>' +
         '</div>' +
@@ -198,9 +199,14 @@ function abrirCurso(id, aba) {
     '<div class="mat-tabs">' +
       '<button class="mat-tab' + (matAbaAtual === 'aulas' ? ' active' : '') + '" onclick="matTrocarAba(\'aulas\')">' + ic('book') + ' Aulas escritas</button>' +
       '<button class="mat-tab' + (matAbaAtual === 'documentario' ? ' active' : '') + '" onclick="matTrocarAba(\'documentario\')">' + ic('video') + ' Documentário</button>' +
+      '<button class="mat-tab' + (matAbaAtual === 'quiz' ? ' active' : '') + '" onclick="matTrocarAba(\'quiz\')">' + ic('cert') + ' Quiz</button>' +
     '</div>' +
 
-    '<div id="matConteudo">' + (matAbaAtual === 'documentario' ? matRenderDocumentario(curso) : matRenderAulas(curso)) + '</div>';
+    '<div id="matConteudo">' +
+      (matAbaAtual === 'documentario' ? matRenderDocumentario(curso)
+        : matAbaAtual === 'quiz' ? '<div id="matQuizWrap">' + matQuizHTML(curso) + '</div>'
+        : matRenderAulas(curso)) +
+    '</div>';
 
   leitor.innerHTML = html;
   const shell = document.querySelector('#materiaisPanel .mat-shell');
@@ -313,6 +319,117 @@ function matRenderDocumentario(curso) {
 function matToggleCapitulo(i) {
   const el = document.getElementById('matCap' + i);
   if (el) el.classList.toggle('open');
+}
+
+// ---------- QUIZ ----------
+let matQuizRespostas = {};
+let matQuizCursoId = null;
+const MAT_QUIZ_KEY = 'boitel_materiais_quiz_v1';
+
+function matLerQuizScores() {
+  try { return JSON.parse(localStorage.getItem(MAT_QUIZ_KEY) || '{}') || {}; } catch (e) { return {}; }
+}
+
+function matSalvarQuizScores(obj) {
+  try { localStorage.setItem(MAT_QUIZ_KEY, JSON.stringify(obj)); } catch (e) {}
+}
+
+function matSalvarQuizScore(curso) {
+  if (!curso || !curso.quiz) return;
+  const total = curso.quiz.length;
+  const acertos = curso.quiz.reduce((s, q, i) => s + (matQuizRespostas[i] === q.correta ? 1 : 0), 0);
+  const scores = matLerQuizScores();
+  const atual = scores[curso.id];
+  if (!atual || acertos > atual.acertos) {
+    scores[curso.id] = { acertos: acertos, total: total };
+    matSalvarQuizScores(scores);
+  }
+}
+
+function matQuizHTML(curso) {
+  const perguntas = (curso && curso.quiz) || [];
+  if (!perguntas.length) return '<div class="mat-empty">Quiz indisponível para este curso.</div>';
+
+  if (matQuizCursoId !== curso.id) {
+    matQuizRespostas = {};
+    matQuizCursoId = curso.id;
+  }
+
+  const respondidas = Object.keys(matQuizRespostas).length;
+  const total = perguntas.length;
+  const acertos = perguntas.reduce((s, q, i) => s + (matQuizRespostas[i] === q.correta ? 1 : 0), 0);
+  const melhor = matLerQuizScores()[curso.id];
+  const fim = respondidas === total;
+
+  let html = '<div class="mat-quiz-top">' +
+      '<div class="mat-quiz-ico">' + ic('cert') + '</div>' +
+      '<div class="mat-quiz-top-txt">' +
+        '<h3>Teste seu conhecimento</h3>' +
+        '<p>' + total + ' perguntas sobre este curso. Responda e veja a explicação de cada resposta.' +
+        (melhor ? ' <strong>Melhor resultado: ' + melhor.acertos + '/' + melhor.total + '.</strong>' : '') +
+        '</p>' +
+      '</div>' +
+      '<div class="mat-quiz-placar">' + respondidas + '/' + total + '</div>' +
+    '</div>';
+
+  if (fim) {
+    const pct = Math.round((acertos / total) * 100);
+    const msg = pct === 100 ? 'Excelente! Você domina o assunto.'
+      : pct >= 70 ? 'Muito bom! Vale revisar os pontos que escaparam.'
+      : pct >= 50 ? 'Bom começo. Releia as aulas e tente de novo.'
+      : 'Vale voltar às aulas com calma antes de investir de verdade.';
+    html += '<div class="mat-quiz-res ' + (pct >= 70 ? 'bom' : pct >= 50 ? 'medio' : 'baixo') + '">' +
+        '<span class="mat-quiz-res-num">' + acertos + '/' + total + '</span>' +
+        '<span class="mat-quiz-res-txt"><strong>' + pct + '% de acerto.</strong> ' + msg + '</span>' +
+        '<button class="mat-quiz-refazer" onclick="matRefazerQuiz()">' + ic('arrow') + ' Refazer</button>' +
+      '</div>';
+  }
+
+  const questoes = perguntas.map((q, i) => {
+    const resp = matQuizRespostas[i];
+    const respondida = resp !== undefined;
+    const opts = q.opcoes.map((o, oi) => {
+      let cls = 'mat-opt';
+      if (respondida) {
+        if (oi === q.correta) cls += ' certa';
+        else if (oi === resp) cls += ' errada';
+        else cls += ' neutra';
+      }
+      return '<button class="' + cls + '"' + (respondida ? ' disabled' : '') +
+          ' onclick="matResponder(' + i + ',' + oi + ')">' +
+          '<span class="mat-opt-letra">' + String.fromCharCode(65 + oi) + '</span>' +
+          '<span class="mat-opt-txt">' + escapeHtml(o) + '</span>' +
+          (respondida && oi === q.correta ? '<span class="mat-opt-ico">' + ic('check') + '</span>' : '') +
+        '</button>';
+    }).join('');
+
+    return '<div class="mat-q">' +
+        '<div class="mat-q-top">' +
+          '<span class="mat-q-num">' + (i + 1) + '</span>' +
+          '<p class="mat-q-text">' + escapeHtml(q.p) + '</p>' +
+        '</div>' +
+        '<div class="mat-q-opts">' + opts + '</div>' +
+        (respondida ? '<div class="mat-q-exp ' + (resp === q.correta ? 'ok' : 'nao') + '">' +
+            '<strong>' + (resp === q.correta ? 'Resposta correta!' : 'Resposta incorreta.') + '</strong> ' +
+            escapeHtml(q.explicacao) + '</div>' : '') +
+      '</div>';
+  }).join('');
+
+  return html + '<div class="mat-quiz-list">' + questoes + '</div>';
+}
+
+function matResponder(i, oi) {
+  if (matQuizRespostas[i] !== undefined) return;
+  matQuizRespostas[i] = oi;
+  matSalvarQuizScore(matCursoAtual);
+  const wrap = document.getElementById('matQuizWrap');
+  if (wrap) wrap.innerHTML = matQuizHTML(matCursoAtual);
+}
+
+function matRefazerQuiz() {
+  matQuizRespostas = {};
+  const wrap = document.getElementById('matQuizWrap');
+  if (wrap) wrap.innerHTML = matQuizHTML(matCursoAtual);
 }
 
 // Fecha com ESC
