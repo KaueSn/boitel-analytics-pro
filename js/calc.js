@@ -29,6 +29,7 @@ function switchTab(tabId, btn) {
   // Painéis Pro (cenários e sensibilidade) — só se o módulo estiver carregado
   if (tabId === 'cenariosTab' && typeof renderCenarios === 'function') setTimeout(renderCenarios, 60);
   if (tabId === 'sensibilidadeTab' && typeof renderPro === 'function') setTimeout(renderPro, 60);
+  if (tabId === 'planejamentoTab' && typeof renderPlanejamento === 'function') setTimeout(renderPlanejamento, 60);
 }
 
 // ============================================

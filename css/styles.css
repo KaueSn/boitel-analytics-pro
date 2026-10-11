@@ -3194,6 +3194,14 @@
     .pro-kpi span { display: block; font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
     .pro-kpi b { display: block; font-size: 1.15rem; margin-top: 5px; font-family: 'JetBrains Mono', monospace; }
 
+    .pro-inline {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color);
+      color: var(--text-secondary); font-size: 0.86rem;
+    }
+    .pro-inline .ic { width: 18px; height: 18px; color: var(--primary-light); }
+    .pro-inline .fld { width: 150px; flex: 0 0 auto; }
+
     @media (max-width: 720px) {
       .pro-top { padding: 15px 16px; }
       .pro-card { padding: 15px 14px; }
