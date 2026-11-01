@@ -27,12 +27,7 @@ Se o CLI do Firebase travar ao iniciar (aconteceu nesta máquina: até `firebase
 
 **Adaptador**: `src/ui/armazenamento-conta.js` (mesma interface do local; testes em `tests/armazenamento-conta.test.js`). Com plano Pro, a página tenta ler a conta: se as regras ainda não foram publicadas (permissão negada), continua salvando no navegador sem erro. Na aba Simulações aparece "Copiar as simulações deste navegador para a conta", que não apaga as cópias locais.
 
-**Situação em 29/10/2026**: bloco inserido em `stratum-agro/firestore.rules` (45 linhas acrescentadas, nada removido). Testes em sequência: 45/45 aprovados (39 atuais + 6 de projetos). **Ainda não publicado.**
-
-**Para valer em produção**:
-1. Publicar `stratum-agro/firestore.rules` no Console do Firebase (projeto `boitel-analytics`). Você faz isso; o arquivo também leva as mudanças da sessão "concluir pendências locais", que ainda não têm commit.
-2. Atualizar em `stratum-agro/CLAUDE.md` a linha "ainda não publicado" com a data.
-3. Fazer push do simulador (`plataforma/`) para a página passar a salvar na conta.
+**Situação em 01/11/2026**: regras **publicadas** no Console (projeto `boitel-analytics`), conferidas por hash com o arquivo testado (45/45 no emulador). Commit `b74cb32` em `stratum-agro`. A plataforma está no ar desde o commit `c5dd229` do simulador: com plano Pro, as simulações passam a ser salvas na conta.
 
 ## O que os números dizem sobre o objetivo (dados de 27–28/10/2026)
 - **Com as premissas do dossiê** (boi magro a R$ 3.328, arroba a R$ 348): 39 cabeças por lote, lucro líquido de R$ 6,7 mil por ciclo, 9,7% a.a. contra 10,5% do CDI líquido em prazo curto. Em 10 anos, cerca de R$ 819 mil, contra R$ 801 mil no CDI. É praticamente empate, com muito mais risco.
