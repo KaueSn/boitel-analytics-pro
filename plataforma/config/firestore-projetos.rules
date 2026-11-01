@@ -1,0 +1,44 @@
+    // ---------------------------------------------------------------------
+    // Plataforma Patrimonial (boitel-analytics-pro/plataforma)
+    // Projetos de estudo de cada cliente: users/{uid}/projetos/{pid}
+    //  - Só o dono lê, cria, altera e exclui. Admin NÃO lê (dado financeiro
+    //    privado do cliente; LGPD). Consultoria = cliente exporta e envia.
+    //  - Criar/alterar exige plano Pro ativo (ou admin). Ler e excluir não:
+    //    quem sai do Pro continua com acesso aos próprios dados.
+    //  - Máximo de 50 projetos: o id precisa ser p00…p49.
+    //  - Esquema fechado e listas limitadas para conter o tamanho do documento.
+    // Inserir dentro de `match /users/{uid} { ... }`, depois das regras do perfil.
+    // ---------------------------------------------------------------------
+    match /projetos/{pid} {
+      function dono() { return signedIn() && request.auth.uid == uid; }
+      function perfil() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
+      function proAtivo() {
+        return exists(/databases/$(database)/documents/users/$(request.auth.uid))
+          && (perfil().get('role', 'user') == 'admin'
+              || (perfil().get('plan', 'acess') == 'pro'
+                  && perfil().get('status', 'active') == 'active'
+                  && perfil().get('subscription', 'trial') != 'expired'));
+      }
+      function txt(v, max) { return v is string && v.size() <= max; }
+      function blocoOk(e, k) { return !(k in e) || e[k] is map; }
+      function projetoValido(d) {
+        return d.keys().hasOnly(['formato', 'nome', 'estado', 'resumo', 'versoes', 'criadoEm', 'atualizadoEm'])
+          && d.keys().hasAll(['formato', 'nome', 'estado', 'criadoEm', 'atualizadoEm'])
+          && d.formato == 1
+          && txt(d.nome, 120) && d.nome.size() > 0
+          && txt(d.criadoEm, 40) && txt(d.atualizadoEm, 40)
+          && d.estado is map
+          && d.estado.keys().hasOnly(['versao', 'nome', 'filtros', 'lote', 'modeloA', 'modeloC', 'patrimonio', 'hedge', 'choques'])
+          && blocoOk(d.estado, 'lote') && blocoOk(d.estado, 'modeloA') && blocoOk(d.estado, 'modeloC')
+          && blocoOk(d.estado, 'patrimonio') && blocoOk(d.estado, 'hedge') && blocoOk(d.estado, 'choques')
+          && blocoOk(d.estado, 'filtros')
+          && (!('lote' in d.estado) || d.estado.lote.size() <= 60)
+          && (!('patrimonio' in d.estado) || d.estado.patrimonio.size() <= 60)
+          && (!('resumo' in d) || d.resumo == null || (d.resumo is map && d.resumo.size() <= 20))
+          && (!('versoes' in d) || (d.versoes is list && d.versoes.size() <= 10));
+      }
+      allow read, delete: if dono();
+      allow create: if dono() && pid.matches('^p[0-4][0-9]$') && proAtivo() && projetoValido(request.resource.data);
+      allow update: if dono() && proAtivo() && projetoValido(request.resource.data)
+        && request.resource.data.criadoEm == resource.data.criadoEm;
+    }

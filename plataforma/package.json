@@ -1,0 +1,11 @@
+{
+  "name": "plataforma-patrimonial-agro",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Plataforma de análise financeira e expansão patrimonial agropecuária (motor de cálculo + interface estática).",
+  "scripts": {
+    "test": "node --test \"tests/**/*.test.js\"",
+    "serve": "node scripts/servidor.mjs 5180"
+  }
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plataforma Patrimonial | Stratum Agro</title>
+  <meta name="description" content="Estudo de viabilidade financeira e expansão patrimonial na pecuária de corte: boitel, recria, hedge B3, CDI e caminho até a fazenda própria.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+  <script>
+    (function () { try { document.documentElement.setAttribute('data-theme', localStorage.getItem('boitel_theme') || 'dark'); } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); } })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/ui/estilos.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topo">
+    <a class="marca" href="../" title="Voltar ao simulador"><img src="../assets/logo.svg" alt="" width="28" height="28"><span>Stratum Agro</span><span class="pro-tag">PRO</span></a>
+    <div class="titulo-app">Plataforma Patrimonial <span id="nome-aberto" class="nome-aberto"></span></div>
+    <div class="topo-acoes">
+      <span id="usuario" class="usuario"></span>
+      <button class="btn-mini" id="btn-nova" type="button">Nova simulação</button>
+      <button class="btn-mini" id="btn-tema" type="button" aria-label="Alternar tema claro/escuro">◐</button>
+    </div>
+  </header>
+
+  <div id="bloqueio"><div class="cartao bloqueio"><p>Verificando acesso…</p></div></div>
+
+  <main id="app" hidden>
+    <section class="filtros" aria-label="Filtros">
+      <div class="filtro"><label for="f-regiao">Região de referência</label><select id="f-regiao"></select></div>
+      <div class="filtro"><label for="f-cenario">Cenário</label><select id="f-cenario"><option value="pessimista">Pessimista</option><option value="base">Base</option><option value="otimista">Otimista</option></select></div>
+      <div class="filtro"><label for="f-modelo">Modelo em foco</label><select id="f-modelo"><option value="A">A — Confinamento próprio</option><option value="B">B — Boitel</option><option value="C">C — Recria + boitel</option></select></div>
+      <div class="filtro"><label for="f-horizonte">Horizonte (anos)</label><input id="f-horizonte" type="number" min="1" max="40" step="1"></div>
+      <div class="filtro"><label for="f-lote">Tamanho do lote (0 = pelo capital)</label><input id="f-lote" type="number" min="0" max="100000" step="1"></div>
+    </section>
+    <nav id="abas" class="abas" role="tablist" aria-label="Seções da plataforma"></nav>
+    <div id="erros" role="alert"></div>
+    <section id="conteudo" role="tabpanel" tabindex="-1">
+      <div id="aba-forms"></div>
+      <div id="aba-res"></div>
+    </section>
+    <footer class="rodape">Ferramenta educacional e analítica. Não executa ordens, não é recomendação de investimento e não garante resultados. Confirme preços, contratos e tributação com fornecedores, corretora e contador.</footer>
+  </main>
+  <div id="relatorio" class="relatorio" aria-hidden="true"></div>
+  <script type="module" src="src/ui/app.js"></script>
+</body>
+</html>
