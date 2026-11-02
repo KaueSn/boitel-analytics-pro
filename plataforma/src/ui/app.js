@@ -5,13 +5,17 @@ import { marcarErros } from './formulario.js';
 import { verificarAcesso, LINK_PLANOS, LINK_SIMULADOR } from './acesso.js';
 import { definirUsuario, salvarRascunho, lerRascunho, usarArmazenamento } from './armazenamento.js';
 import { criarArmazenamentoConta } from './armazenamento-conta.js';
+import { guiaHTML } from './ajuda.js';
+import { iniciarAssistente } from './assistente.js';
+import { abrirGuiado } from './guiado.js';
 import { REGIOES } from '../engine/mercado.js';
 import * as A from './abas-analise.js';
 import * as P from './abas-planejamento.js';
 import * as G from './abas-gestao.js';
+import * as RG from './abas-regiao.js';
 
 const ABAS = [
-  ['painel', 'Painel', A.painel], ['premissas', 'Premissas', G.premissas], ['lote', 'Lote & zootecnia', A.lote],
+  ['painel', 'Painel', A.painel], ['premissas', 'Premissas', G.premissas], ['regiao', 'Região & logística', RG.regiao], ['lote', 'Lote & zootecnia', A.lote],
   ['modelos', 'Modelos A/B/C', A.modelos], ['patrimonio', 'Patrimônio', P.patrimonio], ['caminhos', 'Caminhos & objetivo', P.caminhos],
   ['cenarios', 'Cenários & sensibilidade', A.cenarios], ['hedge', 'Hedge B3', P.hedge], ['cdi', 'Renda fixa (CDI)', P.cdi],
   ['calendario', 'Calendário & alertas', P.calendario], ['simulacoes', 'Simulações', G.simulacoes], ['fontes', 'Fontes & método', G.fontes]
@@ -34,7 +38,14 @@ const ctx = {
   salvarRascunho: () => salvarRascunho(estado),
   idAberto(v) { if (v !== undefined) idAberto = v; return idAberto; },
   abrirEstado(novo, id) { estado = novo; idAberto = id; ctx.recarregarAba(); },
-  calcular: e => recalcular(e)
+  calcular: e => recalcular(e),
+  abrirGuiado: () => abrirGuiado(ctx),
+  irParaAba(id) {
+    if (!ABAS.some(a => a[0] === id)) return;
+    abaAtual = id;
+    montarAba();
+    document.getElementById('conteudo').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 };
 
 function agendar() {
@@ -79,6 +90,7 @@ function montarAba() {
   forms.innerHTML = '';
   forms.onchange = forms.oninput = null;
   if (aba.forms) aba.forms(forms, ctx);
+  forms.insertAdjacentHTML('afterbegin', guiaHTML(abaAtual));
   if (res && !res.ok) marcarErros(forms, res.erros);
   renderResultados();
   $('#conteudo').setAttribute('aria-labelledby', 'tab-' + abaAtual);
@@ -167,6 +179,8 @@ async function iniciar() {
   montarFiltros();
   calcularAgora();
   montarAba();
+  iniciarAssistente(ctx);
+  $('#btn-guiado').onclick = () => abrirGuiado(ctx);
   $('#btn-nova').onclick = () => {
     if (!confirm('Começar uma simulação nova com as premissas do dossiê? A atual continua no histórico se tiver sido salva.')) return;
     ctx.abrirEstado(estadoInicial(), null);

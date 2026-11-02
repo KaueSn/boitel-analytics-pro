@@ -148,6 +148,42 @@ export const FONTES = [
     limitacoes: 'Não confirmei nesta pesquisa se houve mudança legal em 2025–2026. LCA/LCI e CRA para PF eram isentos. Verifique antes de decidir.'
   },
   {
+    id: 'mapa-sif',
+    nome: 'MAPA — Estabelecimentos registrados no SIF (dados abertos)',
+    url: 'https://dados.agricultura.gov.br/dataset/servico-de-inspecao-federal-sif',
+    data: '2026-10-02',
+    valor: 79,
+    unidade: 'frigoríficos de bovinos com SIF ativo em MG (19), SP (19), GO (18) e MS (23); capacidade em cabeças/hora',
+    limitacoes: 'Registro ativo não garante que a planta esteja abatendo nem comprando na sua região. Confirme por telefone.'
+  },
+  {
+    id: 'incra-vtn',
+    nome: 'INCRA — Pauta de Valores da Terra Nua 2026',
+    url: 'https://www.gov.br/incra/pt-br/assuntos/governanca-fundiaria/Pauta_de_Valores_2026.xlsx',
+    data: '2026-01-01',
+    valor: 7978,
+    unidade: 'R$/ha — VTN médio por região rural (ex.: região de Uberlândia R$ 7.978; Ribeirão Preto R$ 28.707)',
+    limitacoes: 'Valor fiscal da terra sem benfeitorias; costuma ficar bem abaixo do preço de mercado. Use como piso.'
+  },
+  {
+    id: 'ibge-municipios',
+    nome: 'Coordenadas dos municípios (kelvins/municipios-brasileiros, dados do IBGE)',
+    url: 'https://github.com/kelvins/municipios-brasileiros',
+    data: '2026-11-01',
+    valor: 1823,
+    unidade: 'municípios de MG, SP, GO e MS (sede municipal)',
+    limitacoes: 'Distâncias calculadas em linha reta × 1,3 (fator de estrada): estimativa, não rota real.'
+  },
+  {
+    id: 'frete-opecuarista',
+    nome: 'O Pecuarista — "Quanto custa transportar boi" e calculadora de lotação',
+    url: 'https://www.opecuarista.com.br/posts/quanto-custa-transportar-boi-e-quanto-perde-em-quebra/',
+    data: '2026-05-02',
+    valor: 9.6,
+    unidade: 'R$/km + R$ 1.720 fixos por viagem (calibrado nas faixas por distância); lotação a ~400 kg/m²',
+    limitacoes: 'Fonte secundária, com "revisão técnica independente pendente" segundo o próprio site. Peça cotação à transportadora.'
+  },
+  {
     id: 'simulador-frete',
     nome: 'Frete por cabeça (ida + volta) — base do simulador Stratum atual (js/data.js)',
     url: '',

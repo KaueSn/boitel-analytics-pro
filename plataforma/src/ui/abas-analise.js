@@ -13,7 +13,8 @@ const HOJE = hojeISO();
 
 // ---------------- Painel executivo ----------------
 export const painel = {
-  resultados(el, { res, estado }) {
+  resultados(el, ctx) {
+    const { res, estado } = ctx;
     const l = res.lote, pr = res.projecao, H = pr.premissas.horizonteAnos;
     const cdi = serieCDI({ capital: l.premissas.capitalInicial, cdiAnual: l.premissas.cdiAnual, anos: H });
     const cdiAnualLiq = Math.pow(1 + l.cdiLiquidoPeriodo, 365 / l.diasCapital) - 1;
@@ -25,6 +26,9 @@ export const painel = {
     ];
     const lotes = pr.lotes.slice(0, 6);
     el.innerHTML = `
+      <div class="cartao convite-guiado"><h3>Primeira vez aqui?</h3>
+        <p>Responda 6 perguntas simples (quanto investir, onde, que animal, quanto tempo, como o boitel cobra e o preço de venda) e veja o resultado do seu projeto. Dá para ajustar tudo depois.</p>
+        <button class="btn" type="button" id="painel-guiado">Começar o preenchimento guiado</button></div>
       <div class="faixa-aviso">Estudo educacional. Valores calculados com premissas editáveis e dados de mercado de ${esc(data(DATA_COLETA))}; não são cotações em tempo real nem garantia de resultado.</div>
       <div class="kpis">
         ${kpi('Capital inicial', moeda(l.premissas.capitalInicial))}
@@ -55,6 +59,7 @@ export const painel = {
         <section class="cartao"><h3>Patrimônio líquido × CDI</h3><div class="graf"><canvas id="g-painel-pl"></canvas></div></section>
         <section class="cartao"><h3>Composição do custo do lote</h3><div class="graf"><canvas id="g-painel-custos"></canvas></div></section>
       </div>`;
+    el.querySelector('#painel-guiado').onclick = () => ctx.abrirGuiado();
     const p = paleta();
     grafico('g-painel-pl', {
       type: 'line', moedaEixo: 'y',

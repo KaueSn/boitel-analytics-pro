@@ -21,6 +21,8 @@ Usa o executor nativo do Node (≥ 20), sem dependências.
 - `docs/FORMULAS.md`: fórmulas, exemplo manual e lista de testes. `docs/INTEGRACAO.md`: integração com o site, limitações e análise do objetivo.
 
 ## Uso
+0. **Jeito fácil**: clique em **Preenchimento guiado** (topo da página) e responda 6 perguntas. Dúvidas: clique no **Triguinho** (canto da tela), o assistente que responde sobre o uso da plataforma com os números da sua simulação. Cada aba tem um quadro "Como usar esta aba".
+1. **Região & logística**: cidade de compra e do boitel → distância e frete estimados, frigoríficos com SIF mais próximos (MAPA), VTN da terra (INCRA) e buscas de boitéis, leilões e fazendas.
 1. **Premissas**: comece pelo dossiê ou aplique a referência de mercado da região. Selos mostram a origem de cada número; os "pendentes" precisam de cotação.
 2. **Painel** e **Lote**: resultado por animal, por arroba e por lote; DRE; equilíbrio.
 3. **Modelos**, **Cenários**, **Hedge**, **CDI**: comparações nas mesmas condições.

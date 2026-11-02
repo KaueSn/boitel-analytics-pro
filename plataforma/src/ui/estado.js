@@ -8,6 +8,7 @@ import { calcularLote } from '../engine/lote.js';
 import { conferirPremissas } from '../engine/estrategias.js';
 import { validar } from '../engine/validacao.js';
 import { REGIOES } from '../engine/mercado.js';
+import { LOGISTICA_PADRAO, normalizarLogistica } from './abas-regiao.js';
 
 export const VERSAO_FORMATO = 1;
 
@@ -17,7 +18,7 @@ export function estadoInicial() {
   return {
     versao: VERSAO_FORMATO,
     nome: 'Plano R$ 250 mil → fazenda',
-    filtros: { regiao: 'MG', cenario: 'base', modelo: 'B' },
+    filtros: { regiao: 'MG', cenario: 'base', modelo: 'B', logistica: { ...LOGISTICA_PADRAO } },
     lote: { ...PREMISSAS_PADRAO },
     modeloA: { ...MODELO_A_PADRAO },
     modeloC: { ...MODELO_C_PADRAO },
@@ -42,7 +43,8 @@ export function normalizarEstado(bruto) {
   out.filtros = {
     regiao: REGIOES[f.regiao] ? f.regiao : 'MG',
     cenario: ['pessimista', 'base', 'otimista'].includes(f.cenario) ? f.cenario : 'base',
-    modelo: ['A', 'B', 'C'].includes(f.modelo) ? f.modelo : 'B'
+    modelo: ['A', 'B', 'C'].includes(f.modelo) ? f.modelo : 'B',
+    logistica: normalizarLogistica(f.logistica)
   };
   if (bruto.choques && typeof bruto.choques === 'object') {
     for (const id of ['pessimista', 'otimista']) {
