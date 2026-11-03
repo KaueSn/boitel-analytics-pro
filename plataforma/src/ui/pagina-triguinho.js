@@ -1,23 +1,33 @@
-// Página do Triguinho: conversa por texto e voz (Web Speech API do navegador).
+// Página do Triguinho: conversa por texto e voz (Web Speech API do navegador), simulações
+// pedidas em frases e mini navegador com as páginas da plataforma.
 // Respostas de assistente-base.js. A conversa fica só na memória da página.
 import { verificarAcesso, LINK_PLANOS, LINK_SIMULADOR } from './acesso.js';
-import { definirUsuario, lerRascunho } from './armazenamento.js';
+import { definirUsuario, lerRascunho, salvarRascunho } from './armazenamento.js';
 import { estadoInicial, recalcular } from './estado.js';
 import { esc } from './formato.js';
 import { responder, ROTULOS } from './assistente-base.js';
 import { SVG_TRIGUINHO, NOMES_ABA } from './assistente.js';
-import { textoParaFala, ehComandoParar } from './voz.js';
+import { textoParaFala, resumirParaFala, dividirEmPartes, ordenarVozes, vozBasica, ehComandoParar } from './voz.js';
+import { interpretarPedido, aplicarMudancas, descreverSimulacao, descreverRegioes, PAGINAS } from './triguinho-comandos.js';
 
 const $ = s => document.querySelector(s);
-const SUGESTOES = ['melhorOpcao', 'comecar', 'lucro', 'melhorRegiao', 'outrasAtividades', 'voz'];
+const SUGESTOES = ['melhorOpcao', 'comandos', 'lucro', 'melhorRegiao', 'risco', 'ganharMais'];
 const MAX_SILENCIOS = 2; // na conversa por voz, encerra depois de tanto silêncio seguido
+const SILENCIO_FIM_MS = 1600; // pausa que encerra a frase: não corta quem fala devagar
+const CHAVE_VOZ = 'stratum_plataforma_triguinho_voz_v1';
 
+let est = null;
 let res = null;
+let ultimoId = null;
+let anterior = null; // estado antes da última simulação, para desfazer
+let paginaAtual = null;
+let historicoNav = [];
 let ouvinte = null;
 let emConversa = false;
 let falando = false;
 let silencios = 0;
 let vozPt = null;
+let falaAtual = 0; // cada fala nova invalida os avisos atrasados da anterior
 
 function estado(texto, classe = '') {
   $('#tp-estado').textContent = texto;
@@ -33,6 +43,17 @@ function bolha(texto, quem) {
   return d;
 }
 
+function botaoNaBolha(d, rotulo, aoClicar) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'btn-mini tri-ir';
+  b.textContent = rotulo;
+  b.onclick = aoClicar;
+  d.appendChild(document.createElement('br'));
+  d.appendChild(b);
+  return b;
+}
+
 function sugestoes(ids) {
   $('#tp-chips').replaceChildren(...ids.filter(id => ROTULOS[id]).slice(0, 6).map(id => {
     const b = document.createElement('button');
@@ -44,28 +65,153 @@ function sugestoes(ids) {
   }));
 }
 
+/** A plataforma aberta no mini navegador pode ter mudado a simulação: sempre parte do rascunho atual. */
+function atualizarDoRascunho() {
+  est = lerRascunho() || est;
+  res = recalcular(est);
+}
+
 function perguntar(texto) {
   const q = String(texto || '').trim().slice(0, 300);
   if (!q) return;
   bolha(q, 'eu');
-  const r = responder(q, res?.ok ? res : null);
+  atualizarDoRascunho();
+  const pedido = interpretarPedido(q);
+  if (pedido) { executarPedido(pedido); return; }
+  const r = responder(q, res?.ok ? res : null, undefined, ultimoId);
+  if (r.id) ultimoId = r.id;
   const d = bolha(r.texto, 'tri');
-  if (r.link || r.aba === 'guiado' || NOMES_ABA[r.aba]) {
+  if (r.link) {
     const a = document.createElement('a');
     a.className = 'btn-mini tri-ir';
-    a.href = r.link ? r.link.href : 'index.html#' + r.aba;
-    a.textContent = r.link ? r.link.rotulo : r.aba === 'guiado' ? 'Abrir o preenchimento guiado →' : 'Abrir ' + NOMES_ABA[r.aba] + ' →';
+    a.href = r.link.href;
+    a.textContent = r.link.rotulo;
     d.appendChild(document.createElement('br'));
     d.appendChild(a);
+  } else if (PAGINAS[r.aba]) {
+    botaoNaBolha(d, 'Ver ' + PAGINAS[r.aba].nome + ' aqui →', () => abrirPagina(r.aba));
   }
   sugestoes(r.seguintes?.length ? r.seguintes : SUGESTOES);
   falar(r.texto);
 }
 
+// --- Pedidos: simular, abrir página, regiões, desfazer ---
+function executarPedido(c) {
+  if (c.tipo === 'desfazer') return desfazer();
+  if (c.tipo === 'abrir') {
+    abrirPagina(c.pagina);
+    const t = `Abri ${PAGINAS[c.pagina].nome} aqui ao lado.`;
+    bolha(t, 'tri');
+    return falar(t);
+  }
+  if (c.tipo === 'regiao') {
+    const t = descreverRegioes(c.uf, res?.ok ? res : null);
+    botaoNaBolha(bolha(t, 'tri'), 'Ver o ranking completo aqui →', () => abrirPagina('estudo'));
+    return falar(t);
+  }
+  if (!c.mudancas.length) {
+    const t = c.avisos.join(' ') || 'Não entendi os valores. Tente "simule com 500 mil e arroba a 320".';
+    bolha(t, 'tri');
+    return falar(t);
+  }
+  const novo = aplicarMudancas(est, c.mudancas);
+  const depois = recalcular(novo);
+  if (!depois.ok) {
+    const t = 'Não consegui simular com esses valores: ' + (depois.erros[0]?.mensagem || 'confira os números.');
+    bolha(t, 'tri');
+    return falar(t);
+  }
+  const antes = res?.ok ? res : null;
+  anterior = structuredClone(est);
+  est = novo;
+  res = depois;
+  salvarRascunho(est);
+  const t = descreverSimulacao(novo, c.mudancas, c.avisos, antes, depois);
+  const d = bolha(t, 'tri');
+  botaoNaBolha(d, 'Desfazer', e => { e.target.remove(); desfazer(); });
+  abrirPagina(paginaAtual && paginaAtual !== 'guiado' ? paginaAtual : 'painel', true);
+  sugestoes(['risco', 'ganharMais', 'melhorOpcao', 'salvar']);
+  falar(t);
+}
+
+function desfazer() {
+  if (!anterior) {
+    const t = 'Não há simulação para desfazer.';
+    bolha(t, 'tri');
+    return falar(t);
+  }
+  est = anterior;
+  anterior = null;
+  res = recalcular(est);
+  salvarRascunho(est);
+  if (paginaAtual) abrirPagina(paginaAtual, true);
+  const t = 'Pronto, voltei os valores de antes da última simulação.';
+  bolha(t, 'tri');
+  falar(t);
+}
+
+// --- Mini navegador: só páginas da própria plataforma ---
+const enderecoDe = id => `${PAGINAS[id].url}?embutida=1${PAGINAS[id].hash ? '#' + PAGINAS[id].hash : ''}`;
+
+function abrirPagina(id, recarregar = false) {
+  if (!PAGINAS[id]) return;
+  const quadro = $('#tp-nav-quadro');
+  const mudou = paginaAtual !== id;
+  const mesmoArquivo = paginaAtual && PAGINAS[paginaAtual].url === PAGINAS[id].url;
+  if (mudou && paginaAtual) historicoNav.push(paginaAtual);
+  paginaAtual = id;
+  $('#tp-nav').hidden = false;
+  $('#tp-app').classList.add('com-nav');
+  $('#tp-nav-pagina').value = id;
+  $('#tp-nav-voltar').disabled = !historicoNav.length;
+  $('#tp-nav-externo').href = `${PAGINAS[id].url}${PAGINAS[id].hash ? '#' + PAGINAS[id].hash : ''}`;
+  // Mesma plataforma já aberta: troca de aba sem recarregar. Valores mudaram: precisa recarregar.
+  if (!mesmoArquivo) quadro.src = enderecoDe(id);
+  else {
+    if (mudou) quadro.contentWindow.location.hash = PAGINAS[id].hash;
+    if (recarregar) quadro.contentWindow.location.reload();
+  }
+}
+
+function fecharNavegador() {
+  $('#tp-nav').hidden = true;
+  $('#tp-app').classList.remove('com-nav');
+  $('#tp-nav-quadro').src = 'about:blank';
+  paginaAtual = null;
+  historicoNav = [];
+}
+
+function iniciarNavegador() {
+  $('#tp-nav-pagina').replaceChildren(...Object.entries(PAGINAS).map(([id, p]) => Object.assign(document.createElement('option'), { value: id, textContent: p.nome })));
+  $('#tp-nav-pagina').onchange = e => abrirPagina(e.target.value);
+  $('#tp-nav-recarregar').onclick = () => { if (paginaAtual) abrirPagina(paginaAtual, true); };
+  $('#tp-nav-fechar').onclick = fecharNavegador;
+  $('#tp-nav-voltar').onclick = () => {
+    const volta = historicoNav.pop();
+    if (!volta) return;
+    abrirPagina(volta);
+    historicoNav.pop(); // abrirPagina registrou a página de onde saímos
+    $('#tp-nav-voltar').disabled = !historicoNav.length;
+  };
+}
+
 // --- Falar (resposta em voz alta) ---
 function escolherVoz() {
-  const vozes = window.speechSynthesis?.getVoices?.() || [];
-  vozPt = vozes.find(v => v.lang === 'pt-BR') || vozes.find(v => v.lang?.startsWith('pt')) || null;
+  const vozes = ordenarVozes(window.speechSynthesis?.getVoices?.());
+  if (!vozes.length) return;
+  let salva = null;
+  try { salva = localStorage.getItem(CHAVE_VOZ); } catch { /* opcional */ }
+  vozPt = vozes.find(v => v.name === salva) || vozes[0];
+  $('#tp-vozes').replaceChildren(...vozes.map(v => Object.assign(document.createElement('option'), { value: v.name, textContent: v.name.replace(/^Microsoft /, '').replace(/ - Portuguese \(Brazil\)| \(Brazil\)/, '') })));
+  $('#tp-vozes').value = vozPt.name;
+  $('#tp-escolha-voz').hidden = false;
+  atualizarDicaVoz(vozes);
+}
+
+function atualizarDicaVoz(vozes) {
+  const dica = $('#tp-dica-voz');
+  dica.hidden = !vozBasica(vozes[0]);
+  dica.textContent = 'Este navegador só tem vozes básicas, que soam robóticas. Para uma voz mais natural e gratuita, abra esta página no Microsoft Edge ou no Google Chrome.';
 }
 
 function aoTerminarDeFalar() {
@@ -76,25 +222,49 @@ function aoTerminarDeFalar() {
   if (emConversa) ouvir();
 }
 
-function falar(texto) {
-  const lerAtivo = $('#tp-ler').checked && 'speechSynthesis' in window;
+/** Encerra o microfone sem disparar a lógica de fim (usado quando a resposta vai ser falada). */
+function largarMicrofone() {
+  if (!ouvinte) return;
+  const r = ouvinte;
+  ouvinte = null;
+  try { r.abort(); } catch { /* já parado */ }
+}
+
+function falar(texto, forcar = false) {
+  const lerAtivo = (forcar || $('#tp-ler').checked) && 'speechSynthesis' in window;
   if (!lerAtivo) {
     if (emConversa) ouvir();
     return;
   }
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(textoParaFala(texto));
-  u.lang = 'pt-BR';
-  if (vozPt) u.voice = vozPt;
+  largarMicrofone(); // senão ele ouve a própria voz
+  const id = ++falaAtual;
+  const sintese = window.speechSynthesis;
+  sintese.cancel();
+  const partes = dividirEmPartes(resumirParaFala(textoParaFala(texto)));
   falando = true;
-  estado('Falando…', 'falando');
+  estado('Falando… clique em Falar para interromper', 'falando');
   atualizarBotoes();
-  u.onend = aoTerminarDeFalar;
-  u.onerror = aoTerminarDeFalar;
-  // Alguns navegadores não avisam o fim da fala: garante que a conversa não trave
-  const limite = Math.max(4000, texto.length * 110);
-  setTimeout(() => { if (falando && !window.speechSynthesis.speaking) aoTerminarDeFalar(); }, limite);
-  window.speechSynthesis.speak(u);
+  const proxima = i => {
+    if (id !== falaAtual) return;
+    if (i >= partes.length) { aoTerminarDeFalar(); return; }
+    const u = new SpeechSynthesisUtterance(partes[i]);
+    u.lang = vozPt?.lang || 'pt-BR';
+    if (vozPt) u.voice = vozPt;
+    u.rate = 1.03;
+    let feito = false;
+    // Alguns navegadores não avisam o fim da fala: garante que a conversa não trave
+    const limite = setTimeout(() => { if (id === falaAtual) { sintese.cancel(); seguir(); } }, 4000 + partes[i].length * 130);
+    function seguir() {
+      if (feito) return;
+      feito = true;
+      clearTimeout(limite);
+      proxima(i + 1);
+    }
+    u.onend = seguir;
+    u.onerror = seguir;
+    sintese.speak(u);
+  };
+  setTimeout(() => proxima(0), 60); // o Chrome ignora speak() logo depois de cancel()
 }
 
 function pararTudo(mensagem = 'Pronto para conversar') {
@@ -102,8 +272,9 @@ function pararTudo(mensagem = 'Pronto para conversar') {
   silencios = 0;
   $('#tp-conversa').setAttribute('aria-pressed', 'false');
   falando = false;
+  falaAtual++;
   try { window.speechSynthesis?.cancel(); } catch { /* opcional */ }
-  if (ouvinte) { try { ouvinte.abort(); } catch { /* já parado */ } ouvinte = null; }
+  largarMicrofone();
   estado(mensagem);
   atualizarBotoes();
 }
@@ -116,22 +287,30 @@ function classeReconhecimento() {
 function ouvir() {
   const SR = classeReconhecimento();
   if (!SR || ouvinte) return;
+  falaAtual++;
   try { window.speechSynthesis?.cancel(); } catch { /* opcional */ }
   falando = false;
   const r = new SR();
   r.lang = 'pt-BR';
   r.interimResults = true;
-  r.continuous = false;
+  // No Android o modo contínuo repete o texto; lá o próprio navegador encerra a frase
+  r.continuous = !/Android/i.test(navigator.userAgent);
   r.maxAlternatives = 1;
   let final = '';
+  let parcial = '';
   let erroFatal = null;
+  let fimDaFrase = null;
   r.onresult = e => {
-    let parcial = '';
+    parcial = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
       const t = e.results[i][0].transcript;
       if (e.results[i].isFinal) final += t; else parcial += t;
     }
     $('#tp-pergunta').value = (final + parcial).trim();
+    if (r.continuous) {
+      clearTimeout(fimDaFrase);
+      fimDaFrase = setTimeout(() => { try { r.stop(); } catch { /* já parado */ } }, SILENCIO_FIM_MS);
+    }
   };
   r.onerror = e => {
     if (e.error === 'not-allowed' || e.error === 'service-not-allowed') erroFatal = 'Sem permissão para usar o microfone. Libere o microfone nas configurações do navegador e tente de novo.';
@@ -140,11 +319,13 @@ function ouvir() {
     else if (e.error !== 'no-speech' && e.error !== 'aborted') erroFatal = 'Não consegui ouvir. Tente de novo ou escreva a pergunta.';
   };
   r.onend = () => {
+    clearTimeout(fimDaFrase);
     if (ouvinte !== r) return; // parado de propósito
     ouvinte = null;
     atualizarBotoes();
     if (erroFatal) { pararTudo(erroFatal); return; }
-    const frase = final.trim();
+    // Às vezes o navegador termina sem marcar o texto como final: aproveita o parcial
+    const frase = (final + ' ' + parcial).trim();
     $('#tp-pergunta').value = '';
     if (frase) {
       silencios = 0;
@@ -171,7 +352,8 @@ function ouvir() {
 function atualizarBotoes() {
   const ativo = !!ouvinte || falando || emConversa;
   $('#tp-parar').hidden = !ativo;
-  $('#tp-falar').disabled = !!ouvinte || emConversa;
+  // Enquanto ele fala, Falar interrompe e passa a ouvir
+  $('#tp-falar').disabled = !!ouvinte || (emConversa && !falando);
   $('#tp-conversa').textContent = emConversa ? 'Conversa por voz ligada' : 'Conversa por voz';
 }
 
@@ -192,9 +374,10 @@ async function iniciar() {
   $('#tp-app').hidden = false;
   $('#tp-boneco').innerHTML = SVG_TRIGUINHO;
 
-  const est = lerRascunho() || estadoInicial();
+  est = lerRascunho() || estadoInicial();
   res = recalcular(est);
   $('#tp-simulacao').textContent = `"${est.nome}"`;
+  iniciarNavegador();
 
   if (classeReconhecimento()) {
     $('#tp-falar').onclick = () => { silencios = 0; ouvir(); };
@@ -218,9 +401,14 @@ async function iniciar() {
   } else {
     escolherVoz();
     window.speechSynthesis.onvoiceschanged = escolherVoz;
+    $('#tp-vozes').onchange = e => {
+      vozPt = ordenarVozes(window.speechSynthesis.getVoices()).find(v => v.name === e.target.value) || vozPt;
+      try { localStorage.setItem(CHAVE_VOZ, e.target.value); } catch { /* opcional */ }
+    };
+    $('#tp-ouvir').onclick = () => falar('Olá, eu sou o Triguinho. Esta é a voz que vou usar para responder.', true);
   }
   $('#tp-parar').onclick = () => pararTudo();
-  $('#tp-ler').onchange = e => { if (!e.target.checked) { try { window.speechSynthesis.cancel(); } catch { /* opcional */ } if (falando) aoTerminarDeFalar(); } };
+  $('#tp-ler').onchange = e => { if (!e.target.checked) { falaAtual++; try { window.speechSynthesis.cancel(); } catch { /* opcional */ } if (falando) aoTerminarDeFalar(); } };
   $('#tp-form').onsubmit = e => {
     e.preventDefault();
     const v = $('#tp-pergunta').value;
@@ -230,7 +418,7 @@ async function iniciar() {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') pararTudo(); });
   window.addEventListener('beforeunload', () => { try { window.speechSynthesis?.cancel(); } catch { /* opcional */ } });
 
-  bolha('Olá! Eu sou o Triguinho. Pode escrever ou clicar em Falar. Pergunte, por exemplo, qual a melhor opção para o seu capital.', 'tri');
+  bolha('Olá! Eu sou o Triguinho. Pergunte o que quiser, peça uma simulação ("simule com 500 mil e arroba a 320") ou uma página ("mostre os cenários").', 'tri');
   if (res.ok === false) bolha('Sua simulação tem campos com erro. Corrija na plataforma para eu usar os seus números.', 'tri');
   sugestoes(SUGESTOES);
   $('#tp-pergunta').focus();

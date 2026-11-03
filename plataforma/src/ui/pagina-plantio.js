@@ -10,6 +10,7 @@ import { ATIVIDADES, CULTURAS, culturaPorId, camposDaCultura, compararComPecuari
 import { MUNICIPIOS } from '../engine/municipios.js';
 import { UFS_ESTUDO, cdiLiquidoAno } from '../engine/estudo.js';
 
+document.body.classList.toggle('embutida', new URLSearchParams(location.search).has('embutida'));
 const $ = s => document.querySelector(s);
 const CHAVE = 'stratum_plantio_rascunho_v1';
 

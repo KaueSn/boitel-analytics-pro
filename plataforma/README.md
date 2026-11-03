@@ -31,7 +31,7 @@ Usa o executor nativo do Node (≥ 20), sem dependências.
 5. **Simulações**: salve, duplique, compare até 4 lado a lado, exporte CSV, gere PDF (imprimir) e faça backup em JSON.
 
 ## Página do Triguinho
-`triguinho.html`: conversa por texto e voz, com a Web Speech API do navegador (reconhecimento no Chrome e no Edge). Sem IA: responde pela base em `src/ui/assistente-base.js` e `assistente-conhecimento.js`. Não aceita arquivo de áudio gravado.
+`triguinho.html`: conversa por texto e voz, com a Web Speech API do navegador (reconhecimento no Chrome e no Edge). Simula pedidos em frases ("simule com 500 mil e arroba a 320", "e se a arroba cair 10%?"), com "desfazer", e abre as páginas da plataforma num mini navegador ao lado da conversa (`src/ui/triguinho-comandos.js`). Sem IA: responde por regras e pela base em `src/ui/assistente-base.js` e `assistente-conhecimento.js`. A voz depende do navegador. Não aceita arquivo de áudio gravado.
 
 ## Página de plantio
 `plantio.html`: estudo de grãos, café, cana, hortifrúti e integração lavoura-pecuária com os números do usuário. Calcula o resultado por hectare e compara com a pecuária (`compararOpcoes`) e o CDI, no mesmo capital e prazo. Cálculo em `src/engine/lavoura.js`; fórmulas em `docs/FORMULAS.md`.

@@ -41,13 +41,21 @@
         <button type="button" class="btn sec" id="tp-parar" hidden>Parar</button>
       </div>
       <label class="tp-check"><input type="checkbox" id="tp-ler" checked> Ler as respostas em voz alta</label>
+      <div class="tp-escolha-voz" id="tp-escolha-voz" hidden>
+        <label for="tp-vozes">Voz</label>
+        <select id="tp-vozes"></select>
+        <button type="button" class="btn-mini" id="tp-ouvir">Ouvir</button>
+        <p id="tp-dica-voz" class="nota" hidden></p>
+      </div>
       <p id="tp-sem-voz" class="nota" hidden></p>
       <details class="tp-info"><summary>Como funciona</summary>
         <ul class="lista">
           <li><b>Falar:</b> clique, faça a pergunta e eu respondo.</li>
           <li><b>Conversa por voz:</b> continuo ouvindo depois de cada resposta. Clique em Parar ou diga "parar" para encerrar.</li>
+          <li><b>Simular:</b> diga "simule com 500 mil, arroba a 320 e 120 dias" ou "e se a arroba cair 10%?". Altero a simulação aberta: para voltar, diga "desfazer".</li>
+          <li><b>Abrir páginas:</b> diga "mostre os cenários" ou "abra o painel".</li>
           <li>Uso os números da simulação aberta: <span id="tp-simulacao"></span>.</li>
-          <li>Não sou uma inteligência artificial: respondo a partir de uma base escrita sobre a plataforma e a pecuária de corte. O que não sei, eu digo que não sei.</li>
+          <li>Não sou uma inteligência artificial: sigo regras e uma base escrita sobre a plataforma e a pecuária de corte. O que não sei, eu digo que não sei.</li>
           <li>Ainda não dá para enviar um arquivo de áudio gravado.</li>
         </ul>
         <p class="nota">Privacidade: o microfone só liga quando você clica. A transcrição é feita pelo serviço de voz do navegador; no Chrome e no Edge, o áudio é enviado à empresa do navegador para virar texto. A conversa não fica salva e some ao fechar a página.</p>
@@ -58,10 +66,21 @@
       <div id="tp-chips" class="tri-chips" aria-label="Sugestões de perguntas"></div>
       <form id="tp-form" class="tri-form">
         <label for="tp-pergunta" class="sr">Sua pergunta</label>
-        <input id="tp-pergunta" autocomplete="off" maxlength="300" placeholder="Escreva ou clique em Falar…">
+        <input id="tp-pergunta" autocomplete="off" maxlength="300" placeholder="Pergunte, peça uma simulação ou uma página…">
         <button type="submit" class="btn">Perguntar</button>
       </form>
       <p class="tri-aviso">Estudo educacional. Não é recomendação de investimento: confirme preços, contratos e impostos com fornecedores, corretora e contador.</p>
+    </section>
+    <section id="tp-nav" class="tp-nav" aria-label="Mini navegador" hidden>
+      <div class="tp-nav-barra">
+        <button type="button" class="btn-mini" id="tp-nav-voltar" aria-label="Voltar à página anterior" title="Voltar">←</button>
+        <label for="tp-nav-pagina" class="sr">Página</label>
+        <select id="tp-nav-pagina"></select>
+        <button type="button" class="btn-mini" id="tp-nav-recarregar" aria-label="Recarregar a página" title="Recarregar">↻</button>
+        <a class="btn-mini" id="tp-nav-externo" target="_blank" rel="noopener" title="Abrir em outra aba do navegador">Abrir em aba</a>
+        <button type="button" class="btn-mini" id="tp-nav-fechar" aria-label="Fechar o mini navegador" title="Fechar">✕</button>
+      </div>
+      <iframe id="tp-nav-quadro" class="tp-nav-quadro" title="Página da plataforma"></iframe>
     </section>
   </main>
   <script type="module" src="src/ui/pagina-triguinho.js"></script>

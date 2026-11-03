@@ -26,6 +26,7 @@ let res = null;
 let abaAtual = 'painel';
 let idAberto = null;
 let timer = null;
+const EMBUTIDA = new URLSearchParams(location.search).has('embutida');
 
 const $ = s => document.querySelector(s);
 
@@ -148,6 +149,7 @@ function alternarTema() {
 }
 
 async function iniciar() {
+  document.body.classList.toggle('embutida', EMBUTIDA);
   $('#btn-tema').onclick = alternarTema;
   const acesso = await verificarAcesso();
   if (acesso.modo === 'sem_login') return bloquear('Entre na sua conta', 'A Plataforma Patrimonial faz parte do plano Pro. Entre no simulador e volte para esta página.', LINK_SIMULADOR, 'Entrar no simulador');
@@ -178,7 +180,8 @@ async function iniciar() {
   montarFiltros();
   calcularAgora();
   montarAba();
-  iniciarAssistente(ctx);
+  if (!EMBUTIDA) iniciarAssistente(ctx);
+  window.addEventListener('hashchange', () => { const a = location.hash.slice(1); if (a === 'guiado') abrirGuiado(ctx); else ctx.irParaAba(a); });
   $('#btn-guiado').hidden = false;
   $('#btn-nova').hidden = false;
   $('#btn-triguinho').hidden = false;

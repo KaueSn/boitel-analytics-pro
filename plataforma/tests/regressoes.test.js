@@ -102,7 +102,7 @@ test('[hidden] vence os display próprios (o chat do Triguinho precisa fechar)',
 test('voz: símbolos viram palavras e comando de parar é reconhecido', () => {
   assert.equal(textoParaFala('Equilíbrio: R$ 300,00/@'), 'Equilíbrio: R$ 300,00 por arroba');
   assert.equal(textoParaFala('12 @ e 464 kg'), '12 arrobas e 464 quilos');
-  assert.equal(textoParaFala('Passos:\n1. Um\n• Dois'), 'Passos:. 1. Um. , Dois');
+  assert.equal(textoParaFala('Passos:\n1. Um\n• Dois'), 'Passos: 1. Um. , Dois');
   for (const f of ['parar', 'Pare!', 'encerrar a conversa', 'tchau triguinho']) assert.ok(ehComandoParar(f), f);
   for (const f of ['como parar a mortalidade', 'quanto custa o frete', '']) assert.ok(!ehComandoParar(f), f);
 });

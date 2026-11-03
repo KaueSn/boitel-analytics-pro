@@ -282,7 +282,7 @@ export const BASE = [
   },
   {
     id: 'boitelPerto', aba: 'regiao',
-    palavras: ['achar boitel', 'encontrar boitel', 'onde encontro', 'onde compro', 'onde acho', 'encontrar', 'boitel perto', 'comprar gado', 'onde comprar', 'bois', 'gado', 'leilao', 'fornecedor', 'vendedor de gado'],
+    palavras: ['achar boitel', 'encontrar boitel', 'onde encontro', 'onde compro', 'onde acho', 'encontrar', 'boitel perto', 'melhor boitel', 'bom boitel', 'comprar gado', 'onde comprar', 'bois', 'gado', 'leilao', 'fornecedor', 'vendedor de gado'],
     exemplos: ['onde encontro um boitel', 'onde compro os bois', 'tem leilão perto'],
     resposta: () => 'Não existe cadastro oficial de boitéis nem de vendedores de gado. Na aba Região & logística há buscas prontas no Google Maps para boitéis, leilões, fazendas à venda e o sindicato rural da cidade escolhida. Antes de fechar: visite, peça referências de outros clientes e o contrato por escrito (RC de entrada, mortos, frete, pagamento).',
     seguintes: ['frete', 'boitel']
@@ -311,6 +311,15 @@ export function normalizar(t) {
 const raiz = p => (p.length > 4 ? p.replace(/(oes|aes|es|s)$/, '') : p);
 const tokens = t => normalizar(t).split(' ').filter(p => p && !PARADAS.has(p)).map(raiz);
 
+/** Erro de digitação ou de transcrição: uma letra trocada, a mais, a menos ou invertida. */
+function umErro(a, b) {
+  if (Math.abs(a.length - b.length) > 1) return false;
+  let i = 0;
+  while (i < a.length && a[i] === b[i]) i++;
+  const ra = a.slice(i), rb = b.slice(i);
+  return ra.slice(1) === rb.slice(1) || ra.slice(1) === rb || ra === rb.slice(1) || (ra[0] === rb[1] && ra[1] === rb[0] && ra.slice(2) === rb.slice(2));
+}
+
 /** Mesma palavra com outra terminação (lucro/lucrar, salvo/salvar): radical comum ≥ 4 letras e ≥ 70% da menor. */
 function parecida(a, b) {
   if (a === b) return true;
@@ -318,17 +327,23 @@ function parecida(a, b) {
   if (menor < 4) return false;
   let i = 0;
   while (i < menor && a[i] === b[i]) i++;
-  return i >= 4 && i / menor >= 0.7;
+  return (i >= 4 && i / menor >= 0.7) || (menor >= 6 && umErro(a, b));
 }
 const contem = (conjunto, p) => [...conjunto].some(t => parecida(t, p));
 
 /** Devolve as entradas mais prováveis para a pergunta, com pontuação. */
-export function buscar(pergunta, base = BASE) {
+export function buscar(pergunta, base = BASE, minimo = 3) {
   const n = ' ' + normalizar(pergunta) + ' ';
   const tk = new Set(tokens(pergunta));
   if (!tk.size) return [];
+  const curta = n.trim().split(' ').length <= 5;
   return base.map(e => {
     let s = 0;
+    // Saudações e agradecimentos só valem em frase curta e com a palavra exata
+    if (e.exato) {
+      if (curta) for (const p of e.palavras) if (n.includes(' ' + normalizar(p) + ' ')) s += 3 + p.split(' ').length;
+      return { e, s };
+    }
     for (const p of e.palavras) {
       const np = normalizar(p);
       if (n.includes(' ' + np + ' ') || (np.includes(' ') && n.includes(np))) s += 3 + np.split(' ').length;
@@ -337,24 +352,42 @@ export function buscar(pergunta, base = BASE) {
     const ex = new Set(e.exemplos.flatMap(tokens));
     for (const t of tk) if (contem(ex, t)) s += 1;
     return { e, s };
-  }).filter(x => x.s >= 3).sort((a, b) => b.s - a.s);
+  }).filter(x => x.s >= minimo).sort((a, b) => b.s - a.s);
 }
 
-/** Resposta pronta para exibir: texto, aba sugerida e próximos assuntos. */
-export function responder(pergunta, res = null, base = BASE) {
-  const achados = buscar(pergunta, base);
-  if (!achados.length) {
-    return {
-      id: null,
-      texto: 'Não tenho resposta para isso e prefiro não inventar. Eu sei sobre a plataforma, seus resultados e conceitos da pecuária de corte. Tente com outras palavras (ex.: "preço de equilíbrio", "melhor opção para o meu capital") ou escolha um tema abaixo.',
-      aba: null,
-      seguintes: ['melhorOpcao', 'comecar', 'lucro', 'frete']
-    };
-  }
-  const e = achados[0].e;
+const PEDE_REPETIR = /^(repete|repita|repetir|pode repetir|fala de novo|diz de novo|o que voce disse|nao ouvi)\b/;
+const NAO_ENTENDEU = /^(nao entendi|explica melhor|explique melhor|como assim|nao ficou claro|me explica melhor|nao compreendi)\b/;
+
+function montar(e, res) {
   let texto;
   try { texto = e.resposta(res); } catch { texto = e.resposta(null); }
-  return { id: e.id, texto, aba: e.aba || null, link: e.link || null, seguintes: e.seguintes || [], alternativas: achados.slice(1, 3).map(a => a.e.id) };
+  return { id: e.id, texto, aba: e.aba || null, link: e.link || null, seguintes: e.seguintes || [] };
+}
+
+/** Resposta pronta para exibir: texto, aba sugerida e próximos assuntos. `ultimoId` permite "repete" e "não entendi". */
+export function responder(pergunta, res = null, base = BASE, ultimoId = null) {
+  const n = normalizar(pergunta);
+  const ultimo = ultimoId ? base.find(e => e.id === ultimoId) : null;
+  if (ultimo && PEDE_REPETIR.test(n)) return montar(ultimo, res);
+  if (NAO_ENTENDEU.test(n)) {
+    if (!ultimo) return { id: null, texto: 'Sem problema. Me diga com as suas palavras o que você quer saber ou fazer.', aba: null, seguintes: ['comandos', 'comecar', 'melhorOpcao'] };
+    const r = montar(ultimo, res);
+    const ideia = r.texto.split(/(?<=[.!?])\s/)[0];
+    return { ...r, texto: `Sem problema. A ideia principal é esta: ${ideia} Qual parte ficou difícil? Pergunte com as suas palavras ou escolha um tema abaixo.` };
+  }
+  const achados = buscar(pergunta, base);
+  if (!achados.length) {
+    const perto = buscar(pergunta, base, 1).map(a => a.e.id).filter(id => id !== 'saudacao' && id !== 'agradecimento').slice(0, 4);
+    return {
+      id: null,
+      texto: perto.length
+        ? 'Não tenho certeza do que você quer saber e prefiro não inventar. Talvez seja um destes temas abaixo. Também posso simular: diga, por exemplo, "simule com 500 mil e arroba a 320".'
+        : 'Isso eu não sei e prefiro não inventar. Sei sobre a plataforma, os seus resultados e a pecuária de corte. Posso abrir páginas ("mostre os cenários") e simular ("e se a arroba cair 10%?").',
+      aba: null,
+      seguintes: perto.length ? perto : ['comandos', 'melhorOpcao', 'comecar', 'lucro']
+    };
+  }
+  return { ...montar(achados[0].e, res), alternativas: achados.slice(1, 3).map(a => a.e.id) };
 }
 
 /** Rótulo curto de cada assunto (para os botões de sugestão). */

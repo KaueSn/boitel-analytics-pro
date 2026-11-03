@@ -228,3 +228,19 @@ button[disabled] { opacity: .65; cursor: default; }
 
 /* Nada pode alargar a página no celular (faria o navegador reduzir o zoom) */
 @media (max-width: 700px) { .usuario { flex-basis: 100%; overflow-wrap: anywhere; } .btn-mini { white-space: nowrap; } main, .cartao, section, details, fieldset { min-width: 0; max-width: 100%; } }
+
+/* Mini navegador do Triguinho e plataforma embutida nele */
+.tp.com-nav { max-width: 1680px; grid-template-columns: 250px minmax(320px, 400px) minmax(0, 1fr); }
+.tp-nav { background: var(--cartao); border: 1px solid var(--borda); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; height: calc(100vh - 110px); position: sticky; top: 70px; }
+.tp-nav-barra { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px; border-bottom: 1px solid var(--borda); }
+.tp-nav-barra select { flex: 1 1 140px; min-width: 0; }
+.tp-nav-quadro { flex: 1; width: 100%; border: 0; background: var(--fundo, #fff); }
+.tp-escolha-voz { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; font-size: .85rem; margin: 8px 0; }
+.tp-escolha-voz select { flex: 1 1 120px; min-width: 0; max-width: 100%; }
+.tp-escolha-voz .nota { flex-basis: 100%; margin: 4px 0 0; text-align: left; }
+body.embutida .topo, body.embutida .pular { display: none; }
+@media (max-width: 1180px) {
+  .tp.com-nav { grid-template-columns: 1fr; padding: 12px 16px; }
+  .tp.com-nav .tp-lado { position: static; }
+  .tp-nav { position: static; height: 75vh; order: 3; }
+}

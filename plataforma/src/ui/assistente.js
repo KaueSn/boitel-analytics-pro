@@ -1,6 +1,7 @@
 // Triguinho: personagem que responde dúvidas sobre como usar a plataforma.
 // Respostas vêm de assistente-base.js (sem IA, sem rede). Textos inseridos com textContent.
 import { responder, ROTULOS } from './assistente-base.js';
+import { interpretarPedido, aplicarMudancas, descreverSimulacao, descreverRegioes, PAGINAS } from './triguinho-comandos.js';
 
 const CHAVE_SAUDACAO = 'stratum_plataforma_triguinho_v1';
 export const NOMES_ABA = {
@@ -71,11 +72,55 @@ export function iniciarAssistente(ctx) {
     }));
   }
 
+  let ultimoId = null;
+  let anterior = null;
+
+  function desfazer() {
+    if (!anterior) { bolha('Não há simulação para desfazer.', 'tri'); return; }
+    ctx.abrirEstado(anterior, ctx.idAberto());
+    anterior = null;
+    bolha('Pronto, voltei os valores de antes da última simulação.', 'tri');
+  }
+
+  /** Executa simular, abrir página, regiões e desfazer. Devolve false se a frase não for um pedido. */
+  function executarPedido(q) {
+    const c = interpretarPedido(q);
+    if (!c) return false;
+    if (c.tipo === 'desfazer') { desfazer(); return true; }
+    if (c.tipo === 'abrir') {
+      const p = PAGINAS[c.pagina];
+      if (p.url !== 'index.html') { location.href = p.url; return true; }
+      bolha('Abrindo ' + p.nome + '.', 'tri');
+      fechar(false);
+      if (c.pagina === 'guiado') ctx.abrirGuiado(); else ctx.irParaAba(c.pagina);
+      return true;
+    }
+    if (c.tipo === 'regiao') { bolha(descreverRegioes(c.uf, ctx.res?.ok ? ctx.res : null), 'tri'); return true; }
+    if (!c.mudancas.length) { bolha(c.avisos.join(' '), 'tri'); return true; }
+    const novo = aplicarMudancas(ctx.estado, c.mudancas);
+    const depois = ctx.calcular(novo);
+    if (!depois.ok) { bolha('Não consegui simular com esses valores: ' + (depois.erros[0]?.mensagem || 'confira os números.'), 'tri'); return true; }
+    const antes = ctx.res?.ok ? ctx.res : null;
+    anterior = structuredClone(ctx.estado);
+    ctx.abrirEstado(novo, ctx.idAberto());
+    const d = bolha(descreverSimulacao(novo, c.mudancas, c.avisos, antes, depois), 'tri');
+    const ir = document.createElement('button');
+    ir.type = 'button';
+    ir.className = 'btn-mini tri-ir';
+    ir.textContent = 'Desfazer';
+    ir.onclick = () => { ir.remove(); desfazer(); };
+    d.appendChild(document.createElement('br'));
+    d.appendChild(ir);
+    return true;
+  }
+
   function perguntar(texto) {
     const q = String(texto || '').trim().slice(0, 200);
     if (!q) return;
     bolha(q, 'eu');
-    const r = responder(q, ctx.res?.ok ? ctx.res : null);
+    if (executarPedido(q)) return;
+    const r = responder(q, ctx.res?.ok ? ctx.res : null, undefined, ultimoId);
+    if (r.id) ultimoId = r.id;
     const d = bolha(r.texto, 'tri');
     if (r.link) {
       const ir = document.createElement('a');

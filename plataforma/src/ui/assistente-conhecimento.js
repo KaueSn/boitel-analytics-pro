@@ -126,10 +126,150 @@ export const CONHECIMENTO = [
   },
   {
     id: 'credito',
-    palavras: ['financiamento', 'credito', 'plano safra', 'emprestimo', 'banco', 'pronamp', 'pronaf', 'lca', 'titulo isento'],
+    palavras: ['financiamento', 'financiar', 'financiamento para comprar', 'credito', 'plano safra', 'emprestimo', 'banco', 'pronamp', 'pronaf', 'lca', 'titulo isento'],
     exemplos: ['posso financiar', 'como funciona o plano safra'],
     resposta: () => 'O Plano Safra tem linhas de custeio, comercialização e investimento com limites por produtor. As taxas e o enquadramento mudam a cada safra, por isso não informo valores: consulte seu banco ou cooperativa. A aba Patrimônio permite simular a compra da fazenda financiada, com os juros e o prazo que você informar.',
     seguintes: ['fazenda', 'caminhos']
+  },
+  {
+    id: 'comandos',
+    palavras: ['como funciona o triguinho', 'o que voce sabe', 'o que voce faz', 'o que sabe fazer', 'o que voce consegue', 'me ajuda', 'preciso de ajuda', 'nao sei o que fazer', 'como falo com voce', 'o que posso pedir', 'voce faz simulacao'],
+    exemplos: ['o que você sabe fazer', 'o que posso te pedir'],
+    resposta: () => 'Posso fazer três coisas. Responder sobre a plataforma e a pecuária de corte. Abrir páginas ao lado da conversa: diga "mostre os cenários" ou "abra o painel". E simular com o que você pedir: diga "simule com 500 mil, arroba a 320 e 120 dias" ou "e se a arroba cair 10%?". Se não gostar do resultado, diga "desfazer".',
+    seguintes: ['melhorOpcao', 'lucro', 'risco']
+  },
+  {
+    id: 'nome', palavras: ['como voce se chama', 'qual seu nome', 'qual o seu nome', 'quem e o triguinho'],
+    exemplos: [],
+    resposta: () => 'Eu me chamo Triguinho. Ajudo você a usar a plataforma, simular e entender os resultados.',
+    seguintes: ['comandos', 'comecar']
+  },
+  {
+    id: 'quantosBois', aba: 'lote',
+    palavras: ['quantos bois', 'quantas cabecas', 'quantos animais', 'tamanho do lote', 'quantos cabem'],
+    exemplos: ['quantos bois consigo comprar', 'quantas cabeças dá para comprar com meu dinheiro'],
+    resposta: res => (res?.lote
+      ? `Com ${brl(res.val?.lote?.capitalInicial)} e os preços da simulação, cabem ${res.lote.cabecas} cabeças por lote, já guardando a reserva. Para testar outro valor, diga "simule com 500 mil".`
+      : 'Depende do capital, do preço do animal e da reserva. Diga "simule com 500 mil" que eu calculo.'),
+    seguintes: ['lucro', 'capitalMinimo']
+  },
+  {
+    id: 'valePena', aba: 'estudo',
+    palavras: ['vale a pena', 'bom negocio', 'da dinheiro', 'da lucro', 'ficar rico', 'compensa investir', 'investir em boi', 'investir em gado', 'investir na pecuaria'],
+    exemplos: ['vale a pena investir em boi', 'é um bom negócio', 'boi dá dinheiro'],
+    resposta: res => {
+      const base = 'Depende dos seus preços, e não há garantia de lucro.';
+      if (!res?.lote) return `${base} A aba Melhor opção & região compara com a renda fixa.`;
+      const eco = res.lote.lucroEconomico;
+      return `${base} Com os números da simulação, o lote dá ${brl(res.lote.lucroLiquido)} de lucro líquido e ${pc(res.lote.roiAnual)} ao ano. ${eco < 0 ? `Isso fica ${brl(-eco)} abaixo do que o mesmo dinheiro renderia no CDI.` : `Isso fica ${brl(eco)} acima do CDI.`} Teste outros preços: diga "e se a arroba subir 10%?". É um estudo, não recomendação de investimento.`;
+    },
+    seguintes: ['melhorOpcao', 'risco', 'ganharMais']
+  },
+  {
+    id: 'risco', aba: 'cenarios',
+    palavras: ['risco', 'riscos', 'arriscado', 'perder dinheiro', 'posso perder', 'seguro investir', 'perigoso'],
+    exemplos: ['qual o risco', 'é arriscado', 'posso perder dinheiro'],
+    resposta: res => `Os maiores riscos são: queda do preço da arroba, reposição cara, ganho de peso abaixo do esperado, morte de animais, calote ou atraso no pagamento e preço do boitel.${res?.lote ? ` Na sua simulação, a margem de segurança no preço da arroba é de ${pc(res.lote.margemSegurancaPreco)}.` : ''} A aba Cenários testa o pessimista e a chance de prejuízo. Sim, é possível perder dinheiro.`,
+    seguintes: ['monte', 'hedge', 'equilibrio']
+  },
+  {
+    id: 'precoAgora', aba: 'premissas',
+    palavras: ['preco do boi', 'preco da arroba', 'quanto esta a arroba', 'arroba hoje', 'boi hoje', 'cotacao de hoje', 'quanto esta o boi', 'preco hoje', 'quanto custa um boi'],
+    exemplos: ['qual o preço do boi hoje', 'quanto está a arroba'],
+    resposta: res => `Não tenho cotação ao vivo: as fontes de preço não permitem uso comercial. Em Premissas há links para consultar a sua praça.${res?.val?.lote ? ` Na simulação você está usando ${brl(res.val.lote.precoVendaArroba)} por arroba e ${brl(res.val.lote.precoCompraCab)} pelo animal.` : ''} Para testar outro preço, diga "simule com arroba a 320".`,
+    seguintes: ['mercado', 'equilibrio']
+  },
+  {
+    id: 'racas',
+    palavras: ['raca', 'racas', 'nelore', 'angus', 'cruzamento', 'cruzado', 'cruzados'],
+    exemplos: ['qual a melhor raça', 'nelore ou angus'],
+    resposta: () => 'O Nelore é a base do rebanho de corte brasileiro: rústico e adaptado ao calor. Cruzados, como Angus com Nelore, costumam ganhar peso mais rápido e dar melhor acabamento, e podem receber bonificação, mas costumam custar mais na compra. Não há raça melhor em qualquer situação: pergunte ao boitel e ao frigorífico o que eles preferem e ajuste GMD e preços na simulação.',
+    seguintes: ['gmd', 'boiChina']
+  },
+  {
+    id: 'dieta',
+    palavras: ['o que o boi come', 'alimentacao', 'racao', 'silagem', 'dieta do confinamento', 'o que come', 'volumoso', 'concentrado'],
+    exemplos: ['o que o boi come', 'qual a dieta do confinamento'],
+    resposta: () => 'No confinamento a dieta mistura volumoso, como silagem, com concentrado, como milho e farelos, formulada por nutricionista, com adaptação gradual nos primeiros dias. No boitel por arroba produzida, a dieta já está no preço. Na cobrança por diária, ela entra como custo nutricional por dia.',
+    seguintes: ['boitel', 'gmd']
+  },
+  {
+    id: 'pesoAbate', aba: 'lote',
+    palavras: ['peso de abate', 'quanto pesa um boi', 'quanto pesa o boi', 'boi gordo pesa', 'quilos abate', 'peso de saida', 'peso final', 'com quantos quilos'],
+    exemplos: ['quanto pesa um boi gordo', 'com quantos quilos abate'],
+    resposta: res => (res?.lote
+      ? `Na sua simulação, o animal sai com ${Math.round(res.lote.animal.pesoAbateKg)} kg, que dão ${res.lote.animal.arrobasSaida.toFixed(1).replace('.', ',')} arrobas. O peso sai da conta: peso de entrada + ganho diário × dias.`
+      : 'O peso de saída é o peso de entrada + ganho diário × dias de cocho.'),
+    seguintes: ['arroba', 'gmd']
+  },
+  {
+    id: 'epoca',
+    palavras: ['melhor mes', 'melhor epoca', 'entressafra', 'safra', 'quando vender', 'quando comprar boi', 'epoca do ano', 'periodo seco', 'sazonalidade'],
+    exemplos: ['qual o melhor mês para comprar boi', 'o que é entressafra'],
+    resposta: () => 'Entressafra é o período seco, quando há menos boi de pasto pronto e a arroba tende a ficar mais firme. Por isso muitos confinam para vender nessa época. Não é regra: o preço depende também da exportação e da oferta. Mude a data em Patrimônio e teste preços diferentes.',
+    seguintes: ['hedge', 'calendario']
+  },
+  {
+    id: 'outrosInvestimentos', aba: 'cdi',
+    palavras: ['poupanca', 'tesouro direto', 'tesouro', 'cdb', 'acoes', 'bolsa de valores', 'fundo imobiliario', 'dolar', 'bitcoin'],
+    exemplos: ['quanto rende na poupança', 'é melhor tesouro direto'],
+    resposta: res => `A plataforma compara só com o CDI${res?.val?.lote ? `, em ${pc(res.val.lote.cdiAnual)} ao ano nas suas premissas,` : ''} já líquido de imposto. Não comparo poupança, Tesouro, ações ou outros produtos: fale com um profissional habilitado para isso.`,
+    seguintes: ['cdi', 'limites']
+  },
+  {
+    id: 'empresa',
+    palavras: ['abrir empresa', 'cnpj', 'pessoa juridica', 'pessoa fisica', 'produtor rural', 'inscricao estadual', 'mei', 'preciso de contador'],
+    exemplos: ['preciso abrir empresa', 'preciso de CNPJ', 'preciso de contador'],
+    resposta: () => 'A forma de atuar, como produtor rural pessoa física ou empresa, muda imposto e documentos, e depende do seu caso. A simulação considera por padrão pessoa física. Vale conversar com um contador antes do primeiro lote e pedir a inscrição exigida no seu estado.',
+    seguintes: ['impostos', 'documentos']
+  },
+  {
+    id: 'ganharMais', aba: 'caminhos',
+    palavras: ['ganhar mais', 'lucrar mais', 'reduzir custo', 'reduzir custos', 'diminuir custo', 'aumentar lucro', 'melhorar resultado', 'melhorar o lucro', 'economizar'],
+    exemplos: ['como faço para ganhar mais', 'como reduzir custo'],
+    resposta: res => `O que mais mexe no resultado: comprar melhor o animal${res?.precos ? ` (o ágio está em ${(res.precos.agio * 100).toFixed(1).replace('.', ',')}%)` : ''}, vender melhor a arroba, negociar o boitel, reduzir o frete com uma região mais próxima e buscar bonificação. A aba Cenários mostra no tornado o que pesa mais, e a aba Caminhos testa peso e dias. Me diga uma mudança, como "e se o boi magro cair 5%?", que eu calculo.`,
+    seguintes: ['varredura', 'cenarios', 'boiChina']
+  },
+  {
+    id: 'indicadores', aba: 'painel',
+    palavras: ['o que e roi', 'significa roi', 'payback', 'tir', 'vpl', 'roi', 'taxa interna', 'tempo de retorno', 'quanto tempo demora', 'quanto tempo para ter retorno', 'quanto tempo leva', 'ciclo demora'],
+    exemplos: ['o que é payback', 'o que é TIR', 'quanto tempo demora para ter retorno'],
+    resposta: res => `ROI é o lucro dividido pelo capital usado. TIR é a taxa que resume o retorno no tempo. Payback é quanto tempo leva para recuperar o investido.${res?.lote && res.p ? ` Na sua simulação: ${res.p.diasCiclo} dias de cocho por ciclo, retorno de ${pc(res.lote.roiCiclo)} no ciclo e ${pc(res.lote.roiAnual)} ao ano.` : ''}`,
+    seguintes: ['lucro', 'cdi']
+  },
+  {
+    id: 'contratoBoitel', aba: 'lote',
+    palavras: ['contrato com o boitel', 'contrato do boitel', 'contrato de boitel', 'o que pedir no contrato', 'clausula'],
+    exemplos: ['como funciona o contrato com o boitel'],
+    resposta: () => 'Peça por escrito: forma de cobrança e valor, rendimento de carcaça de entrada, regra para animais mortos ou refugados, quem paga frete, quando o boitel recebe e quem vende o gado. Compare a proposta na aba Lote e leve o contrato a um advogado se o valor for alto.',
+    seguintes: ['produzida', 'gancho']
+  },
+  {
+    id: 'plano',
+    palavras: ['plano pro', 'cancelar', 'cancelamento', 'assinatura', 'custa o plano', 'mensalidade', 'pagamento do plano'],
+    exemplos: ['como cancelar o plano', 'quanto custa o plano'],
+    resposta: () => 'Valores e cancelamento do plano ficam na sua conta, no simulador da Stratum Agro. Eu não tenho esses dados aqui.',
+    seguintes: ['conta', 'privacidade']
+  },
+  {
+    id: 'contato',
+    palavras: ['falo com voces', 'falar com alguem', 'falar com voces', 'atendimento', 'suporte', 'contato', 'telefone', 'whatsapp', 'consultor'],
+    exemplos: ['como falo com vocês'],
+    resposta: () => 'Para falar com a equipe, use os contatos do site da Stratum Agro. Se quiser ajuda de um consultor com os números, exporte a simulação na aba Simulações e envie o arquivo.',
+    seguintes: ['exportar', 'privacidade']
+  },
+  {
+    id: 'vozRuim',
+    palavras: ['voz robotica', 'voz ruim', 'voz estranha', 'mudar a voz', 'trocar a voz', 'outra voz', 'voz esta', 'voz natural', 'me escuta', 'esta me ouvindo'],
+    exemplos: ['a voz está ruim', 'como mudo a voz', 'você me escuta'],
+    resposta: () => 'A voz vem do seu navegador. Na página do Triguinho, escolha outra em "Voz" e clique em Ouvir. As mais naturais e gratuitas costumam estar no Microsoft Edge, como a Francisca. No Chrome, procure "Google português do Brasil". Eu ouço pelo botão Falar ou pela Conversa por voz.',
+    seguintes: ['voz', 'comandos']
+  },
+  {
+    id: 'piada', palavras: ['piada', 'me conta', 'conta uma', 'cantar', 'seu time'],
+    exemplos: [],
+    resposta: () => 'Essa não é a minha especialidade: sou melhor com arrobas do que com piadas. Quer que eu simule alguma coisa?',
+    seguintes: ['comandos', 'melhorOpcao']
   },
   {
     id: 'voz', palavras: ['falar com voce', 'por voz', 'microfone', 'audio', 'mandar audio', 'enviar audio', 'pagina do triguinho', 'conversar por voz'],
@@ -144,13 +284,13 @@ export const CONHECIMENTO = [
     seguintes: ['comecar', 'limites']
   },
   {
-    id: 'saudacao', palavras: ['oi', 'ola', 'bom dia', 'boa tarde', 'boa noite', 'tudo bem', 'e ai'],
+    id: 'saudacao', exato: true, palavras: ['oi', 'ola', 'bom dia', 'boa tarde', 'boa noite', 'tudo bem', 'e ai'],
     exemplos: [],
     resposta: () => 'Olá! Eu explico como usar a plataforma e os resultados da sua simulação. Pergunte, por exemplo: qual a melhor opção para o meu capital?',
     seguintes: ['melhorOpcao', 'comecar', 'guiado']
   },
   {
-    id: 'agradecimento', palavras: ['obrigado', 'obrigada', 'valeu', 'muito obrigado', 'agradeco'],
+    id: 'agradecimento', exato: true, palavras: ['obrigado', 'obrigada', 'valeu', 'muito obrigado', 'agradeco'],
     exemplos: [],
     resposta: () => 'Por nada! Se surgir outra dúvida, é só perguntar.',
     seguintes: ['melhorOpcao', 'lucro']
@@ -162,5 +302,5 @@ export const ROTULOS_CONHECIMENTO = {
   outrasAtividades: 'E outras atividades?', arrendamento: 'Como é o arrendamento?', parceria: 'O que é parceria?',
   confinamento: 'O que é confinamento?', fases: 'Fases da pecuária', reposicao: 'O que é reposição?', agio: 'Ágio e relação de troca',
   quebra: 'Quebra de peso', documentos: 'Documentos e GTA', sif: 'O que é SIF?', itr: 'Custos de comprar terra', boiChina: 'Bonificação e Boi China',
-  reserva: 'Reserva e giro', credito: 'Financiamento', voz: 'Posso falar por voz?', ia: 'Quem é você?', saudacao: 'Oi', agradecimento: 'Obrigado'
+  reserva: 'Reserva e giro', comandos: 'O que você sabe fazer?', nome: 'Seu nome', quantosBois: 'Quantos bois cabem?', valePena: 'Vale a pena?', risco: 'Quais os riscos?', precoAgora: 'Preço do boi hoje', racas: 'Nelore ou cruzado?', dieta: 'O que o boi come?', pesoAbate: 'Peso de saída', epoca: 'Melhor época', outrosInvestimentos: 'Poupança e Tesouro', empresa: 'Preciso de empresa?', ganharMais: 'Como ganhar mais?', indicadores: 'ROI, TIR e payback', contratoBoitel: 'Contrato do boitel', plano: 'Plano e cancelamento', contato: 'Falar com a equipe', vozRuim: 'Mudar a voz', piada: 'Uma piada', credito: 'Financiamento', voz: 'Posso falar por voz?', ia: 'Quem é você?', saudacao: 'Oi', agradecimento: 'Obrigado'
 };
