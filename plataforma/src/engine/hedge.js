@@ -11,7 +11,7 @@ export const ESQUEMA_HEDGE = {
   strike: { rotulo: 'Preço de exercício da put', unidade: 'R$/@', tipo: 'numero', padrao: 0, min: 0, max: 2000, origem: 'pendente' },
   premioPut: { rotulo: 'Prêmio da put', unidade: 'R$/@', tipo: 'numero', padrao: 0, min: 0, max: 500, origem: 'pendente' },
   custoPorContrato: { rotulo: 'Corretagem + emolumentos por contrato (ida e volta)', unidade: 'R$/contrato', tipo: 'numero', padrao: 0, min: 0, max: 10000, origem: 'pendente' },
-  base: { rotulo: 'Base esperada (físico regional − referência do contrato)', unidade: 'R$/@', tipo: 'numero', padrao: 0, min: -200, max: 200, origem: 'pendente', nota: 'Ex.: Scot 27/10/2026 MG Triângulo −1,34% vs SP. A base varia e é risco residual.' },
+  base: { rotulo: 'Base esperada (físico regional − referência do contrato)', unidade: 'R$/@', tipo: 'numero', padrao: 0, min: -200, max: 200, origem: 'pendente', nota: 'Diferença entre o preço da sua praça e o indicador do contrato. Varia e é risco residual.' },
   coberturaPct: { rotulo: 'Fração da produção a proteger', unidade: 'fração', tipo: 'numero', padrao: 1, min: 0, max: 1.5, origem: 'estimado' },
   arredondamento: { rotulo: 'Arredondamento de contratos', tipo: 'opcao', opcoes: ['baixo', 'proximo', 'cima'], padrao: 'baixo', origem: 'estimado' },
   margemPctFuturo: { rotulo: 'Margem de garantia do futuro (fração do nocional)', unidade: 'fração', tipo: 'numero', padrao: 0.1, min: 0, max: 1, origem: 'pendente', nota: 'A B3 define a margem; confirme com a corretora.' },

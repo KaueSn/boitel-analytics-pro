@@ -28,6 +28,7 @@ export const patrimonio = {
         ${kpi('Valorização da terra (não caixa)', moeda(r.valorizacaoTerra))}
         ${kpi('Custos da fazenda + juros', moeda(r.custosFazenda + r.jurosPagos))}
       </div>
+      ${pr.premissas.precoHa < 15000 ? aviso(`Preço da terra usado: ${moeda(pr.premissas.precoHa)}/ha. Se ele veio do VTN do INCRA, é um valor fiscal, normalmente abaixo do preço de mercado: a compra pode parecer mais próxima do que é. Informe a cotação real da sua região.`) : ''}
       <section class="cartao"><h3>Composição do patrimônio</h3><div class="graf alto"><canvas id="g-pat"></canvas></div></section>
       <section class="cartao"><h3>Evolução anual</h3>${tabela(['Ano', 'Fase', 'Caixa', 'Reserva', 'Animais (custo)', 'Terra', 'Dívida', 'Patrimônio líquido', 'Lucro dos lotes', 'Rend. caixa', 'CDI líquido'],
         pr.anos.map((a, i) => [a.ano, esc(a.fase), moeda(a.caixa), moeda(a.reserva), moeda(a.estoqueAnimais), moeda(a.terra), moeda(a.divida), `<b>${moeda(a.patrimonioLiquido)}</b>`, `<span class="${sinal(a.lucroLotesAno)}">${moeda(a.lucroLotesAno)}</span>`, moeda(a.rendimentoCaixaAno), moeda(cdi[i + 1]?.montanteLiquido)]))}
@@ -72,7 +73,7 @@ export const hedge = {
       </div>
       ${h.avisos.map(a => aviso(a)).join('')}
       <section class="cartao"><h3>Receita efetiva por arroba × preço de liquidação</h3><div class="graf alto"><canvas id="g-hedge"></canvas></div></section>
-      <section class="cartao"><h3>Cenários de liquidação</h3>${tabela(['Variação', 'Preço liquidação', 'Físico regional', 'Sem hedge (R$/@)', 'Com put (R$/@)', 'Com futuro (R$/@)', 'Resultado put', 'Resultado futuro'],
+      <section class="cartao"><h3>Cenários de liquidação</h3>${ph.precoFuturoAtual <= 0 ? '<p class="vazio">Informe o preço futuro do vencimento para ver os cenários.</p>' : tabela(['Variação', 'Preço liquidação', 'Físico regional', 'Sem hedge (R$/@)', 'Com put (R$/@)', 'Com futuro (R$/@)', 'Resultado put', 'Resultado futuro'],
         h.grade.map(g => [pct(g.variacao, 0), moeda(g.precoLiquidacao, 2), moeda(g.precoFisico, 2), moeda(g.precoEfetivoSemHedge, 2), moeda(g.precoEfetivoPut, 2), moeda(g.precoEfetivoFuturo, 2), `<span class="${sinal(g.resultadoPut)}">${moeda(g.resultadoPut)}</span>`, `<span class="${sinal(g.resultadoFuturo)}">${moeda(g.resultadoFuturo)}</span>`]))}</section>
       <section class="cartao"><h3>Riscos que continuam após o hedge</h3><ul class="lista">${h.riscosResiduais.map(r => `<li>${esc(r)}</li>`).join('')}</ul>
       <p class="nota">Hedge teórico = contratos × 330 @ vs. produção. Proteção efetiva depende da base no dia, da quantidade realmente produzida e do vencimento escolhido.</p></section>`;
@@ -118,6 +119,7 @@ export const cdi = {
         ['Retorno anual equivalente', pct(Math.pow(pr.resumo.patrimonioFinal / l.premissas.capitalInicial, 1 / H) - 1, 2), pct(Math.pow(fim.montanteLiquido / l.premissas.capitalInicial, 1 / H) - 1, 2)],
         ['Diferença', `<b class="${sinal(pr.resumo.patrimonioFinal - fim.montanteLiquido)}">${moeda(pr.resumo.patrimonioFinal - fim.montanteLiquido)}</b>`, '']
       ])}
+      ${pr.premissas.aporteMensal > 0 || pr.premissas.retiradaMensal > 0 ? aviso('Esta comparação considera só o capital inicial no CDI, mas a projeção da pecuária tem aportes ou retiradas mensais. Zere esses campos na aba Patrimônio para comparar em igualdade.') : ''}
       <p class="nota">O patrimônio da pecuária inclui terra avaliada pelo preço informado (ilíquida) e animais ao custo. O CDI é mantido constante: é uma referência, não projeção de juros. Retorno ajustado ao risco: use o índice tipo Sharpe na aba Cenários (Monte Carlo), que depende das distribuições escolhidas.</p></section>`;
   }
 };
@@ -126,18 +128,23 @@ export const cdi = {
 export const caminhos = {
   resultados(el, ctx) {
     const { res, estado } = ctx;
-    const c = res.conferencia;
-    const v = varrerPesoEDias(res.val.lote, estado.filtros.regiao);
+    const c = res.precos;
+    const v = varrerPesoEDias(res.val.lote);
     const cdiAno = res.val.lote.cdiAnual;
     el.innerHTML = `
-      <section class="cartao"><h3>1. Conferência das premissas com o mercado (${esc(c.regiao)})</h3>
-      ${tabela(['Premissa', 'Usada', 'Referência', 'Desvio', 'Fonte'], c.itens.map(i => [esc(i.rotulo), moeda(i.usado, i.usado < 2 ? 4 : 2), moeda(i.referencia, i.referencia < 2 ? 4 : 2), `<span class="${i.alerta ? 'neg' : ''}">${pct(i.desvio)}</span>`, `${esc(i.fonte)} (${data(i.data)})<br><small>${esc(i.unidade)}</small>`]))}
-      <p>Relação de troca: com as premissas, 1 animal custa <b>${num(c.relacaoTroca, 2)} @</b> de boi gordo; no mercado de referência, <b>${num(c.relacaoTrocaMercado, 2)} @</b>.
-      O animal de reposição sai a <b>${moeda(c.precoArrobaEntradaMercado, 2)}</b> por @ de carcaça de entrada (RC ${pct(res.val.lote.rcEntrada, 0)}), um ágio de <b>${pct(c.agioReposicaoMercado)}</b> sobre a @ do boi gordo. Esse ágio é o principal fator de margem na terminação curta.</p></section>
+      <section class="cartao"><h3>1. O que os seus preços dizem</h3>
+      ${tabela(['Indicador', 'Valor', 'O que significa'], [
+        ['Relação de troca', `${num(c.relacaoTroca, 2)} @`, 'Arrobas de boi gordo necessárias para comprar 1 animal de reposição.'],
+        ['Preço por kg do animal', moeda(c.precoKgReposicao, 2) + '/kg vivo', 'Preço de compra ÷ peso de entrada.'],
+        ['Preço da @ na entrada', moeda(c.precoArrobaEntrada, 2) + '/@', `Preço do animal ÷ arrobas de carcaça de entrada (RC ${pct(res.val.lote.rcEntrada, 0)}).`],
+        ['Ágio da reposição', `<span class="${c.agio > 0.1 ? 'neg' : c.agio > 0 ? 'aviso' : 'pos'}">${pct(c.agio)}</span>`, 'Quanto a @ do animal magro custa acima da @ do boi gordo. Em terminação curta, é o principal fator da margem.']
+      ])}
+      ${c.alertas.map(t => aviso(t)).join('')}
+      <p class="nota">Calculado com os preços que você informou nas premissas. Para conferir com o mercado da sua região, use os links em Premissas → "Onde consultar os preços da sua região".</p></section>
 
-      <section class="cartao"><h3>2. Onde a conta fecha: peso de entrada × dias de cocho (compra ao preço de mercado)</h3>
+      <section class="cartao"><h3>2. Onde a conta fecha: peso de entrada × dias de cocho</h3>
       ${tabela(['Peso / preço de compra', ...v.dias.map(d => d + ' dias')], v.linhas.map(lin => [`${lin.peso} kg · ${moeda(lin.precoCompra)}`, ...lin.celulas.map(cel => `<span class="cel ${cel.roiAnual > cdiAno ? 'pos' : cel.roiAnual > 0 ? 'aviso' : 'neg'}" title="Lucro/cab ${moeda(cel.lucroPorCab, 2)} · equilíbrio ${moeda(cel.precoEquilibrio, 2)}/@">${pct(cel.roiAnual)}</span>`)]), { classe: 'mapa' })}
-      <p class="nota">Retorno anual com as demais premissas do lote (preço de venda ${moeda(res.val.lote.precoVendaArroba, 2)}/@). Verde = acima do CDI bruto (${pct(cdiAno)}); amarelo = positivo, abaixo do CDI; vermelho = prejuízo. Melhor combinação: ${v.melhor ? `${v.melhor.peso} kg por ${v.melhor.dias} dias (${pct(v.melhor.roiAnual)} a.a.)` : 'nenhuma'}. Mais dias exigem confirmar com o boitel GMD, RC e preço por @ nesses prazos.</p></section>
+      <p class="nota">Retorno anual mantendo o seu preço por kg (${moeda(v.precoKg, 2)}/kg) para todos os pesos e o preço de venda de ${moeda(res.val.lote.precoVendaArroba, 2)}/@. Na prática, animais mais leves costumam custar mais por kg: confira com cotações reais. Verde = acima do CDI bruto (${pct(cdiAno)}); amarelo = positivo, abaixo do CDI; vermelho = prejuízo. Melhor combinação: ${v.melhor ? `${v.melhor.peso} kg por ${v.melhor.dias} dias (${pct(v.melhor.roiAnual)} a.a.)` : 'nenhuma'}. Mais dias exigem confirmar com o boitel GMD, RC e preço por @ nesses prazos.</p></section>
 
       <section class="cartao"><h3>3. Caminhos para o objetivo (fazenda própria)</h3>
         <p class="nota">Área ${num(res.val.patrimonio.areaHa)} ha a ${moeda(res.val.patrimonio.precoHa)}/ha = ${moeda(res.val.patrimonio.areaHa * res.val.patrimonio.precoHa)} + custos de aquisição. Ajuste na aba Patrimônio. Os caminhos rodam o cenário base e o pessimista.</p>

@@ -5,9 +5,8 @@ import { PATRIMONIO_PADRAO, ESQUEMA_PATRIMONIO, projetarPatrimonio } from '../en
 import { HEDGE_PADRAO, ESQUEMA_HEDGE, simularHedge } from '../engine/hedge.js';
 import { CENARIOS_PADRAO, aplicarChoques, rodarCenarios } from '../engine/cenarios.js';
 import { calcularLote } from '../engine/lote.js';
-import { conferirPremissas } from '../engine/estrategias.js';
+import { analisarPrecos } from '../engine/estrategias.js';
 import { validar } from '../engine/validacao.js';
-import { REGIOES } from '../engine/mercado.js';
 import { LOGISTICA_PADRAO, normalizarLogistica } from './abas-regiao.js';
 
 export const VERSAO_FORMATO = 1;
@@ -18,11 +17,11 @@ export function estadoInicial() {
   return {
     versao: VERSAO_FORMATO,
     nome: 'Plano R$ 250 mil → fazenda',
-    filtros: { regiao: 'MG', cenario: 'base', modelo: 'B', logistica: { ...LOGISTICA_PADRAO } },
+    filtros: { cenario: 'base', modelo: 'B', logistica: { ...LOGISTICA_PADRAO } },
     lote: { ...PREMISSAS_PADRAO },
     modeloA: { ...MODELO_A_PADRAO },
     modeloC: { ...MODELO_C_PADRAO },
-    patrimonio: { ...PATRIMONIO_PADRAO, precoHa: REGIOES.SP.precoTerraHa },
+    patrimonio: { ...PATRIMONIO_PADRAO },
     hedge: { ...HEDGE_PADRAO },
     choques: structuredClone(CENARIOS_PADRAO)
   };
@@ -41,7 +40,6 @@ export function normalizarEstado(bruto) {
   }
   const f = bruto.filtros || {};
   out.filtros = {
-    regiao: REGIOES[f.regiao] ? f.regiao : 'MG',
     cenario: ['pessimista', 'base', 'otimista'].includes(f.cenario) ? f.cenario : 'base',
     modelo: ['A', 'B', 'C'].includes(f.modelo) ? f.modelo : 'B',
     logistica: normalizarLogistica(f.logistica)
@@ -80,8 +78,8 @@ export function recalcular(estado) {
     const modelos = compararModelos(pCen, val.modeloA, val.modeloC);
     const cenarios = rodarCenarios(val.lote, estado.choques);
     const hedge = simularHedge({ ...val.hedge, arrobasExpostas: val.hedge.arrobasExpostas || lote.arrobasVendidas });
-    const conferencia = conferirPremissas(val.lote, estado.filtros.regiao);
-    return { ok: true, erros: [], p: pCen, lote, loteAlternativo: loteDiaria, projecao, modelos, cenarios, hedge, conferencia, val };
+    const precos = analisarPrecos(val.lote);
+    return { ok: true, erros: [], p: pCen, lote, loteAlternativo: loteDiaria, projecao, modelos, cenarios, hedge, precos, val };
   } catch (e) {
     return { ok: false, erros: [{ campo: '', mensagem: e.message }] };
   }

@@ -7,7 +7,7 @@ import { serieCDI } from '../engine/rendaFixa.js';
 import { tornado, gradeSensibilidade, monteCarlo, resolverEquilibrio, VARIAVEIS, DISTRIBUICOES_PADRAO, CENARIOS_PADRAO } from '../engine/cenarios.js';
 import { compararModelos } from '../engine/modelos.js';
 import { aplicarChoques } from '../engine/cenarios.js';
-import { DATA_COLETA } from '../engine/mercado.js';
+import { guiadoJaVisto, marcarGuiadoVisto } from './guiado.js';
 
 const HOJE = hojeISO();
 
@@ -20,16 +20,16 @@ export const painel = {
     const cdiAnualLiq = Math.pow(1 + l.cdiLiquidoPeriodo, 365 / l.diasCapital) - 1;
     const modelo = res.modelos.linhas.find(m => m.modelo === estado.filtros.modelo);
     const alertas = [
-      ...res.conferencia.itens.filter(i => i.alerta).map(i => ({ t: `${i.rotulo}: premissa ${moeda(i.usado, 2)} está ${pct(i.desvio)} em relação à referência ${moeda(i.referencia, 2)} (${i.fonte}, ${data(i.data)}).`, tipo: 'risco' })),
+      ...res.precos.alertas.map(t => ({ t, tipo: 'risco' })),
       ...l.avisos.map(t => ({ t, tipo: 'risco' })),
       ...pr.alertas.filter(a => a.tipo !== 'info').slice(0, 4).map(a => ({ t: `${data(a.data)} — ${a.mensagem}`, tipo: a.tipo }))
     ];
     const lotes = pr.lotes.slice(0, 6);
     el.innerHTML = `
-      <div class="cartao convite-guiado"><h3>Primeira vez aqui?</h3>
+      ${guiadoJaVisto() ? '' : `<div class="cartao convite-guiado"><h3>Primeira vez aqui?</h3>
         <p>Responda 6 perguntas simples (quanto investir, onde, que animal, quanto tempo, como o boitel cobra e o preço de venda) e veja o resultado do seu projeto. Dá para ajustar tudo depois.</p>
-        <button class="btn" type="button" id="painel-guiado">Começar o preenchimento guiado</button></div>
-      <div class="faixa-aviso">Estudo educacional. Valores calculados com premissas editáveis e dados de mercado de ${esc(data(DATA_COLETA))}; não são cotações em tempo real nem garantia de resultado.</div>
+        <div class="botoes"><button class="btn" type="button" id="painel-guiado">Começar o preenchimento guiado</button><button class="btn sec" type="button" id="painel-dispensar">Agora não</button></div></div>`}
+      <div class="faixa-aviso">Estudo educacional. Os resultados dependem dos preços informados nas premissas (a plataforma não embute cotações); não são garantia de resultado.</div>
       <div class="kpis">
         ${kpi('Capital inicial', moeda(l.premissas.capitalInicial))}
         ${kpi('Reserva de segurança', moeda(l.reserva), { sub: pct(l.premissas.reservaPct, 0) + ' do capital' })}
@@ -59,7 +59,11 @@ export const painel = {
         <section class="cartao"><h3>Patrimônio líquido × CDI</h3><div class="graf"><canvas id="g-painel-pl"></canvas></div></section>
         <section class="cartao"><h3>Composição do custo do lote</h3><div class="graf"><canvas id="g-painel-custos"></canvas></div></section>
       </div>`;
-    el.querySelector('#painel-guiado').onclick = () => ctx.abrirGuiado();
+    const conviteG = el.querySelector('#painel-guiado');
+    if (conviteG) {
+      conviteG.onclick = () => ctx.abrirGuiado();
+      el.querySelector('#painel-dispensar').onclick = () => { marcarGuiadoVisto(); el.querySelector('.convite-guiado').remove(); };
+    }
     const p = paleta();
     grafico('g-painel-pl', {
       type: 'line', moedaEixo: 'y',

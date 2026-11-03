@@ -2,38 +2,36 @@
 import { esc, moeda, num, pct, data, aviso, tabela, valorPremissa } from './formato.js';
 import { renderFormulario } from './formulario.js';
 import { ESQUEMA_LOTE, PREMISSAS_PADRAO, camposPendentes, ROTULO_ORIGEM } from '../engine/premissas.js';
-import { REGIOES, FONTES, DATA_COLETA, precoReposicaoKgInterpolado } from '../engine/mercado.js';
+import { FONTES, DATA_COLETA, CONSULTA_PRECOS } from '../engine/mercado.js';
 import { armazenamento, copiarLocalParaAtivo, exportarBackup, importarArquivo } from './armazenamento.js';
 import { normalizarEstado } from './estado.js';
 import { exportarCSV, imprimirRelatorio } from './exportar.js';
 
 // ---------------- Premissas ----------------
+/** Quadro com os links para consultar preços (a plataforma não copia cotações). */
+export function consultaPrecosHTML() {
+  return `<details class="cartao" open><summary>Onde consultar os preços da sua região</summary>
+    <p>A plataforma não copia cotações (as fontes não permitem uso comercial). Consulte o preço da <b>arroba do boi gordo</b> na sua praça e o do <b>animal de reposição</b> no peso que você vai comprar, digite nas premissas e anote a data.</p>
+    <ul class="lista">${CONSULTA_PRECOS.map(c => `<li><a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">${esc(c.nome)}</a> — ${esc(c.o)}</li>`).join('')}</ul>
+    <p class="nota">Dica: prefira a cotação da sua praça (cidade/região) e a do frigorífico ou leiloeiro com quem você vai negociar. Preço de outro estado distorce o resultado.</p></details>`;
+}
+
 export const premissas = {
   forms(el, ctx) {
-    const reg = ctx.estado.filtros.regiao;
     el.innerHTML = `
       <div class="cartao"><h3>Ponto de partida</h3>
-        <p>As premissas iniciais são as do dossiê. Use os botões para trocar pelos valores de referência pesquisados (${esc(data(DATA_COLETA))}) da região escolhida no filtro. Todos os campos continuam editáveis.</p>
+        <p>As premissas iniciais são as do dossiê. O jeito mais fácil de trocar pelos seus números é o <b>Preenchimento guiado</b> (botão no topo). Aqui você pode ajustar cada campo.</p>
         <div class="botoes">
-          <button class="btn" id="btn-mercado">Aplicar referência de mercado — ${esc(REGIOES[reg].nome)}</button>
+          <button class="btn" id="btn-guiado-prem">Abrir o preenchimento guiado</button>
           <button class="btn sec" id="btn-dossie">Restaurar premissas do dossiê</button>
         </div>
         <p class="legenda">${Object.entries(ROTULO_ORIGEM).map(([k, v]) => `<span class="selo selo-${k}">${esc(v)}</span>`).join(' ')}</p>
         ${aviso(`Pendentes de cotação: ${camposPendentes().map(c => c.rotulo).join('; ')}.`, 'risco')}
       </div>
+      ${consultaPrecosHTML()}
       <div id="f-lote"></div>`;
     renderFormulario(el.querySelector('#f-lote'), 'lt', ESQUEMA_LOTE, ctx.estado.lote, (c, v) => ctx.atualizar('lote', c, v));
-    el.querySelector('#btn-mercado').onclick = () => {
-      const r = REGIOES[reg];
-      const peso = ctx.estado.lote.pesoEntradaKg;
-      Object.assign(ctx.estado.lote, {
-        precoVendaArroba: r.precoVendaArroba,
-        precoCompraCab: Math.round(precoReposicaoKgInterpolado(reg, peso) * peso * 100) / 100,
-        freteEntradaCab: r.freteEntradaCab, freteSaidaCab: r.freteSaidaCab
-      });
-      if (r.precoTerraHa) ctx.estado.patrimonio.precoHa = r.precoTerraHa;
-      ctx.recarregarAba();
-    };
+    el.querySelector('#btn-guiado-prem').onclick = () => ctx.abrirGuiado();
     el.querySelector('#btn-dossie').onclick = () => {
       ctx.estado.lote = { ...PREMISSAS_PADRAO, capitalInicial: ctx.estado.lote.capitalInicial };
       ctx.recarregarAba();
@@ -70,7 +68,7 @@ export const simulacoes = {
       </div>
       <div class="cartao"><h3>Histórico</h3><div id="lista-sim"></div></div>
       <div class="cartao"><h3>Comparar lado a lado</h3><p class="nota">Marque de 2 a 4 simulações no histórico.</p><div id="comparacao"></div></div>`;
-    const msg = (t, tipo = 'ok') => { el.querySelector('#msg-sim').innerHTML = aviso(t, tipo); };
+    const msg = (t, tipo = 'ok') => { const m = el.querySelector('#msg-sim'); if (m) m.innerHTML = aviso(t, tipo); };
     el.querySelector('#nome-sim').oninput = e => { ctx.estado.nome = e.target.value.slice(0, 120) || 'Sem nome'; ctx.salvarRascunho(); };
     const salvar = async novo => {
       if (!ctx.res?.ok) return msg('Corrija os erros das premissas antes de salvar.', 'risco');
@@ -110,6 +108,7 @@ export const simulacoes = {
   async listar(el, ctx) {
     const lista = await armazenamento().listar();
     const box = el.querySelector('#lista-sim');
+    if (!box) return; // a pessoa já saiu da aba enquanto a lista carregava
     if (!lista.length) { box.innerHTML = '<p class="vazio">Nenhuma simulação salva.</p>'; return; }
     box.innerHTML = tabela(['', 'Nome', 'Atualizada', 'Lucro/lote', 'Retorno a.a.', 'PL final', 'Versões', 'Ações'], lista.map(s => [
       `<input type="checkbox" class="cmp" value="${esc(s.id)}" aria-label="Comparar ${esc(s.nome)}">`,
@@ -134,6 +133,7 @@ export const simulacoes = {
     box.onchange = async () => {
       const ids = [...box.querySelectorAll('.cmp:checked')].map(c => c.value).slice(0, 4);
       const comp = el.querySelector('#comparacao');
+      if (!comp) return;
       if (ids.length < 2) { comp.innerHTML = ''; return; }
       const sims = (await Promise.all(ids.map(i => armazenamento().obter(i)))).filter(Boolean);
       const resultados = sims.map(s => ctx.calcular(normalizarEstado(s.estado).estado));
@@ -158,7 +158,8 @@ export const fontes = {
     el.innerHTML = `
       <section class="cartao"><h3>Fontes de dados (coletadas em ${esc(data(DATA_COLETA))})</h3>
       ${tabela(['Fonte', 'Data', 'Valor', 'Unidade', 'Limitações'], FONTES.map(f => [f.url ? `<a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">${esc(f.nome)}</a>` : esc(f.nome), data(f.data), esc(f.valor), esc(f.unidade), esc(f.limitacoes)]))}
-      <p class="nota">A plataforma não busca cotações sozinha. Para atualizar, edite as premissas e registre a nova data. Scot Consultoria: uso apenas como referência pessoal (a reprodução depende de autorização). CEPEA: licença CC BY-NC 4.0.</p></section>
+      <p class="nota">Preços de boi gordo e de reposição não são embutidos: CEPEA (CC BY-NC 4.0) e CONAB autorizam só uso sem fins lucrativos e a Scot Consultoria proíbe a reprodução sem autorização. Consulte os links abaixo e digite os valores nas premissas.</p></section>
+      ${consultaPrecosHTML()}
       <section class="cartao"><h3>Convenções e fórmulas principais</h3><ul class="lista">
         <li>1 arroba (@) = 15 kg de carcaça. @ = peso vivo × rendimento de carcaça ÷ 15.</li>
         <li>Peso de saída = peso de entrada + GMD × dias; peso de abate = saída × (1 − quebra).</li>

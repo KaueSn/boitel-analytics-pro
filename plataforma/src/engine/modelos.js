@@ -26,8 +26,8 @@ export const ESQUEMA_MODELO_A = {
 };
 
 export const ESQUEMA_MODELO_C = {
-  pesoCompraRecriaKg: { grupo: 'C — Recria', rotulo: 'Peso de compra para recria', unidade: 'kg vivo', tipo: 'numero', padrao: 240, min: 100, max: 500, origem: 'pesquisado', fonte: 'scot-reposicao-mg' },
-  precoCompraRecriaCab: { grupo: 'C — Recria', rotulo: 'Preço do bezerro/garrote', unidade: 'R$/cab', tipo: 'numero', padrao: 3975.16, min: 0, max: 50000, origem: 'pesquisado', fonte: 'scot-reposicao-mg', nota: 'Bezerro Nelore 12 meses, 240 kg, MG, 27/10/2026.' },
+  pesoCompraRecriaKg: { grupo: 'C — Recria', rotulo: 'Peso de compra para recria', unidade: 'kg vivo', tipo: 'numero', padrao: 240, min: 100, max: 500, origem: 'estimado' },
+  precoCompraRecriaCab: { grupo: 'C — Recria', rotulo: 'Preço do bezerro/garrote', unidade: 'R$/cab', tipo: 'numero', padrao: 2496, min: 0, max: 50000, origem: 'pendente', nota: 'Provisório: 240 kg × R$ 10,40/kg (mesmo R$/kg do boi magro do dossiê). Consulte o preço do bezerro/garrote na sua região.' },
   diasRecria: { grupo: 'C — Recria', rotulo: 'Duração da recria', unidade: 'dias', tipo: 'inteiro', padrao: 180, min: 30, max: 720, origem: 'estimado' },
   gmdAguas: { grupo: 'C — Recria', rotulo: 'GMD a pasto nas águas', unidade: 'kg/dia', tipo: 'numero', padrao: 0.6, min: 0, max: 2, origem: 'estimado' },
   gmdSeca: { grupo: 'C — Recria', rotulo: 'GMD a pasto na seca', unidade: 'kg/dia', tipo: 'numero', padrao: 0.25, min: -0.5, max: 2, origem: 'estimado' },

@@ -27,7 +27,7 @@ export const ESQUEMA_PATRIMONIO = {
   habilitarFazenda: { grupo: 'Fase 3', rotulo: 'Planejar compra de fazenda', tipo: 'booleano', padrao: true, origem: 'informado' },
   anoMinimoFazenda: { grupo: 'Fase 3', rotulo: 'Ano mínimo para comprar', unidade: 'ano', tipo: 'inteiro', padrao: 5, min: 1, max: 40, origem: 'informado' },
   areaHa: { grupo: 'Fase 3', rotulo: 'Área desejada', unidade: 'ha', tipo: 'numero', padrao: 100, min: 1, max: 1e6, origem: 'estimado' },
-  precoHa: { grupo: 'Fase 3', rotulo: 'Preço da terra', unidade: 'R$/ha', tipo: 'numero', padrao: 56800, min: 0, max: 1e7, origem: 'pesquisado', fonte: 'scot-terra', nota: 'Média de SP (Scot, set/2026). MG: informe à mão.' },
+  precoHa: { grupo: 'Fase 3', rotulo: 'Preço da terra', unidade: 'R$/ha', tipo: 'numero', padrao: 7978, min: 0, max: 1e7, origem: 'pesquisado', fonte: 'incra-vtn', nota: 'VTN médio do INCRA na região de Uberlândia: valor FISCAL, sem benfeitorias, que costuma ficar abaixo do preço de mercado. Troque pela cotação de corretores da região.' },
   custosAquisicaoPct: { grupo: 'Fase 3', rotulo: 'ITBI, escritura, registro, georreferenciamento', unidade: 'fração', tipo: 'numero', padrao: 0.05, min: 0, max: 0.3, origem: 'pendente' },
   formaPagamento: { grupo: 'Fase 3', rotulo: 'Forma de pagamento', tipo: 'opcao', opcoes: ['avista', 'financiado'], padrao: 'avista', origem: 'estimado' },
   entradaPct: { grupo: 'Fase 3', rotulo: 'Entrada (se financiado)', unidade: 'fração', tipo: 'numero', padrao: 0.3, min: 0, max: 1, origem: 'estimado' },

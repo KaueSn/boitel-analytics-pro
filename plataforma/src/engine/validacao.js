@@ -47,7 +47,12 @@ export function validar(esquema, entrada = {}, { exigir = false } = {}) {
   for (const [campo, def] of Object.entries(esquema)) {
     const bruto = entrada[campo];
     const rotulo = def.rotulo || campo;
-    if (bruto === undefined || bruto === null || bruto === '') {
+    if (bruto === '') { // campo apagado na tela: não calcular com um valor que a pessoa não vê
+      erros.push({ campo, mensagem: `${rotulo}: preencha este campo.` });
+      valores[campo] = def.padrao;
+      continue;
+    }
+    if (bruto === undefined || bruto === null) {
       valores[campo] = def.padrao;
       if (exigir) avisos.push({ campo, mensagem: `${rotulo}: ausente, usado o padrão.` });
       continue;

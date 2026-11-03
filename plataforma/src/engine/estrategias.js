@@ -1,59 +1,54 @@
 // Caminhos alternativos para o objetivo (capital inicial → fazenda própria),
-// conferência das premissas contra o mercado pesquisado e checklist de oportunidades.
+// análise dos preços informados pelo usuário e checklist de oportunidades.
 // Todo veredito sai dos números calculados; nada aqui é recomendação de investimento.
 import { projetarPatrimonio, PATRIMONIO_PADRAO } from './patrimonio.js';
 import { MODELO_C_PADRAO } from './modelos.js';
 import { aplicarChoques, CENARIOS_PADRAO } from './cenarios.js';
 import { serieCDI } from './rendaFixa.js';
 import { calcularLote } from './lote.js';
-import { REGIOES, fonte, precoReposicaoKgInterpolado } from './mercado.js';
+import { fonte } from './mercado.js';
 
-/** Compara premissas com as referências pesquisadas e aponta desvios relevantes. */
-export function conferirPremissas(p, regiao = 'MG', limite = 0.1) {
-  const ref = REGIOES[regiao];
-  const itens = [];
-  const add = (rotulo, usado, referencia, idFonte, unidade) => {
-    if (!referencia) return;
-    const desvio = usado / referencia - 1;
-    const f = fonte(idFonte);
-    itens.push({ rotulo, usado, referencia, desvio, unidade, fonte: f?.nome, data: f?.data, alerta: Math.abs(desvio) > limite });
-  };
-  add('Preço da arroba', p.precoVendaArroba + p.bonificacaoArroba, ref.precoVendaArroba, ref.fontePreco, 'R$/@');
-  const kgRef = precoReposicaoKgInterpolado(regiao, p.pesoEntradaKg);
-  add('Preço do animal de reposição', p.precoCompraCab, kgRef * p.pesoEntradaKg, ref.fonteReposicao, `R$/cab (${kgRef.toFixed(2)} R$/kg interpolado × ${p.pesoEntradaKg} kg)`);
-  if (p.modoCobranca === 'arroba_produzida') add('Preço da @ produzida no boitel', p.precoArrobaProduzida, fonte('icbc-set26').valor, 'icbc-set26', 'R$/@ (ICBC = custo, não preço)');
-  add('CDI', p.cdiAnual, fonte('bcb-cdi').valor, 'bcb-cdi', 'a.a.');
-  const relacaoTroca = p.precoCompraCab / Math.max(1e-9, p.precoVendaArroba);
-  const relacaoTrocaMercado = (kgRef * p.pesoEntradaKg) / ref.precoVendaArroba;
-  // Ágio da reposição: preço da @ "de entrada" (carcaça presumida no RC de entrada) vs. @ do boi gordo
-  const precoArrobaEntrada = p.precoCompraCab / (p.pesoEntradaKg * p.rcEntrada / 15);
-  const precoArrobaEntradaMercado = (kgRef * p.pesoEntradaKg) / (p.pesoEntradaKg * p.rcEntrada / 15);
+/**
+ * Análise dos preços que o USUÁRIO informou (a plataforma não embute cotações).
+ * Relação de troca = arrobas de boi gordo para comprar 1 animal.
+ * Ágio da reposição = preço da @ de carcaça de entrada (RC de entrada) ÷ preço da @ do boi gordo − 1.
+ */
+export function analisarPrecos(p, limiteAgio = 0.1) {
+  const venda = p.precoVendaArroba + p.bonificacaoArroba;
+  const arrobasEntrada = p.pesoEntradaKg * p.rcEntrada / 15;
+  const precoArrobaEntrada = p.precoCompraCab / (arrobasEntrada || 1e-9);
+  const agio = precoArrobaEntrada / Math.max(1e-9, venda) - 1;
+  const alertas = [];
+  if (agio > limiteAgio) {
+    alertas.push(`Pelos seus preços, o animal de reposição custa ${(agio * 100).toFixed(1)}% a mais por arroba do que o boi gordo. Em terminação curta, esse ágio costuma consumir a margem.`);
+  }
+  const icbc = fonte('icbc-set26');
+  if (p.modoCobranca === 'arroba_produzida' && typeof p.precoArrobaProduzida === 'number' && typeof icbc.valor === 'number' && p.precoArrobaProduzida <= icbc.valor) {
+    alertas.push(`O preço por arroba produzida (R$ ${p.precoArrobaProduzida.toFixed(2)}) está no nível do CUSTO de produção medido pelo ICBC/USP (R$ ${icbc.valor.toFixed(2)}). O boitel cobra margem: peça a cotação real.`);
+  }
   return {
-    regiao: ref.nome, itens, relacaoTroca, relacaoTrocaMercado,
-    precoArrobaEntrada, precoArrobaEntradaMercado,
-    agioReposicaoMercado: precoArrobaEntradaMercado / ref.precoVendaArroba - 1,
-    precoMercadoCompra: kgRef * p.pesoEntradaKg
+    relacaoTroca: p.precoCompraCab / Math.max(1e-9, venda),
+    precoKgReposicao: p.precoCompraCab / Math.max(1e-9, p.pesoEntradaKg),
+    precoArrobaEntrada, agio, alertas
   };
 }
 
 /**
- * Varredura peso de entrada × dias de cocho, com o preço de compra de MERCADO
- * (R$/kg interpolado da região) e demais premissas iguais. Mostra onde a conta fecha.
+ * Varredura peso de entrada × dias de cocho mantendo o MESMO R$/kg de compra das premissas
+ * (na prática, animais mais leves costumam custar mais por kg: confira com cotações reais).
  */
-export function varrerPesoEDias(p, regiao = 'MG', pesos = [240, 270, 300, 320, 345, 375], dias = [90, 105, 120, 150]) {
-  const linhas = pesos.map(peso => {
-    const kg = precoReposicaoKgInterpolado(regiao, peso);
-    return {
-      peso, precoKg: kg, precoCompra: kg * peso,
-      celulas: dias.map(d => {
-        const r = calcularLote({ ...p, pesoEntradaKg: peso, precoCompraCab: kg * peso, diasCiclo: d, precoVendaArroba: p.precoVendaArroba });
-        return { dias: d, cabecas: r.cabecas, lucroPorCab: r.margemPorCabeca, lucroLiquido: r.lucroLiquido, roiAnual: r.roiAnual, precoEquilibrio: r.precoEquilibrio, pesoSaida: r.animal.pesoSaidaKg };
-      })
-    };
-  });
+export function varrerPesoEDias(p, pesos = [240, 270, 300, 320, 345, 375], dias = [90, 105, 120, 150]) {
+  const kg = p.precoCompraCab / Math.max(1e-9, p.pesoEntradaKg);
+  const linhas = pesos.map(peso => ({
+    peso, precoKg: kg, precoCompra: kg * peso,
+    celulas: dias.map(d => {
+      const r = calcularLote({ ...p, pesoEntradaKg: peso, precoCompraCab: kg * peso, diasCiclo: d });
+      return { dias: d, cabecas: r.cabecas, lucroPorCab: r.margemPorCabeca, lucroLiquido: r.lucroLiquido, roiAnual: r.roiAnual, precoEquilibrio: r.precoEquilibrio, pesoSaida: r.animal.pesoSaidaKg };
+    })
+  }));
   let melhor = null;
   for (const l of linhas) for (const c of l.celulas) if (c.cabecas > 0 && (!melhor || c.roiAnual > melhor.roiAnual)) melhor = { peso: l.peso, ...c };
-  return { regiao, dias, linhas, melhor, cdi: p.cdiAnual };
+  return { precoKg: kg, dias, linhas, melhor, cdi: p.cdiAnual };
 }
 
 function resumir(id, nome, descricao, proj, extra = {}) {
@@ -92,10 +87,13 @@ export function areaViavelPorAno(pLote, pPat, pC) {
   const proj = projetarPatrimonio(pLote, { ...pPat, habilitarFazenda: false }, pC);
   const custoHaAno = pPat.custoFazendaHaAno + pPat.itrAliquota * pPat.precoHa;
   return proj.anos.map(a => {
-    const giro = proj.lotes.length ? proj.lotes[proj.lotes.length - 1].capital * pPat.giroMinimoPct : 0;
+    // Giro a preservar: o do último lote fechado ATÉ este ano, não o maior lote da projeção
+    const fechados = proj.lotes.filter(l => l.fim <= a.ano * 365);
+    const giro = fechados.length ? fechados[fechados.length - 1].capital * pPat.giroMinimoPct : 0;
     const livre = a.caixa + a.estoqueAnimais - pLote.reservaPct * (a.caixa + a.estoqueAnimais) - giro - 12 * pPat.maoDeObraFazendaMensal;
     const custoPorHa = pPat.precoHa * (1 + pPat.custosAquisicaoPct) + custoHaAno; // compra + 1 ano de manutenção
-    return { ano: a.ano, patrimonio: a.patrimonioLiquido, areaHa: Math.max(0, livre / custoPorHa) };
+    const area = custoPorHa !== 0 ? Math.max(0, livre / custoPorHa) : 0;
+    return { ano: a.ano, patrimonio: a.patrimonioLiquido, areaHa: area };
   });
 }
 

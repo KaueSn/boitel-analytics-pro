@@ -30,7 +30,8 @@ export function iniciarAssistente(ctx) {
   raiz.innerHTML = `
     <div class="tri-painel" id="tri-painel" role="dialog" aria-modal="false" aria-labelledby="tri-titulo" hidden>
       <div class="tri-topo"><strong id="tri-titulo">Triguinho — tire suas dúvidas</strong>
-        <button type="button" class="tri-fechar" aria-label="Fechar">×</button></div>
+        <span class="tri-acoes"><button type="button" class="btn-mini tri-esconder" title="Tira o Triguinho da tela; volta pela etiqueta “? Ajuda”">Esconder</button>
+        <button type="button" class="tri-fechar" aria-label="Minimizar o chat" title="Minimizar">–</button></span></div>
       <div class="tri-msgs" aria-live="polite"></div>
       <div class="tri-chips" aria-label="Sugestões de perguntas"></div>
       <form class="tri-form"><label for="tri-pergunta" class="sr">Sua pergunta</label>
@@ -39,7 +40,8 @@ export function iniciarAssistente(ctx) {
       <p class="tri-aviso">Respostas sobre como usar a plataforma, com os números da sua simulação. Não é recomendação de investimento.</p>
     </div>
     <div class="tri-balao" hidden></div>
-    <button type="button" class="tri-boneco" aria-expanded="false" aria-controls="tri-painel" title="Pergunte ao Triguinho">${SVG}<span class="sr">Abrir o assistente Triguinho</span></button>`;
+    <button type="button" class="tri-boneco" aria-expanded="false" aria-controls="tri-painel" title="Pergunte ao Triguinho">${SVG}<span class="sr">Abrir o assistente Triguinho</span></button>
+    <button type="button" class="tri-mini" hidden title="Mostrar o Triguinho">? Ajuda</button>`;
   document.body.appendChild(raiz);
 
   const painel = raiz.querySelector('.tri-painel');
@@ -80,7 +82,7 @@ export function iniciarAssistente(ctx) {
       ir.type = 'button';
       ir.className = 'btn-mini tri-ir';
       ir.textContent = 'Abrir o preenchimento guiado →';
-      ir.onclick = () => ctx.abrirGuiado();
+      ir.onclick = () => { fechar(false); ctx.abrirGuiado(); };
       d.appendChild(document.createElement('br'));
       d.appendChild(ir);
     } else if (r.aba && NOMES_ABA[r.aba]) {
@@ -88,14 +90,27 @@ export function iniciarAssistente(ctx) {
       ir.type = 'button';
       ir.className = 'btn-mini tri-ir';
       ir.textContent = 'Ir para ' + NOMES_ABA[r.aba] + ' →';
-      ir.onclick = () => ctx.irParaAba(r.aba);
+      ir.onclick = () => { fechar(false); ctx.irParaAba(r.aba); };
       d.appendChild(document.createElement('br'));
       d.appendChild(ir);
     }
     mostrarSugestoes(r.seguintes?.length ? r.seguintes : SUGESTOES_INICIAIS);
   }
 
+  const mini = raiz.querySelector('.tri-mini');
+  const CHAVE_ESCONDIDO = 'stratum_plataforma_triguinho_escondido_v1';
+  function esconder(sim) {
+    painel.hidden = true;
+    balao.hidden = true;
+    boneco.hidden = sim;
+    mini.hidden = !sim;
+    boneco.setAttribute('aria-expanded', 'false');
+    try { localStorage.setItem(CHAVE_ESCONDIDO, sim ? '1' : '0'); } catch { /* opcional */ }
+    (sim ? mini : boneco).focus();
+  }
+
   function abrir() {
+    if (boneco.hidden) { boneco.hidden = false; mini.hidden = true; }
     painel.hidden = false;
     balao.hidden = true;
     boneco.setAttribute('aria-expanded', 'true');
@@ -106,17 +121,25 @@ export function iniciarAssistente(ctx) {
     input.focus();
   }
 
-  function fechar() {
+  function fechar(devolverFoco = true) {
     painel.hidden = true;
     boneco.setAttribute('aria-expanded', 'false');
-    boneco.focus();
+    if (devolverFoco) boneco.focus();
   }
 
   boneco.onclick = () => (painel.hidden ? abrir() : fechar());
-  raiz.querySelector('.tri-fechar').onclick = fechar;
+  raiz.querySelector('.tri-fechar').onclick = () => fechar();
+  raiz.querySelector('.tri-esconder').onclick = () => esconder(true);
+  mini.onclick = () => { esconder(false); abrir(); };
+  // Clicar fora do chat minimiza
+  document.addEventListener('pointerdown', e => { if (!painel.hidden && !raiz.contains(e.target)) fechar(false); });
   raiz.querySelector('.tri-form').onsubmit = e => { e.preventDefault(); perguntar(input.value); input.value = ''; };
   painel.addEventListener('keydown', e => { if (e.key === 'Escape') fechar(); });
   balao.onclick = abrir;
+
+  let escondido = false;
+  try { escondido = localStorage.getItem(CHAVE_ESCONDIDO) === '1'; } catch { /* opcional */ }
+  if (escondido) { boneco.hidden = true; mini.hidden = false; return { abrir, perguntar }; }
 
   // Saudação curta na primeira visita
   let jaViu = false;

@@ -32,7 +32,7 @@ export const BASE = [
     id: 'premissas', aba: 'premissas',
     palavras: ['premissa', 'alterar valor', 'mudar valor', 'editar', 'campo', 'preencher', 'digitar'],
     exemplos: ['como mudo os valores', 'onde altero o preço', 'como preencher os campos'],
-    resposta: () => 'Na aba Premissas ficam todos os números: capital, peso, ganho de peso, preços, custos do boitel, fretes, impostos e CDI. Mude um campo e tudo recalcula sozinho. Percentuais são digitados em % (15 = 15%). O botão "Aplicar referência de mercado" troca preços pelos valores pesquisados da região.',
+    resposta: () => 'Na aba Premissas ficam todos os números: capital, peso, ganho de peso, preços, custos do boitel, fretes, impostos e CDI. Mude um campo e tudo recalcula sozinho. Percentuais são digitados em % (15 = 15%). Os links para consultar os preços da sua região ficam no quadro "Onde consultar os preços".',
     seguintes: ['selos', 'mercado', 'pendente']
   },
   {
@@ -53,13 +53,13 @@ export const BASE = [
     id: 'mercado', aba: 'premissas',
     palavras: ['referencia de mercado', 'preco atual', 'mercado', 'cotacao atual', 'cepea', 'scot', 'regiao'],
     exemplos: ['qual o preço da arroba hoje', 'como uso os preços de mercado', 'qual região escolher'],
-    resposta: () => 'Os preços pesquisados são de 27–28/10/2026: arroba CEPEA SP R$ 389,05; Scot MG Triângulo R$ 371,00 e SP R$ 376,00; reposição Nelore 300 kg MG R$ 4.428,79 e SP R$ 4.581,67. Escolha a região no filtro do topo e clique em "Aplicar referência de mercado" na aba Premissas. A plataforma não atualiza cotações sozinha.',
+    resposta: () => 'A plataforma não copia cotações: as fontes de preço (CEPEA, CONAB, Scot) não permitem uso comercial. Em Premissas há o quadro "Onde consultar os preços da sua região" com os links. Consulte o preço da arroba na sua praça e o do animal no peso que vai comprar, digite e anote a data. Prefira a cotação do frigorífico ou do leiloeiro com quem vai negociar.',
     seguintes: ['fontes', 'prejuizo']
   },
   {
     id: 'filtros', palavras: ['filtro', 'cenario base', 'modelo em foco', 'horizonte', 'tamanho do lote', 'topo da pagina'],
     exemplos: ['para que servem os filtros', 'o que é modelo em foco'],
-    resposta: () => 'Filtros do topo:\n• Região: muda a referência de mercado usada na conferência.\n• Cenário: aplica os choques pessimista/base/otimista em todas as abas.\n• Modelo em foco: destaca A, B ou C no Painel.\n• Horizonte: anos da projeção patrimonial.\n• Tamanho do lote: 0 = calcula pelo capital; outro número fixa as cabeças.',
+    resposta: () => 'Filtros do topo:\n• Cenário: aplica os choques pessimista/base/otimista em todas as abas.\n• Modelo em foco: destaca A, B ou C no Painel.\n• Horizonte: anos da projeção patrimonial.\n• Tamanho do lote: 0 = calcula pelo capital; outro número fixa as cabeças.',
     seguintes: ['cenarios', 'modelos']
   },
   {
@@ -124,7 +124,7 @@ export const BASE = [
     id: 'prejuizo', aba: 'caminhos',
     palavras: ['prejuizo', 'negativo', 'nao fecha', 'por que perde', 'nao da lucro', 'vermelho'],
     exemplos: ['por que dá prejuízo', 'por que está negativo'],
-    resposta: () => 'Com os preços de mercado de outubro/2026, o animal de reposição custa caro em relação ao boi gordo: cerca de R$ 435 por arroba de carcaça na entrada, contra R$ 371 do boi gordo em MG (ágio de ~17%). Num ciclo curto, as arrobas produzidas não cobrem esse ágio. Veja na aba Caminhos as combinações de peso e dias e as alternativas.',
+    resposta: res => { const a = res?.precos; return 'Na terminação curta, o resultado depende muito do ágio da reposição: quanto a arroba do animal magro custa acima da arroba do boi gordo.' + (a ? ` Pelos seus preços, o ágio está em ${(a.agio * 100).toFixed(1)}% e 1 animal custa ${a.relacaoTroca.toFixed(2)} @ de boi gordo.` : '') + ' Outros fatores: preço do boitel, frete e dias de cocho. Veja na aba Caminhos as combinações de peso e dias e as alternativas.'; },
     seguintes: ['varredura', 'caminhos']
   },
   {
@@ -166,7 +166,7 @@ export const BASE = [
     id: 'varredura', aba: 'caminhos',
     palavras: ['peso de entrada', 'peso x dias', 'combinacao', 'mais pesado', 'mapa de cores', 'onde fecha'],
     exemplos: ['qual peso de compra é melhor', 'o que é a tabela peso por dias'],
-    resposta: () => 'A tabela "peso × dias" refaz a conta comprando cada peso pelo preço de mercado da região e variando os dias de cocho. Verde = supera o CDI; amarelo = lucro abaixo do CDI; vermelho = prejuízo. Passe o mouse para ver o lucro por cabeça e o preço de equilíbrio de cada célula.',
+    resposta: () => 'A tabela "peso × dias" refaz a conta para cada peso, mantendo o seu preço por kg, e varia os dias de cocho. Verde = supera o CDI; amarelo = lucro abaixo do CDI; vermelho = prejuízo. Passe o mouse para ver o lucro por cabeça e o preço de equilíbrio de cada célula.',
     seguintes: ['prejuizo', 'gmd']
   },
   {
@@ -240,7 +240,7 @@ export const BASE = [
     id: 'fontes', aba: 'fontes',
     palavras: ['fonte', 'de onde vem', 'dado de mercado', 'atualizar dados', 'confiavel', 'data dos dados'],
     exemplos: ['de onde vêm os dados', 'os preços estão atualizados'],
-    resposta: () => 'A aba Fontes & método lista cada dado com fonte, data, unidade e limitações: CEPEA, Scot Consultoria, ICBC/USP, Banco Central e B3 (coletados em 27–28/10/2026). A plataforma não atualiza cotações sozinha: troque as premissas quando tiver preços novos.',
+    resposta: () => 'A aba Fontes & método lista cada dado com fonte, data, unidade e limitações: Banco Central (CDI), B3 (contratos), ICBC/USP (custo de confinamento), MAPA (frigoríficos com SIF), INCRA (valor da terra) e IBGE (municípios). Preços de boi e de reposição você consulta pelos links e digita, porque as fontes não permitem cópia comercial.',
     seguintes: ['mercado', 'limites']
   },
   {
@@ -275,7 +275,7 @@ export const BASE = [
     id: 'terraRegiao', aba: 'regiao',
     palavras: ['preco da terra', 'valor da terra', 'vtn', 'incra', 'hectare na regiao', 'quanto custa o hectare'],
     exemplos: ['quanto custa o hectare na minha região', 'o que é VTN'],
-    resposta: () => 'A aba Região & logística mostra o Valor da Terra Nua (VTN) do INCRA 2026 da região rural da cidade escolhida (mínimo, médio e máximo por hectare). Atenção: o VTN é um valor fiscal, sem benfeitorias, e fica bem abaixo do preço de mercado. A média de mercado da terra com pastagem em SP era R$ 56,8 mil/ha (Scot, set/2026). Use o VTN como piso.',
+    resposta: () => 'A aba Região & logística mostra o Valor da Terra Nua (VTN) do INCRA 2026 da região rural da cidade escolhida (mínimo, médio e máximo por hectare). Atenção: o VTN é um valor fiscal, sem benfeitorias, e costuma ficar bem abaixo do preço de mercado. Use como piso e confirme com corretores e laudo.',
     seguintes: ['fazenda', 'boitelPerto']
   },
   {

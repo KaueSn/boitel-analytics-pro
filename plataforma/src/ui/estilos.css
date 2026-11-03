@@ -150,7 +150,7 @@ details.cartao[open] > summary { margin-bottom: 10px; }
 
 /* Triguinho */
 .tri { position: fixed; right: 16px; bottom: 16px; z-index: 20; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-.tri-boneco { width: 76px; height: 76px; border-radius: 50%; border: 2px solid var(--borda); background: var(--cartao); box-shadow: var(--sombra); cursor: pointer; display: grid; place-items: center; padding: 0; animation: tri-flutua 3.5s ease-in-out infinite; }
+.tri-boneco { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--borda); background: var(--cartao); box-shadow: var(--sombra); cursor: pointer; display: grid; place-items: center; padding: 0; animation: tri-flutua 3.5s ease-in-out infinite; }
 .tri-boneco:hover { transform: scale(1.06); }
 @keyframes tri-flutua { 0%, 100% { translate: 0 0; } 50% { translate: 0 -4px; } }
 @media (prefers-reduced-motion: reduce) { .tri-boneco { animation: none; } }
@@ -187,3 +187,12 @@ details.cartao[open] > summary { margin-bottom: 10px; }
 .g-erro { color: var(--neg); min-height: 1.2em; margin-top: 8px; font-weight: 600; }
 .g-nav { justify-content: flex-end; margin-top: 12px; }
 .convite-guiado { border-left: 4px solid var(--acento); }
+.tri-boneco svg { width: 50px; height: 50px; }
+.tri-acoes { display: flex; align-items: center; gap: 6px; }
+.tri-mini { background: var(--cartao); color: var(--texto); border: 1px solid var(--borda); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; box-shadow: var(--sombra); opacity: .85; }
+.tri-mini:hover { opacity: 1; }
+@media (max-width: 700px) { .tri { right: 10px; bottom: 10px; } .tri-boneco { width: 52px; height: 52px; } .tri-boneco svg { width: 44px; height: 44px; } }
+
+/* No celular o topo não fica fixo, para não ocupar a tela */
+@media (max-width: 700px) { .topo { position: static; } .titulo-app { min-width: 0; flex-basis: 100%; order: 3; } }
+button[disabled] { opacity: .65; cursor: default; }

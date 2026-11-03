@@ -2,6 +2,7 @@
 // Os choques são HIPÓTESES editáveis, não previsões.
 import { calcularLote } from './lote.js';
 import { indiceSharpe } from './rendaFixa.js';
+import { ESQUEMA_LOTE } from './premissas.js';
 
 const limitar = (v, min, max) => Math.min(max, Math.max(min, v));
 
@@ -30,6 +31,12 @@ export function aplicarChoques(p, choques = {}) {
   for (const [k, x] of Object.entries(choques)) {
     if (!VARIAVEIS[k] || !Number.isFinite(x) || x === 0) continue;
     VARIAVEIS[k].aplicar(q, x);
+  }
+  // Um choque não pode levar o valor para fora da faixa aceita pelo motor (ex.: GMD 2,9 + 10%)
+  for (const [k, d] of Object.entries(ESQUEMA_LOTE)) {
+    if (typeof q[k] !== 'number' || q[k] === p[k]) continue;
+    if (d.max !== undefined) q[k] = Math.min(d.max, q[k]);
+    if (d.min !== undefined) q[k] = Math.max(d.min, q[k]);
   }
   return q;
 }
@@ -77,6 +84,7 @@ export function gradeSensibilidade(p, vendas = [-0.2, -0.1, 0, 0.1, 0.2], compra
  */
 export function resolverEquilibrio(p, campo, lo, hi, metrica = 'lucroOperacional', iter = 80) {
   const n = p.cabecasFixas > 0 ? p.cabecasFixas : calcularLote(p).cabecas;
+  if (n === 0) return null; // sem animais não há equilíbrio a calcular
   const f = x => calcularLote({ ...p, cabecasFixas: n, [campo]: x })[metrica];
   let a = lo, b = hi, fa = f(a), fb = f(b);
   if (fa === 0) return a;

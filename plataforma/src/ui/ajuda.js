@@ -7,9 +7,9 @@ export const GUIAS = {
     titulo: 'Painel: o resumo de tudo',
     paraQue: 'Mostra, em uma tela, se o projeto se paga: quanto capital fica na atividade, quantos animais cabem por lote, o lucro por lote, o retorno comparado ao CDI e o patrimônio ao fim do horizonte.',
     passos: [
-      'Escolha a região de referência e o cenário nos filtros do topo (comece pelo "Base").',
+      'Escolha o cenário no filtro do topo (comece pelo "Base").',
       'Leia primeiro os cartões "Lucro líquido por lote", "Retorno anualizado" e "Preço de equilíbrio".',
-      'Veja os alertas: eles dizem quais premissas estão longe do mercado ou quando o caixa fica abaixo da reserva.',
+      'Veja os alertas: eles apontam reposição cara em relação ao boi gordo, preços a confirmar e quando o caixa fica abaixo da reserva.',
       'Compare a linha da pecuária com a do CDI no gráfico de patrimônio.'
     ],
     dicas: [
@@ -21,7 +21,7 @@ export const GUIAS = {
     titulo: 'Premissas: os números que alimentam tudo',
     paraQue: 'Todos os cálculos saem daqui: capital, peso, ganho de peso, preços, custos do boitel, fretes, impostos e CDI. Mude um número e todas as abas se atualizam.',
     passos: [
-      'Comece com as premissas do dossiê (padrão) ou clique em "Aplicar referência de mercado" para usar os preços pesquisados da região.',
+      'O jeito mais fácil é o Preenchimento guiado. Para ajustar à mão, consulte os preços da sua região no quadro "Onde consultar" e digite aqui.',
       'Olhe o selo ao lado de cada campo: "Pendente de cotação" significa que o valor é provisório e precisa ser trocado por uma cotação real.',
       'Substitua primeiro os campos pendentes que mais pesam: preço por arroba produzida do boitel, fretes e preço de compra.',
       'Percentuais são digitados em % (ex.: 15 para 15%).'
@@ -91,7 +91,7 @@ export const GUIAS = {
     titulo: 'Caminhos & objetivo: onde a conta fecha e alternativas',
     paraQue: 'Confere suas premissas com o mercado, procura combinações de peso e dias que fecham a conta, compara caminhos até a fazenda e calcula quanto falta para chegar lá.',
     passos: [
-      'Leia a conferência com o mercado: desvios grandes em vermelho indicam premissas otimistas ou desatualizadas.',
+      'Leia o quadro "O que os seus preços dizem": relação de troca e ágio da reposição, calculados com os preços que você informou.',
       'Veja a tabela peso × dias: verde supera o CDI, amarelo dá lucro abaixo do CDI, vermelho dá prejuízo.',
       'Clique em "Calcular caminhos" para comparar boitel, híbrido, fazenda financiada, acerto no gancho, arrendar e renda fixa.',
       'Informe o ano desejado e clique em "Calcular aporte mensal necessário".'
@@ -161,7 +161,7 @@ export const GUIAS = {
     titulo: 'Fontes & método',
     paraQue: 'Mostra de onde vem cada dado de mercado (com data e limitações), as fórmulas usadas e os limites do modelo.',
     passos: ['Confira a data de cada fonte antes de decidir. A plataforma não atualiza cotações sozinha.'],
-    dicas: ['Os dados de mercado são de 27–28/10/2026. Atualize as premissas com cotações recentes.']
+    dicas: ['Preços de boi gordo e de reposição não são embutidos: consulte os links e digite nas premissas, anotando a data.']
   }
 };
 

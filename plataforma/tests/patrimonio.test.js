@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { PREMISSAS_PADRAO } from '../src/engine/premissas.js';
 import { projetarPatrimonio, PATRIMONIO_PADRAO, parcelaPrice } from '../src/engine/patrimonio.js';
-import { compararCaminhos, conferirPremissas, aporteNecessario, checklistOportunidades, areaViavelPorAno } from '../src/engine/estrategias.js';
+import { compararCaminhos, analisarPrecos, aporteNecessario, checklistOportunidades, areaViavelPorAno } from '../src/engine/estrategias.js';
 import { MODELO_C_PADRAO } from '../src/engine/modelos.js';
 import { calcularLote } from '../src/engine/lote.js';
 
@@ -99,31 +99,28 @@ test('aporte necessário: zero quando já viável; nulo ou positivo caso contrá
   assert.ok(caro === null || caro > 0);
 });
 
-test('conferência de premissas aponta preço de reposição desatualizado', () => {
-  const c = conferirPremissas(L(), 'MG');
-  const rep = c.itens.find(i => i.rotulo.includes('reposição'));
-  assert.ok(rep.alerta && rep.desvio < -0.2, `desvio ${rep.desvio}`);
-  assert.ok(c.relacaoTrocaMercado > c.relacaoTroca);
+test('análise de preços: relação de troca e ágio calculados à mão', () => {
+  // dossiê: 3.328 / 348 = 9,563 @; @ de entrada = 320 × 0,5 ÷ 15 = 10,667 → 312,00/@ → ágio −10,3%
+  const a = analisarPrecos(L());
+  perto(a.relacaoTroca, 3328 / 348, 1e-9);
+  perto(a.precoArrobaEntrada, 3328 / (320 * 0.5 / 15), 1e-9);
+  perto(a.agio, 312 / 348 - 1, 1e-9);
+  assert.equal(a.alertas.filter(t => t.includes('ágio') || t.includes('a mais por arroba')).length, 0);
+  const caro = analisarPrecos(L({ precoCompraCab: 4644 }));
+  assert.ok(caro.agio > 0.1 && caro.alertas.some(t => t.includes('a mais por arroba')));
+  assert.ok(caro.alertas.some(t => t.includes('ICBC')), 'avisa que o preço do boitel está no nível do custo');
 });
 
-test('reposição interpolada: MG 320 kg = 14,76 − (20/75)×0,93 R$/kg', async () => {
-  const { precoReposicaoKgInterpolado } = await import('../src/engine/mercado.js');
-  perto(precoReposicaoKgInterpolado('MG', 320), 14.76 - (20 / 75) * 0.93, 1e-9);
-  assert.equal(precoReposicaoKgInterpolado('MG', 200), 16.56);
-  assert.equal(precoReposicaoKgInterpolado('MG', 400), 13.83);
-  const c = conferirPremissas(L(), 'MG');
-  perto(c.precoMercadoCompra, 320 * (14.76 - (20 / 75) * 0.93), 1e-6);
-});
-
-test('varredura peso × dias usa o preço de mercado e acha o melhor ROI', async () => {
+test('varredura peso × dias mantém o R$/kg das premissas e acha o melhor ROI', async () => {
   const { varrerPesoEDias } = await import('../src/engine/estrategias.js');
-  const v = varrerPesoEDias(L({ precoVendaArroba: 371 }), 'MG');
+  const v = varrerPesoEDias(L());
+  perto(v.precoKg, 3328 / 320, 1e-9);
   assert.equal(v.linhas.length, 6);
   assert.equal(v.linhas[0].celulas.length, 4);
+  perto(v.linhas[0].precoCompra, 240 * 3328 / 320, 1e-9);
   const todos = v.linhas.flatMap(l => l.celulas.filter(c => c.cabecas > 0).map(c => c.roiAnual));
-  perto(v.melhor.roiAnual, Math.max(...todos));
+  perto(v.melhor.roiAnual, Math.max(...todos), 1e-12);
 });
-
 test('checklist e área viável retornam dados', () => {
   assert.ok(checklistOportunidades(L()).length >= 8);
   const a = areaViavelPorAno(L(), PAT({ precoHa: 20000 }), MODELO_C_PADRAO);

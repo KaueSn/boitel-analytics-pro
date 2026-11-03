@@ -26,8 +26,8 @@
     <div class="titulo-app">Plataforma Patrimonial <span id="nome-aberto" class="nome-aberto"></span></div>
     <div class="topo-acoes">
       <span id="usuario" class="usuario"></span>
-      <button class="btn-mini" id="btn-guiado" type="button">Preenchimento guiado</button>
-      <button class="btn-mini" id="btn-nova" type="button">Nova simulação</button>
+      <button class="btn-mini" id="btn-guiado" type="button" hidden>Preenchimento guiado</button>
+      <button class="btn-mini" id="btn-nova" type="button" hidden>Nova simulação</button>
       <button class="btn-mini" id="btn-tema" type="button" aria-label="Alternar tema claro/escuro">◐</button>
     </div>
   </header>
@@ -36,7 +36,6 @@
 
   <main id="app" hidden>
     <section class="filtros" aria-label="Filtros">
-      <div class="filtro"><label for="f-regiao">Região de referência</label><select id="f-regiao"></select></div>
       <div class="filtro"><label for="f-cenario">Cenário</label><select id="f-cenario"><option value="pessimista">Pessimista</option><option value="base">Base</option><option value="otimista">Otimista</option></select></div>
       <div class="filtro"><label for="f-modelo">Modelo em foco</label><select id="f-modelo"><option value="A">A — Confinamento próprio</option><option value="B">B — Boitel</option><option value="C">C — Recria + boitel</option></select></div>
       <div class="filtro"><label for="f-horizonte">Horizonte (anos)</label><input id="f-horizonte" type="number" min="1" max="40" step="1"></div>

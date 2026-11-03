@@ -9,7 +9,7 @@ const fmtMoeda2 = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 
 
 export function moeda(v, casas = 0) {
   if (v === null || v === undefined || Number.isNaN(v)) return '—';
-  if (!Number.isFinite(v)) return v > 0 ? 'sem limite' : '—';
+  if (!Number.isFinite(v)) return '—';
   return (casas ? fmtMoeda2 : fmtMoeda).format(v);
 }
 
@@ -22,6 +22,18 @@ export function num(v, casas = 0) {
 export function pct(v, casas = 1) {
   if (v === null || v === undefined || Number.isNaN(v) || !Number.isFinite(v)) return '—';
   return (v * 100).toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas }) + '%';
+}
+
+/**
+ * Lê número digitado à brasileira ou com ponto decimal: "123,45", "123.45", "250.000",
+ * "1.234,50" e "R$ 300". Devolve NaN se não for número.
+ */
+export function numeroBR(texto) {
+  const s = String(texto ?? '').replace(/R\$|\s/g, '');
+  if (!s) return NaN;
+  if (s.includes(',')) return Number(s.replace(/\./g, '').replace(',', '.'));
+  if (/^\d{1,3}(\.\d{3})+$/.test(s)) return Number(s.replace(/\./g, ''));
+  return Number(s);
 }
 
 export function data(iso) {

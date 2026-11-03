@@ -16,7 +16,7 @@ export function exportarCSV(estado, res) {
   const L = [];
   L.push(linhaCSV(['Plataforma Stratum — exportação', hojeISO()]));
   L.push(linhaCSV(['Simulação', estado.nome]));
-  L.push(linhaCSV(['Cenário', estado.filtros.cenario, 'Região de referência', estado.filtros.regiao]));
+  L.push(linhaCSV(['Cenário', estado.filtros.cenario, 'Cidade do boitel', (estado.filtros.logistica?.boitel || '').replace('|', ' - ')]));
   L.push(linhaCSV(['Dados de mercado coletados em', DATA_COLETA]));
   L.push('');
   L.push(linhaCSV(['PREMISSAS', 'Campo', 'Valor', 'Unidade', 'Origem', 'Fonte']));

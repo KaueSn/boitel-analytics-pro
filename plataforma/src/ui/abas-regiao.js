@@ -5,7 +5,6 @@ import { MUNICIPIOS } from '../engine/municipios.js';
 import { municipio, distanciaEstimadaKm, fretePorCabeca, frigorificosProximos, CAMINHOES, FRETE_PADRAO } from '../engine/logistica.js';
 import { FONTE_FRIGORIFICOS } from '../engine/frigorificos.js';
 import { vtnDoMunicipio, FONTE_TERRA } from '../engine/terra.js';
-import { fonte } from '../engine/mercado.js';
 
 export const LOGISTICA_PADRAO = { compra: 'Uberlândia|MG', boitel: 'Uberlândia|MG', nomeBoitel: '', venda: 'auto', caminhao: 'carreta', fixoViagem: FRETE_PADRAO.fixoViagem, porKm: FRETE_PADRAO.porKm };
 
@@ -46,7 +45,7 @@ export const regiao = {
     el.innerHTML = `
       <datalist id="lista-cidades">${MUNICIPIOS.map(m => `<option value="${esc(rotuloCidade(m))}">`).join('')}</datalist>
       <div class="cartao"><h3>Onde vai acontecer a operação?</h3>
-        <p class="nota">Digite o nome da cidade e escolha na lista (MG, SP, GO e MS). As distâncias são estimadas em linha reta × ${FRETE_PADRAO.fatorRota} (fator de estrada); confirme a rota real.</p>
+        <p class="nota">Digite o nome da cidade e escolha na lista (todos os municípios do Brasil). As distâncias são estimadas em linha reta × ${FRETE_PADRAO.fatorRota} (fator de estrada); confirme a rota real.</p>
         <div class="grade-campos">
           <div class="campo"><label for="lg-compra">Cidade onde vai comprar os animais</label><input id="lg-compra" list="lista-cidades" value="${esc(cid('compra'))}" autocomplete="off"></div>
           <div class="campo"><label for="lg-boitel">Cidade do boitel</label><input id="lg-boitel" list="lista-cidades" value="${esc(cid('boitel'))}" autocomplete="off"></div>
@@ -104,7 +103,8 @@ export const regiao = {
     const fEntrada = fretePorCabeca(dEntrada, p.pesoEntradaKg, opFrete);
     const fSaida = venda ? fretePorCabeca(venda.distanciaKm, res.lote.animal.pesoAbateKg, opFrete) : null;
     const vtnB = vtnDoMunicipio(boitel[0]), vtnC = vtnDoMunicipio(compra[0]);
-    const scotTerra = fonte('scot-terra');
+    const fretesAplicados = Math.abs(p.freteEntradaCab - fEntrada.porCabeca) < 0.01 && (!fSaida || Math.abs(p.freteSaidaCab - fSaida.porCabeca) < 0.01);
+    const terraAplicada = vtnB && res.val.patrimonio.precoHa === vtnB.med;
     const nomeB = L.nomeBoitel ? `${L.nomeBoitel} (${boitel[1]})` : boitel[1];
     el.innerHTML = `
       <div class="kpis">
@@ -114,15 +114,15 @@ export const regiao = {
         ${kpi('Frete de saída estimado', fSaida ? moeda(fSaida.porCabeca, 2) + '/cab' : '—', { sub: fSaida ? `${fSaida.cabecasPorViagem} cab/viagem de ${num(res.lote.animal.pesoAbateKg)} kg` : '' })}
         ${kpi('Fretes no lote', moeda(res.lote.cabecas * (fEntrada.porCabeca + (fSaida ? fSaida.porCabeca * (1 - p.mortalidadePct) : 0))), { sub: `${res.lote.cabecas} cabeças` })}
       </div>
-      <div class="cartao"><div class="botoes"><button class="btn" id="lg-usar">Usar estes fretes nas premissas</button></div>
+      <div class="cartao"><div class="botoes"><button class="btn" id="lg-usar"${fretesAplicados ? ' disabled' : ''}>${fretesAplicados ? 'Fretes aplicados ✓' : 'Usar estes fretes nas premissas'}</button></div>
         <p class="nota">Premissas atuais: entrada ${moeda(p.freteEntradaCab, 2)}/cab, saída ${moeda(p.freteSaidaCab, 2)}/cab. Na venda ao frigorífico, o frete costuma ser pago por ele e já vem descontado no preço; nesse caso, use frete de saída 0 nas premissas.</p></div>
       <section class="cartao"><h3>Frigoríficos com SIF mais próximos do boitel</h3>
         ${tabela(['Frigorífico', 'Município', 'SIF', 'Abate (cab/h)', 'Distância est.', 'Frete est./cab'], proximos.map(f => [esc(f.nome), `${esc(f.municipio)}/${f.uf}`, String(f.sif), esc(f.capacidade), `~${num(f.distanciaKm)} km`, moeda(fretePorCabeca(f.distanciaKm, res.lote.animal.pesoAbateKg, opFrete).porCabeca, 2)]))}
         <p class="nota">Fonte: ${esc(FONTE_FRIGORIFICOS.nome)}, arquivo de ${esc(FONTE_FRIGORIFICOS.data.split('-').reverse().join('/'))}. Registro ativo não garante que a planta esteja comprando boi na sua região nem as condições de pagamento. Ligue antes e pergunte preço, prazo, bonificações e quem paga o frete.</p></section>
       <section class="cartao"><h3>Terra na região (Valor da Terra Nua — INCRA 2026)</h3>
         ${tabela(['Local', 'Região rural', 'VTN mínimo', 'VTN médio', 'VTN máximo'], [[esc(nomeB), vtnB ? esc(vtnB.nome) : 'sem dado', moeda(vtnB?.min), moeda(vtnB?.med), moeda(vtnB?.max)], [esc(compra[1]) + ' (compra)', vtnC ? esc(vtnC.nome) : 'sem dado', moeda(vtnC?.min), moeda(vtnC?.med), moeda(vtnC?.max)]].map(l => l.map((c, i) => (i >= 2 ? c + (c !== '—' ? '/ha' : '') : c))))}
-        ${aviso(`O VTN é a terra sem benfeitorias, usado para fins fiscais, e costuma ficar bem abaixo do preço de uma fazenda formada. Referência de mercado: terra com pastagem em SP, média de ${moeda(scotTerra.valor)}/ha (Scot, ${scotTerra.data.split('-').reverse().join('/')}). Use o VTN como piso e confirme com corretores e laudo.`, 'info')}
-        <div class="botoes">${vtnB ? `<button class="btn sec" id="lg-terra">Usar VTN médio (${moeda(vtnB.med)}/ha) na projeção</button>` : ''}<a class="btn sec" href="${esc(FONTE_TERRA.url)}" target="_blank" rel="noopener noreferrer">Abrir a pauta do INCRA</a></div>
+        ${aviso('O VTN é a terra sem benfeitorias, usado para fins fiscais, e costuma ficar bem abaixo do preço de uma fazenda formada. Use como piso e confirme o preço de mercado com corretores, anúncios e laudo de avaliação.', 'info')}
+        <div class="botoes">${vtnB ? `<button class="btn sec" id="lg-terra"${terraAplicada ? ' disabled' : ''}>${terraAplicada ? 'VTN aplicado ✓ (lembre: é um piso)' : `Usar VTN médio (${moeda(vtnB.med)}/ha) na projeção`}</button>` : ''}<a class="btn sec" href="${esc(FONTE_TERRA.url)}" target="_blank" rel="noopener noreferrer">Abrir a pauta do INCRA</a></div>
         <p class="nota">Preço da terra usado hoje na aba Patrimônio: ${moeda(res.val.patrimonio.precoHa)}/ha.</p></section>
       <section class="cartao"><h3>Pesquisar boitéis, gado e terras perto de ${esc(boitel[1])}</h3>
         <p>Não existe cadastro oficial de boitéis nem de vendedores de gado. Use as buscas abaixo (abrem o Google Maps) e confira cada contato: visite, peça referências e o contrato por escrito.</p>
@@ -132,14 +132,13 @@ export const regiao = {
           <a class="btn sec" target="_blank" rel="noopener noreferrer" href="${linkMapa('fazenda à venda perto de ' + boitel[1] + ' ' + boitel[4])}">Fazendas à venda perto de ${esc(boitel[1])}</a>
           <a class="btn sec" target="_blank" rel="noopener noreferrer" href="${linkMapa('sindicato rural ' + compra[1] + ' ' + compra[4])}">Sindicato rural de ${esc(compra[1])}</a>
         </div>
-        <p class="nota">Preço de referência da reposição na sua região: aba Caminhos (Scot Consultoria, por estado e categoria).</p></section>`;
+        <p class="nota">Preços de boi gordo e de reposição: veja Premissas → "Onde consultar os preços da sua região".</p></section>`;
     el.querySelector('#lg-usar').onclick = () => {
       estado.lote.freteEntradaCab = Math.round(fEntrada.porCabeca * 100) / 100;
       if (fSaida) estado.lote.freteSaidaCab = Math.round(fSaida.porCabeca * 100) / 100;
       ctx.recalcular();
-      el.querySelector('#lg-usar').textContent = 'Fretes aplicados ✓';
     };
     const bt = el.querySelector('#lg-terra');
-    if (bt) bt.onclick = () => { estado.patrimonio.precoHa = vtnB.med; ctx.recalcular(); bt.textContent = 'VTN aplicado ✓ (lembre: é um piso)'; };
+    if (bt) bt.onclick = () => { estado.patrimonio.precoHa = vtnB.med; ctx.recalcular(); };
   }
 };

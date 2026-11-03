@@ -8,7 +8,6 @@ import { criarArmazenamentoConta } from './armazenamento-conta.js';
 import { guiaHTML } from './ajuda.js';
 import { iniciarAssistente } from './assistente.js';
 import { abrirGuiado } from './guiado.js';
-import { REGIOES } from '../engine/mercado.js';
 import * as A from './abas-analise.js';
 import * as P from './abas-planejamento.js';
 import * as G from './abas-gestao.js';
@@ -50,7 +49,7 @@ const ctx = {
 
 function agendar() {
   clearTimeout(timer);
-  timer = setTimeout(() => { calcularAgora(); renderResultados(); }, 250);
+  timer = setTimeout(() => { calcularAgora(); renderResultados(); sincronizarFiltros(); }, 250);
 }
 
 function calcularAgora() {
@@ -97,7 +96,6 @@ function montarAba() {
 }
 
 function sincronizarFiltros() {
-  $('#f-regiao').value = estado.filtros.regiao;
   $('#f-cenario').value = estado.filtros.cenario;
   $('#f-modelo').value = estado.filtros.modelo;
   $('#f-horizonte').value = estado.patrimonio.horizonteAnos;
@@ -106,9 +104,7 @@ function sincronizarFiltros() {
 }
 
 function montarFiltros() {
-  $('#f-regiao').innerHTML = Object.entries(REGIOES).map(([k, r]) => `<option value="${k}">${esc(r.nome)}</option>`).join('');
   const ligar = (sel, fn) => $(sel).addEventListener('change', e => { fn(e.target.value); ctx.recarregarAba(); });
-  ligar('#f-regiao', v => { estado.filtros.regiao = v; });
   ligar('#f-cenario', v => { estado.filtros.cenario = v; });
   ligar('#f-modelo', v => { estado.filtros.modelo = v; });
   ligar('#f-horizonte', v => { estado.patrimonio.horizonteAnos = Number(v); });
@@ -180,6 +176,8 @@ async function iniciar() {
   calcularAgora();
   montarAba();
   iniciarAssistente(ctx);
+  $('#btn-guiado').hidden = false;
+  $('#btn-nova').hidden = false;
   $('#btn-guiado').onclick = () => abrirGuiado(ctx);
   $('#btn-nova').onclick = () => {
     if (!confirm('Começar uma simulação nova com as premissas do dossiê? A atual continua no histórico se tiver sido salva.')) return;

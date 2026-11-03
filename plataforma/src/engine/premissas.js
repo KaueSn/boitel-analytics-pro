@@ -24,9 +24,9 @@ export const ESQUEMA_LOTE = {
   metaCiclosAno: { grupo: 'Zootecnia', rotulo: 'Limite de ciclos por ano', unidade: 'ciclos', tipo: 'numero', padrao: 3, min: 0.5, max: 6, origem: 'informado', nota: 'Meta do briefing: 2,5 a 3.' },
 
   // --- Compra ---
-  precoCompraCab: { grupo: 'Compra', rotulo: 'Preço do boi magro', unidade: 'R$/cab', tipo: 'numero', padrao: 3328, min: 0, max: 50000, origem: 'informado', nota: 'Premissa do dossiê. Em 27/10/2026 a Scot cotava o garrote Nelore de 300 kg a R$ 4.428,79 (MG) e R$ 4.581,67 (SP).' },
+  precoCompraCab: { grupo: 'Compra', rotulo: 'Preço do boi magro', unidade: 'R$/cab', tipo: 'numero', padrao: 3328, min: 0, max: 50000, origem: 'informado', nota: 'Premissa do dossiê. Consulte o preço da sua região (botão "Onde consultar os preços") e digite aqui.' },
   comissaoCompraPct: { grupo: 'Compra', rotulo: 'Comissão/corretagem na compra', unidade: 'fração', tipo: 'numero', padrao: 0.01, min: 0, max: 0.2, origem: 'pendente' },
-  freteEntradaCab: { grupo: 'Compra', rotulo: 'Frete de entrada', unidade: 'R$/cab', tipo: 'numero', padrao: 205, min: 0, max: 5000, origem: 'pendente', fonte: 'simulador-frete' },
+  freteEntradaCab: { grupo: 'Compra', rotulo: 'Frete de entrada', unidade: 'R$/cab', tipo: 'numero', padrao: 205, min: 0, max: 5000, origem: 'estimado', fonte: 'frete-opecuarista', nota: 'Calcule pela aba Região & logística ou use a cotação da transportadora.' },
   sanidadeCab: { grupo: 'Compra', rotulo: 'Sanidade, medicamentos e manejo', unidade: 'R$/cab', tipo: 'numero', padrao: 45, min: 0, max: 5000, origem: 'pendente' },
   outrasDespesasCab: { grupo: 'Compra', rotulo: 'Outras despesas (GTA, brinco, seguro)', unidade: 'R$/cab', tipo: 'numero', padrao: 25, min: 0, max: 5000, origem: 'pendente' },
 
@@ -39,11 +39,11 @@ export const ESQUEMA_LOTE = {
   boitelPagamento: { grupo: 'Boitel', rotulo: 'Pagamento do boitel', tipo: 'opcao', opcoes: ['durante', 'final'], padrao: 'durante', origem: 'estimado', nota: '"durante" exige o capital antes da venda (conservador); "final" = acerto descontado na venda.' },
 
   // --- Venda ---
-  precoVendaArroba: { grupo: 'Venda', rotulo: 'Preço de venda da arroba', unidade: 'R$/@', tipo: 'numero', padrao: 348, min: 0, max: 2000, origem: 'informado', nota: 'Premissa do dossiê. CEPEA SP em 28/10/2026: R$ 389,05; Scot MG Triângulo em 27/10: R$ 371,00.' },
+  precoVendaArroba: { grupo: 'Venda', rotulo: 'Preço de venda da arroba', unidade: 'R$/@', tipo: 'numero', padrao: 348, min: 0, max: 2000, origem: 'informado', nota: 'Premissa do dossiê. Consulte o preço da arroba na sua praça e digite aqui.' },
   bonificacaoArroba: { grupo: 'Venda', rotulo: 'Bonificação (ex.: Boi China)', unidade: 'R$/@', tipo: 'numero', padrao: 0, min: -200, max: 200, origem: 'pendente' },
   funruralPct: { grupo: 'Venda', rotulo: 'Funrural sobre a receita bruta', unidade: 'fração', tipo: 'numero', padrao: 0.015, min: 0, max: 0.1, origem: 'pesquisado', fonte: 'lei-funrural' },
   comissaoVendaPct: { grupo: 'Venda', rotulo: 'Comissão de venda', unidade: 'fração', tipo: 'numero', padrao: 0, min: 0, max: 0.2, origem: 'pendente' },
-  freteSaidaCab: { grupo: 'Venda', rotulo: 'Frete de saída', unidade: 'R$/cab', tipo: 'numero', padrao: 205, min: 0, max: 5000, origem: 'pendente', fonte: 'simulador-frete' },
+  freteSaidaCab: { grupo: 'Venda', rotulo: 'Frete de saída', unidade: 'R$/cab', tipo: 'numero', padrao: 205, min: 0, max: 5000, origem: 'estimado', fonte: 'frete-opecuarista', nota: 'Calcule pela aba Região & logística ou use a cotação da transportadora.' },
   prazoRecebimentoDias: { grupo: 'Venda', rotulo: 'Prazo de recebimento após o abate', unidade: 'dias', tipo: 'inteiro', padrao: 0, min: 0, max: 365, origem: 'estimado' },
 
   // --- Financeiro e tributos ---

@@ -4,7 +4,7 @@
 - **Página Pro do simulador**: `boitel-analytics-pro/plataforma/` → `https://kauesn.github.io/boitel-analytics-pro/plataforma/` depois do push.
 - Mesma origem do simulador, então aproveita o **mesmo login do Firebase** (sem novo cadastro) e a mesma regra de acesso do Pro (`plan === 'pro'` com assinatura ativa, ou admin). Sem login, a página manda para o simulador; sem Pro, para `stratum-agro.vercel.app/#planos`.
 - O simulador ganhou a aba-link **Plataforma Patrimonial PRO** (em `index.html`).
-- **Ainda falta (site Stratum Agro)**: um botão "Plataforma Patrimonial" ao lado de "Abrir o Simulador" na área logada (`stratum-agro/index.html`, perto de `#btnSim`). Não foi feito porque outra sessão está editando esse repositório agora.
+- **Site Stratum Agro**: botão "Plataforma Patrimonial PRO →" ao lado de "Abrir o Simulador" na área logada (`stratum-agro/index.html`, `#btnPlataforma`, junto de `#btnSim`). Liberado com a mesma regra de acesso Pro.
 
 ## Limites honestos do bloqueio
 - O bloqueio Pro é **de interface**: o motor roda no navegador, e quem souber o endereço dos arquivos `.js` consegue executá-lo. Para proteção real seria preciso servir o cálculo por uma API autenticada (ex.: função da Vercel que valida o token do Firebase), o que tem custo de manutenção e de infraestrutura.
@@ -29,15 +29,17 @@ Se o CLI do Firebase travar ao iniciar (aconteceu nesta máquina: até `firebase
 
 **Situação em 01/11/2026**: regras **publicadas** no Console (projeto `boitel-analytics`), conferidas por hash com o arquivo testado (45/45 no emulador). Commit `b74cb32` em `stratum-agro`. A plataforma está no ar desde o commit `c5dd229` do simulador: com plano Pro, as simulações passam a ser salvas na conta.
 
-## O que os números dizem sobre o objetivo (dados de 27–28/10/2026)
-- **Com as premissas do dossiê** (boi magro a R$ 3.328, arroba a R$ 348): 39 cabeças por lote, lucro líquido de R$ 6,7 mil por ciclo, 9,7% a.a. contra 10,5% do CDI líquido em prazo curto. Em 10 anos, cerca de R$ 819 mil, contra R$ 801 mil no CDI. É praticamente empate, com muito mais risco.
-- **Com os preços de mercado pesquisados** (reposição MG interpolada a R$ 14,51/kg = R$ 4.644 por 320 kg; arroba a R$ 371 em MG): todo lote de 90 dias dá prejuízo, e o equilíbrio fica em torno de R$ 415–420/@. O motivo é o **ágio da reposição**: o animal custa R$ 435 por @ de carcaça de entrada, 17% acima da @ do boi gordo.
-- Nenhuma combinação de peso (240–375 kg) × dias (90–150) superou o CDI em MG. Mesmo ao preço CEPEA de SP (R$ 389,05), a melhor (375 kg × 150 dias) dá cerca de 5,8% a.a.
-- Fazenda: 100 ha a R$ 56,8 mil/ha (média de SP) custam ~R$ 5,7 milhões. Com R$ 250 mil não é alcançável em 10 anos nem nas premissas do dossiê. A aba Caminhos calcula a área viável por ano e o aporte mensal necessário.
+## O que os números dizem sobre o objetivo
+- **Com as premissas do dossiê** (boi magro a R$ 3.328, arroba a R$ 348): 39 cabeças por lote, lucro líquido de R$ 6,7 mil por ciclo, 9,7% a.a. contra 10,5% do CDI líquido em prazo curto. É praticamente empate com a renda fixa, com muito mais risco.
+- **O ponto mais sensível é o ágio da reposição**: quanto a arroba do animal magro custa acima da arroba do boi gordo. A aba Caminhos calcula esse ágio com os preços que o usuário informa e mostra onde a conta fecha (peso × dias de cocho). Confira com os preços atuais da sua região: as premissas do dossiê podem estar desatualizadas.
+- **Fazenda**: o preço da terra muda muito por região. A aba Região & logística traz o VTN do INCRA (piso fiscal) e a aba Caminhos calcula a área viável por ano e o aporte mensal necessário.
+
+## Preços de boi gordo e de reposição
+A plataforma não embute essas cotações: CEPEA (CC BY-NC) e CONAB autorizam só uso sem fins lucrativos e a Scot proíbe a reprodução sem autorização, e a plataforma é paga. O usuário consulta pelos links e digita nas premissas. Para embutir preços por região seria preciso autorização por escrito ou licença de dados.
 
 ## Caminhos e alternativas para avaliar (em ordem de impacto)
 1. **Conseguir cotação real do boitel** (preço por @ produzida e RC de entrada). Hoje o modelo usa o custo ICBC como piso, e o preço real tende a ser maior.
-2. **Comprar melhor**: preço por kg abaixo da referência, compra na safra ou em outra região, frete negociado. Cada R$ 100/cab a menos melhora o lote em ~R$ 3,1 mil (31 cabeças).
+2. **Comprar melhor**: preço por kg menor, compra na safra ou em outra região, frete negociado. Cada R$ 100/cab a menos melhora o lote em R$ 100 × número de cabeças (mais a comissão).
 3. **Vender melhor**: bonificação Boi China, venda a termo ou futuro quando o BGI estiver acima do físico regional, put para garantir um piso.
 4. **Animais mais pesados e ciclos mais longos**: a conta melhora, mas só se o boitel confirmar GMD e preço nesses prazos.
 5. **Parceria em vez de compra**: arrendar pasto e fazer parceria pecuária preserva liquidez. Comprar terra pode esperar até o patrimônio sustentar terra mais giro.
