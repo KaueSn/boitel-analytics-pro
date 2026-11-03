@@ -3,13 +3,13 @@
 import { responder, ROTULOS } from './assistente-base.js';
 
 const CHAVE_SAUDACAO = 'stratum_plataforma_triguinho_v1';
-const NOMES_ABA = {
-  painel: 'Painel', premissas: 'Premissas', lote: 'Lote & zootecnia', modelos: 'Modelos A/B/C', patrimonio: 'Patrimônio',
+export const NOMES_ABA = {
+  painel: 'Painel', estudo: 'Melhor opção & região', premissas: 'Premissas', lote: 'Lote & zootecnia', modelos: 'Modelos A/B/C', patrimonio: 'Patrimônio',
   caminhos: 'Caminhos & objetivo', cenarios: 'Cenários', hedge: 'Hedge B3', cdi: 'Renda fixa (CDI)',
   calendario: 'Calendário', simulacoes: 'Simulações', fontes: 'Fontes & método', regiao: 'Região & logística'
 };
 
-const SVG = `<svg viewBox="0 0 100 100" width="64" height="64" aria-hidden="true">
+export const SVG_TRIGUINHO = `<svg viewBox="0 0 100 100" width="64" height="64" aria-hidden="true">
   <path d="M50 95 V46" stroke="#bd8f28" stroke-width="5" stroke-linecap="round"/>
   <path d="M50 88 C34 86 27 75 31 66 C43 70 50 78 50 88 Z" fill="#d4af37"/>
   <path d="M50 88 C66 86 73 75 69 66 C57 70 50 78 50 88 Z" fill="#e8c75f"/>
@@ -22,7 +22,7 @@ const SVG = `<svg viewBox="0 0 100 100" width="64" height="64" aria-hidden="true
   <path d="M44 64 Q50 69 56 64" stroke="#0a0e17" stroke-width="2.4" fill="none" stroke-linecap="round"/>
 </svg>`;
 
-const SUGESTOES_INICIAIS = ['guiado', 'comecar', 'lucro', 'frete', 'fazenda', 'prejuizo'];
+const SUGESTOES_INICIAIS = ['melhorOpcao', 'guiado', 'lucro', 'frete', 'fazenda', 'prejuizo'];
 
 export function iniciarAssistente(ctx) {
   const raiz = document.createElement('div');
@@ -37,10 +37,10 @@ export function iniciarAssistente(ctx) {
       <form class="tri-form"><label for="tri-pergunta" class="sr">Sua pergunta</label>
         <input id="tri-pergunta" autocomplete="off" maxlength="200" placeholder="Ex.: quanto vou lucrar?">
         <button type="submit" class="btn">Perguntar</button></form>
-      <p class="tri-aviso">Respostas sobre como usar a plataforma, com os números da sua simulação. Não é recomendação de investimento.</p>
+      <p class="tri-aviso"><a href="triguinho.html">Abrir a página do Triguinho (conversa por voz)</a>. Respostas sobre como usar a plataforma, com os números da sua simulação. Não é recomendação de investimento.</p>
     </div>
     <div class="tri-balao" hidden></div>
-    <button type="button" class="tri-boneco" aria-expanded="false" aria-controls="tri-painel" title="Pergunte ao Triguinho">${SVG}<span class="sr">Abrir o assistente Triguinho</span></button>
+    <button type="button" class="tri-boneco" aria-expanded="false" aria-controls="tri-painel" title="Pergunte ao Triguinho">${SVG_TRIGUINHO}<span class="sr">Abrir o assistente Triguinho</span></button>
     <button type="button" class="tri-mini" hidden title="Mostrar o Triguinho">? Ajuda</button>`;
   document.body.appendChild(raiz);
 

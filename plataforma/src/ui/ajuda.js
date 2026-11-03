@@ -17,6 +17,20 @@ export const GUIAS = {
       'Preço de equilíbrio é o preço da arroba que zera o lucro. Quanto mais abaixo do preço usado, mais folga você tem.'
     ]
   },
+  estudo: {
+    titulo: 'Melhor opção & região: o que fazer com o seu capital',
+    paraQue: 'Compara boitel, arrendar terra, comprar terra e renda fixa com o seu capital e os seus preços, mostra como a resposta muda com mais ou menos capital e lista as regiões que favorecem cada opção.',
+    passos: [
+      'Antes, preencha os seus preços (Preenchimento guiado ou aba Premissas).',
+      'Leia a resposta no alto e a tabela de comparação: ela usa o mesmo capital para todas as opções.',
+      'Veja como a melhor opção muda em outras faixas de capital.',
+      'Escolha o estado e o raio para ver as regiões indicadas para boitel, arrendamento e compra.'
+    ],
+    dicas: [
+      'O filtro de cenário do topo também vale aqui: teste o pessimista antes de decidir.',
+      'O ranking de regiões usa frigoríficos e valor da terra. Preço do boi, oferta de boitéis, clima e qualidade da terra precisam ser conferidos por você.'
+    ]
+  },
   premissas: {
     titulo: 'Premissas: os números que alimentam tudo',
     paraQue: 'Todos os cálculos saem daqui: capital, peso, ganho de peso, preços, custos do boitel, fretes, impostos e CDI. Mude um número e todas as abas se atualizam.',

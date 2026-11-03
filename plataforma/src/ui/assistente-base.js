@@ -7,6 +7,8 @@ const brl2 = v => (Number.isFinite(v) ? v.toLocaleString('pt-BR', { style: 'curr
 const pc = v => (Number.isFinite(v) ? (v * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%' : '—');
 
 // palavras: termos que indicam o assunto (peso 3 cada); exemplos: perguntas típicas (peso 1 por palavra em comum)
+import { CONHECIMENTO, ROTULOS_CONHECIMENTO } from './assistente-conhecimento.js';
+
 export const BASE = [
   {
     id: 'comecar', aba: 'premissas',
@@ -23,7 +25,7 @@ export const BASE = [
     seguintes: ['comecar', 'lucro']
   },
   {
-    id: 'oque', palavras: ['o que e essa plataforma', 'o que e isso', 'para que serve', 'plataforma patrimonial', 'objetivo da plataforma'],
+    id: 'oque', palavras: ['o que e essa plataforma', 'o que e isso', 'para que serve isso', 'para que serve a plataforma', 'plataforma patrimonial', 'objetivo da plataforma'],
     exemplos: ['o que é essa plataforma', 'para que serve isso'],
     resposta: () => 'É um estudo de viabilidade da pecuária de corte: quanto rende um lote no boitel, como comparar com o CDI, quais riscos existem e se dá para chegar a uma fazenda própria reinvestindo os lucros. É uma ferramenta educacional e analítica: não é recomendação de investimento.',
     seguintes: ['comecar', 'limites']
@@ -296,7 +298,8 @@ export const BASE = [
     exemplos: ['como mudo para o tema claro'],
     resposta: () => 'Clique no botão ◐ no canto superior direito para alternar entre tema claro e escuro.',
     seguintes: []
-  }
+  },
+  ...CONHECIMENTO
 ];
 
 const PARADAS = new Set('a o e de da do das dos em no na nos nas um uma uns umas para pra por com que se eu meu minha me voce e é como qual quais quanto onde quando isso esse essa este esta tem ter ou ao aos as os ja mais muito sobre'.split(' '));
@@ -343,9 +346,9 @@ export function responder(pergunta, res = null, base = BASE) {
   if (!achados.length) {
     return {
       id: null,
-      texto: 'Não encontrei esse assunto. Tente com outras palavras (ex.: "preço de equilíbrio", "como salvar", "o que é arroba produzida") ou escolha um dos temas abaixo.',
+      texto: 'Não tenho resposta para isso e prefiro não inventar. Eu sei sobre a plataforma, seus resultados e conceitos da pecuária de corte. Tente com outras palavras (ex.: "preço de equilíbrio", "melhor opção para o meu capital") ou escolha um tema abaixo.',
       aba: null,
-      seguintes: ['comecar', 'lucro', 'premissas', 'fazenda']
+      seguintes: ['melhorOpcao', 'comecar', 'lucro', 'frete']
     };
   }
   const e = achados[0].e;
@@ -356,6 +359,7 @@ export function responder(pergunta, res = null, base = BASE) {
 
 /** Rótulo curto de cada assunto (para os botões de sugestão). */
 export const ROTULOS = {
+  ...ROTULOS_CONHECIMENTO,
   comecar: 'Por onde começo?', guiado: 'Jeito fácil de preencher', oque: 'O que é a plataforma?', premissas: 'Como mudo os valores?', selos: 'O que são os selos?',
   pendente: 'O que é "pendente"?', mercado: 'Preços de mercado', filtros: 'Para que servem os filtros?', arroba: 'O que é arroba?',
   produzida: 'Arroba produzida', boitel: 'Como o boitel cobra?', gmd: 'O que é GMD?', mortalidade: 'Mortalidade', dre: 'Como ler a DRE?',

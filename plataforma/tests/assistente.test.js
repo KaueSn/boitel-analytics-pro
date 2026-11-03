@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 import { responder, buscar, normalizar, BASE, ROTULOS } from '../src/ui/assistente-base.js';
 import { calcularLote } from '../src/engine/lote.js';
 import { PREMISSAS_PADRAO } from '../src/engine/premissas.js';
+import { MODELO_A_PADRAO, MODELO_C_PADRAO } from '../src/engine/modelos.js';
+import { PATRIMONIO_PADRAO } from '../src/engine/patrimonio.js';
 
 const CASOS = [
   ['por onde eu começo?', 'comecar'],
@@ -33,6 +35,31 @@ const CASOS = [
   ['onde encontro um boitel', 'boitelPerto'],
   ['onde compro os bois', 'boitelPerto'],
   ['quanto custa o hectare na minha região', 'terraRegiao'],
+  ['qual a melhor opção para o meu capital', 'melhorOpcao'],
+  ['é melhor comprar terra ou fazer boitel?', 'melhorOpcao'],
+  ['alugar ou comprar terreno', 'melhorOpcao'],
+  ['qual a melhor região para boitel', 'melhorRegiao'],
+  ['em qual estado comprar terra', 'melhorRegiao'],
+  ['com quanto posso começar', 'capitalMinimo'],
+  ['e se eu plantar soja?', 'outrasAtividades'],
+  ['outras opções do agro dão mais lucro?', 'outrasAtividades'],
+  ['como funciona o arrendamento', 'arrendamento'],
+  ['o que é parceria pecuária', 'parceria'],
+  ['o que é confinamento', 'confinamento'],
+  ['o que é recria', 'fases'],
+  ['o que é boi magro', 'reposicao'],
+  ['o que é ágio', 'agio'],
+  ['o que é quebra de peso', 'quebra'],
+  ['o que é GTA', 'documentos'],
+  ['o que é SIF', 'sif'],
+  ['o que é ITR', 'itr'],
+  ['o que é boi China', 'boiChina'],
+  ['para que serve a reserva', 'reserva'],
+  ['posso financiar pelo plano safra', 'credito'],
+  ['posso falar com você por voz', 'voz'],
+  ['você é uma inteligência artificial?', 'ia'],
+  ['bom dia', 'saudacao'],
+  ['obrigado', 'agradecimento'],
   ['é muito complicado preencher', 'guiado'],
   ['tem um jeito mais fácil?', 'guiado']
 ];
@@ -42,6 +69,14 @@ for (const [pergunta, esperado] of CASOS) {
     assert.equal(responder(pergunta).id, esperado);
   });
 }
+
+test('melhor opção usa o capital da simulação', () => {
+  const lote = calcularLote({ ...PREMISSAS_PADRAO });
+  const val = { lote: PREMISSAS_PADRAO, modeloA: MODELO_A_PADRAO, modeloC: MODELO_C_PADRAO, patrimonio: PATRIMONIO_PADRAO };
+  const r = responder('qual a melhor opção para o meu capital', { lote, val, p: PREMISSAS_PADRAO });
+  assert.match(r.texto, /R\$\s?250\.000/);
+  assert.match(r.texto, /renda fixa/);
+});
 
 test('pergunta sem relação devolve ajuda com sugestões', () => {
   const r = responder('qual a capital da França');

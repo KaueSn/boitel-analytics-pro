@@ -12,9 +12,10 @@ import * as A from './abas-analise.js';
 import * as P from './abas-planejamento.js';
 import * as G from './abas-gestao.js';
 import * as RG from './abas-regiao.js';
+import * as E from './abas-estudo.js';
 
 const ABAS = [
-  ['painel', 'Painel', A.painel], ['premissas', 'Premissas', G.premissas], ['regiao', 'Região & logística', RG.regiao], ['lote', 'Lote & zootecnia', A.lote],
+  ['painel', 'Painel', A.painel], ['estudo', 'Melhor opção & região', E.estudo], ['premissas', 'Premissas', G.premissas], ['regiao', 'Região & logística', RG.regiao], ['lote', 'Lote & zootecnia', A.lote],
   ['modelos', 'Modelos A/B/C', A.modelos], ['patrimonio', 'Patrimônio', P.patrimonio], ['caminhos', 'Caminhos & objetivo', P.caminhos],
   ['cenarios', 'Cenários & sensibilidade', A.cenarios], ['hedge', 'Hedge B3', P.hedge], ['cdi', 'Renda fixa (CDI)', P.cdi],
   ['calendario', 'Calendário & alertas', P.calendario], ['simulacoes', 'Simulações', G.simulacoes], ['fontes', 'Fontes & método', G.fontes]
@@ -170,6 +171,8 @@ async function iniciar() {
   $('#app').hidden = false;
   estado = lerRascunho() || estadoInicial();
   try { abaAtual = sessionStorage.getItem('stratum_plataforma_aba') || 'painel'; } catch { /* opcional */ }
+  const pedido = location.hash.slice(1);
+  if (ABAS.some(a => a[0] === pedido)) abaAtual = pedido;
   if (!ABAS.some(a => a[0] === abaAtual)) abaAtual = 'painel';
   montarAbas();
   montarFiltros();
@@ -178,7 +181,9 @@ async function iniciar() {
   iniciarAssistente(ctx);
   $('#btn-guiado').hidden = false;
   $('#btn-nova').hidden = false;
+  $('#btn-triguinho').hidden = false;
   $('#btn-guiado').onclick = () => abrirGuiado(ctx);
+  if (pedido === 'guiado') abrirGuiado(ctx);
   $('#btn-nova').onclick = () => {
     if (!confirm('Começar uma simulação nova com as premissas do dossiê? A atual continua no histórico se tiver sido salva.')) return;
     ctx.abrirEstado(estadoInicial(), null);

@@ -13,6 +13,7 @@ import { municipio, frigorificosProximos } from '../src/engine/logistica.js';
 import { MUNICIPIOS } from '../src/engine/municipios.js';
 import { vtnDoMunicipio, TOTAL_MUNICIPIOS_VTN } from '../src/engine/terra.js';
 import { FRIGORIFICOS } from '../src/engine/frigorificos.js';
+import { textoParaFala, ehComandoParar } from '../src/ui/voz.js';
 
 const perto = (a, b, tol = 1e-9) => assert.ok(Math.abs(a - b) <= tol, `${a} ≠ ${b}`);
 
@@ -91,6 +92,19 @@ test('produto não reproduz cotações do CEPEA nem da Scot', () => {
     const achou = fs.readFileSync(new URL(d, import.meta.url), 'utf8').match(proibido);
     assert.equal(achou, null, `${d}: ${achou?.[0]}`);
   }
+});
+
+test('[hidden] vence os display próprios (o chat do Triguinho precisa fechar)', () => {
+  const css = fs.readFileSync(new URL('../src/ui/estilos.css', import.meta.url), 'utf8');
+  assert.ok(css.includes('[hidden] { display: none !important; }'));
+});
+
+test('voz: símbolos viram palavras e comando de parar é reconhecido', () => {
+  assert.equal(textoParaFala('Equilíbrio: R$ 300,00/@'), 'Equilíbrio: R$ 300,00 por arroba');
+  assert.equal(textoParaFala('12 @ e 464 kg'), '12 arrobas e 464 quilos');
+  assert.equal(textoParaFala('Passos:\n1. Um\n• Dois'), 'Passos:. 1. Um. , Dois');
+  for (const f of ['parar', 'Pare!', 'encerrar a conversa', 'tchau triguinho']) assert.ok(ehComandoParar(f), f);
+  for (const f of ['como parar a mortalidade', 'quanto custa o frete', '']) assert.ok(!ehComandoParar(f), f);
 });
 
 test('aporte zero e capital zero não geram NaN na projeção', () => {

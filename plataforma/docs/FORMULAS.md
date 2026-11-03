@@ -55,5 +55,17 @@ Contratos = @ × cobertura ÷ 330 (arredondamento escolhido). Put = 330n × máx
 ## Renda fixa (`rendaFixa.js`)
 IR regressivo (22,5 / 20 / 17,5 / 15%), alíquota pelo prazo total. Comparação sempre líquido × líquido, mesmo capital e prazo.
 
+## Melhor opção por capital (`estudo.js`)
+Mesmo capital e mesmo prazo (1 ano) para todas as opções: resultado = resultado líquido da operação + (capital − capital na operação) × CDI líquido de 1 ano (IR de 17,5%).
+- **Boitel**: modelo B. **Arrendar pasto**: modelo C. **Arrendar área**: modelo A (com escala mínima). **Renda fixa**: todo o capital no CDI líquido.
+- **Comprar terra**: área = mín(área desejada, 50% do capital disponível ÷ (preço/ha × (1 + custos de aquisição))); exige pelo menos 5 ha. O resto do capital roda o modelo C, com pasto próprio até a lotação da área. Custos anuais = manutenção/ha × área + ITR × valor da terra + mão de obra × 12. Valorização da terra não entra no resultado do ano.
+
+## Melhor região (`estudo.js`)
+Por região rural do INCRA, a partir do centro geográfico dos seus municípios: frigoríficos com SIF no raio (linha reta × 1,3) e capacidade somada por classe (até 20 = 20; 20 a 40 = 30; 40 a 80 = 60; mais de 80 = 80 cab/h).
+- Acesso = 0,5 × √(capacidade ÷ maior capacidade) + 0,5 × (1 − distância do mais próximo ÷ raio). Custo = 1 − posição do VTN médio em escala logarítmica.
+- Nota: boitel = acesso; arrendar = 50% custo + 50% acesso; comprar = 60% custo + 40% acesso.
+- Teto do arrendamento = 15% × VTN por ano (Estatuto da Terra, art. 95, XII; o VTN aproxima o valor cadastral).
+- Limites: não considera preço do boi e da reposição, oferta de boitéis e pastos, clima nem qualidade da terra.
+
 ## Testes executados
-`npm test` (em `plataforma/`): 101 testes, todos aprovados em 03/11/2026. Cobrem conversões, exemplo manual, fechamento da DRE (sem dupla contagem), modos de cobrança, dimensionamento e reserva, equilíbrio (fórmula fechada × bisseção), prejuízo, mortalidade de 100%, capital zero, atraso de recebimento, validação de entradas, IR, CDI, hedge (piso calculado à mão), Black-76 (paridade), cenários, tornado, Monte Carlo reprodutível, modelos A/B/C, conservação e reconciliação do patrimônio, compra forçada com alerta, caminhos e interpolação de preços.
+`npm test` (em `plataforma/`): 138 testes, todos aprovados em 03/11/2026. Cobrem conversões, exemplo manual, fechamento da DRE (sem dupla contagem), modos de cobrança, dimensionamento e reserva, equilíbrio (fórmula fechada × bisseção), prejuízo, mortalidade de 100%, capital zero, atraso de recebimento, validação de entradas, IR, CDI, hedge (piso calculado à mão), Black-76 (paridade), cenários, tornado, Monte Carlo reprodutível, modelos A/B/C, conservação e reconciliação do patrimônio, compra forçada com alerta, caminhos e interpolação de preços.

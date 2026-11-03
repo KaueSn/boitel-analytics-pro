@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Triguinho | Stratum Agro</title>
+  <meta name="description" content="Converse com o Triguinho, por texto ou voz, sobre a Plataforma Patrimonial e a pecuária de corte.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+  <script>
+    (function () { try { document.documentElement.setAttribute('data-theme', localStorage.getItem('boitel_theme') || 'dark'); } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); } })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/ui/estilos.css">
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body class="pag-tri">
+  <a class="pular" href="#tp-pergunta">Pular para a pergunta</a>
+  <header class="topo">
+    <a class="marca" href="../" title="Voltar ao simulador"><img src="../assets/logo.svg" alt="" width="28" height="28"><span>Stratum Agro</span><span class="pro-tag">PRO</span></a>
+    <div class="titulo-app">Converse com o Triguinho</div>
+    <div class="topo-acoes">
+      <span id="usuario" class="usuario"></span>
+      <a class="btn-mini" href="index.html">Voltar à plataforma</a>
+    </div>
+  </header>
+
+  <div id="bloqueio"><div class="cartao bloqueio"><p>Verificando acesso…</p></div></div>
+
+  <main id="tp-app" class="tp" hidden>
+    <aside class="tp-lado">
+      <div id="tp-boneco" class="tp-boneco" aria-hidden="true"></div>
+      <p id="tp-estado" class="tp-estado" role="status" aria-live="polite">Pronto para conversar</p>
+      <div class="botoes tp-voz">
+        <button type="button" class="btn" id="tp-falar">🎤 Falar</button>
+        <button type="button" class="btn sec" id="tp-conversa" aria-pressed="false">Conversa por voz</button>
+        <button type="button" class="btn sec" id="tp-parar" hidden>Parar</button>
+      </div>
+      <label class="tp-check"><input type="checkbox" id="tp-ler" checked> Ler as respostas em voz alta</label>
+      <p id="tp-sem-voz" class="nota" hidden></p>
+      <details class="tp-info"><summary>Como funciona</summary>
+        <ul class="lista">
+          <li><b>Falar:</b> clique, faça a pergunta e eu respondo.</li>
+          <li><b>Conversa por voz:</b> continuo ouvindo depois de cada resposta. Clique em Parar ou diga "parar" para encerrar.</li>
+          <li>Uso os números da simulação aberta: <span id="tp-simulacao"></span>.</li>
+          <li>Não sou uma inteligência artificial: respondo a partir de uma base escrita sobre a plataforma e a pecuária de corte. O que não sei, eu digo que não sei.</li>
+          <li>Ainda não dá para enviar um arquivo de áudio gravado.</li>
+        </ul>
+        <p class="nota">Privacidade: o microfone só liga quando você clica. A transcrição é feita pelo serviço de voz do navegador; no Chrome e no Edge, o áudio é enviado à empresa do navegador para virar texto. A conversa não fica salva e some ao fechar a página.</p>
+      </details>
+    </aside>
+    <section class="tp-chat" aria-label="Conversa">
+      <div id="tp-msgs" class="tp-msgs" aria-live="polite"></div>
+      <div id="tp-chips" class="tri-chips" aria-label="Sugestões de perguntas"></div>
+      <form id="tp-form" class="tri-form">
+        <label for="tp-pergunta" class="sr">Sua pergunta</label>
+        <input id="tp-pergunta" autocomplete="off" maxlength="300" placeholder="Escreva ou clique em Falar…">
+        <button type="submit" class="btn">Perguntar</button>
+      </form>
+      <p class="tri-aviso">Estudo educacional. Não é recomendação de investimento: confirme preços, contratos e impostos com fornecedores, corretora e contador.</p>
+    </section>
+  </main>
+  <script type="module" src="src/ui/pagina-triguinho.js"></script>
+</body>
+</html>
