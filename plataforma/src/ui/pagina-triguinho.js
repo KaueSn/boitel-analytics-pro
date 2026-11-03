@@ -50,11 +50,11 @@ function perguntar(texto) {
   bolha(q, 'eu');
   const r = responder(q, res?.ok ? res : null);
   const d = bolha(r.texto, 'tri');
-  if (r.aba === 'guiado' || NOMES_ABA[r.aba]) {
+  if (r.link || r.aba === 'guiado' || NOMES_ABA[r.aba]) {
     const a = document.createElement('a');
     a.className = 'btn-mini tri-ir';
-    a.href = 'index.html#' + r.aba;
-    a.textContent = r.aba === 'guiado' ? 'Abrir o preenchimento guiado →' : 'Abrir ' + NOMES_ABA[r.aba] + ' →';
+    a.href = r.link ? r.link.href : 'index.html#' + r.aba;
+    a.textContent = r.link ? r.link.rotulo : r.aba === 'guiado' ? 'Abrir o preenchimento guiado →' : 'Abrir ' + NOMES_ABA[r.aba] + ' →';
     d.appendChild(document.createElement('br'));
     d.appendChild(a);
   }

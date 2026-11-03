@@ -77,7 +77,14 @@ export function iniciarAssistente(ctx) {
     bolha(q, 'eu');
     const r = responder(q, ctx.res?.ok ? ctx.res : null);
     const d = bolha(r.texto, 'tri');
-    if (r.aba === 'guiado') {
+    if (r.link) {
+      const ir = document.createElement('a');
+      ir.className = 'btn-mini tri-ir';
+      ir.href = r.link.href;
+      ir.textContent = r.link.rotulo;
+      d.appendChild(document.createElement('br'));
+      d.appendChild(ir);
+    } else if (r.aba === 'guiado') {
       const ir = document.createElement('button');
       ir.type = 'button';
       ir.className = 'btn-mini tri-ir';

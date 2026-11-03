@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plantio e outras atividades | Stratum Agro</title>
+  <meta name="description" content="Estudo de plantio e outras atividades do agro com os seus números, comparado com a pecuária e o CDI.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+  <script>
+    (function () { try { document.documentElement.setAttribute('data-theme', localStorage.getItem('boitel_theme') || 'dark'); } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); } })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/ui/estilos.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <a class="pular" href="#pl-form">Pular para o formulário</a>
+  <header class="topo">
+    <a class="marca" href="../" title="Voltar ao simulador"><img src="../assets/logo.svg" alt="" width="28" height="28"><span>Stratum Agro</span><span class="pro-tag">PRO</span></a>
+    <div class="titulo-app">Plantio e outras atividades</div>
+    <div class="topo-acoes">
+      <span id="usuario" class="usuario"></span>
+      <a class="btn-mini" href="index.html#estudo">Voltar à plataforma</a>
+    </div>
+  </header>
+
+  <div id="bloqueio"><div class="cartao bloqueio"><p>Verificando acesso…</p></div></div>
+
+  <main id="pl-app" hidden>
+    <section class="cartao convite-guiado">
+      <h2>Vale mais a pena plantar?</h2>
+      <p>Informe a cultura, a região, a área e os seus custos e preços. A página calcula o resultado por hectare e compara com a pecuária e o CDI, com o mesmo capital e no prazo de 1 ano.</p>
+      <p class="nota">Nenhum valor vem preenchido: custo, produtividade e preço mudam muito de uma região e de uma safra para outra. Estudo educacional, não é recomendação de investimento: confirme com agrônomo, fornecedores e contador.</p>
+    </section>
+    <form id="pl-form" autocomplete="off" onsubmit="return false"></form>
+    <div id="pl-res" aria-live="polite"></div>
+  </main>
+  <script type="module" src="src/ui/pagina-plantio.js"></script>
+</body>
+</html>

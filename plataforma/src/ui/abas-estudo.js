@@ -85,8 +85,9 @@ export const estudo = {
       </section>
 
       <section class="cartao convite-guiado"><h3>E fora da pecuária?</h3>
-        <p>Este estudo compara apenas pecuária de corte e renda fixa. <b>Outras atividades do agro podem dar lucro maior</b> dependendo da região e do capital, como plantio de grãos, café, cana, hortifrúti ou integração lavoura-pecuária. Elas têm outras exigências: máquinas, janela de plantio, clima, crédito e comercialização. Não comparo essas atividades aqui porque a plataforma ainda não tem esses dados.</p>
-        <p class="nota">Um estudo próprio para plantio e outras atividades pode ser feito em uma nova página de estudo aqui no site.</p>
+        <p>Esta aba compara apenas pecuária de corte e renda fixa. <b>Outras atividades do agro podem dar lucro maior</b> dependendo da região e do capital, como plantio de grãos, café, cana, hortifrúti ou integração lavoura-pecuária. Elas têm outras exigências: máquinas, janela de plantio, clima, crédito e comercialização.</p>
+        <p>O estudo de plantio calcula o resultado por hectare com os seus custos e preços e compara com estas opções, no mesmo capital e prazo.</p>
+        <div class="botoes"><a class="btn" href="plantio.html">Abrir o estudo de plantio</a></div>
       </section>`;
 
     el.querySelector('#est-uf').onchange = e => { filtroRegiao.uf = e.target.value; estudo.resultados(el, ctx); };

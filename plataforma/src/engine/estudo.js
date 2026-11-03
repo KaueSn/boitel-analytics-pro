@@ -15,7 +15,7 @@ import { MUNICIPIOS } from './municipios.js';
 export const TETO_ARRENDAMENTO = 0.15;
 export const ESTUDO_PADRAO = { fatiaTerraMax: 0.5, areaMinimaHa: 5, raioKm: 200 };
 
-const cdiLiquidoAno = cdi => aplicacaoCDI({ capital: 1, cdiAnual: cdi, dias: 365 }).retornoLiquido;
+export const cdiLiquidoAno = cdi => aplicacaoCDI({ capital: 1, cdiAnual: cdi, dias: 365 }).retornoLiquido;
 
 function linha(id, nome, capital, cdi, m, extra = {}) {
   const empregado = m.viavel ? Math.min(capital, m.capitalEmpregado) : 0;

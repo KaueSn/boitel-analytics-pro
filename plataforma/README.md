@@ -33,5 +33,8 @@ Usa o executor nativo do Node (≥ 20), sem dependências.
 ## Página do Triguinho
 `triguinho.html`: conversa por texto e voz, com a Web Speech API do navegador (reconhecimento no Chrome e no Edge). Sem IA: responde pela base em `src/ui/assistente-base.js` e `assistente-conhecimento.js`. Não aceita arquivo de áudio gravado.
 
+## Página de plantio
+`plantio.html`: estudo de grãos, café, cana, hortifrúti e integração lavoura-pecuária com os números do usuário. Calcula o resultado por hectare e compara com a pecuária (`compararOpcoes`) e o CDI, no mesmo capital e prazo. Cálculo em `src/engine/lavoura.js`; fórmulas em `docs/FORMULAS.md`.
+
 ## Atualizar dados de mercado
 Edite `src/engine/mercado.js` (valor, data, unidade, limitações). Preços de boi gordo e de reposição não são embutidos (ver `docs/INTEGRACAO.md`).

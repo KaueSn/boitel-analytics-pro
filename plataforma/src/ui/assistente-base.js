@@ -354,7 +354,7 @@ export function responder(pergunta, res = null, base = BASE) {
   const e = achados[0].e;
   let texto;
   try { texto = e.resposta(res); } catch { texto = e.resposta(null); }
-  return { id: e.id, texto, aba: e.aba || null, seguintes: e.seguintes || [], alternativas: achados.slice(1, 3).map(a => a.e.id) };
+  return { id: e.id, texto, aba: e.aba || null, link: e.link || null, seguintes: e.seguintes || [], alternativas: achados.slice(1, 3).map(a => a.e.id) };
 }
 
 /** Rótulo curto de cada assunto (para os botões de sugestão). */

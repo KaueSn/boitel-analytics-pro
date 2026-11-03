@@ -67,5 +67,15 @@ Por região rural do INCRA, a partir do centro geográfico dos seus municípios:
 - Teto do arrendamento = 15% × VTN por ano (Estatuto da Terra, art. 95, XII; o VTN aproxima o valor cadastral).
 - Limites: não considera preço do boi e da reposição, oferta de boitéis e pastos, clima nem qualidade da terra.
 
+## Plantio e outras atividades (`lavoura.js`)
+Custos, produtividade e preços são sempre digitados. Funrural, regime de IR, reserva e CDI vêm das premissas da pecuária. Resultado depois de IR = (margem/ha × área − depreciação) − IR.
+- **Ciclo curto (grãos, hortifrúti)**: margem/ha = produtividade × ciclos × (preço × (1 − Funrural) − frete e venda) − custo por ciclo × ciclos − arrendamento. Capital/ha = custo de 1 ciclo + arrendamento.
+- **Café e cana**: margem em produção = produtividade × (preço × (1 − Funrural) − frete e venda) − custo anual − arrendamento. Formação = implantação + (manutenção + arrendamento) × anos sem colheita. Margem/ha = (anos em produção × margem em produção − formação) ÷ vida útil. Capital/ha = formação + custo anual, preso o ano inteiro. Sem desconto pelo tempo de espera.
+- **Integração lavoura-pecuária**: soma a margem da lavoura e a do gado, (venda × (1 − Funrural) − compra − custo) × lotação. Capital/ha = maior entre lavoura e gado, que não ocupam o caixa ao mesmo tempo.
+- **Máquinas**: depreciação = valor ÷ vida útil. O valor fica preso o ano inteiro.
+- **Comparação**: mesmo capital e 1 ano. Dinheiro parado = (capital × 12 − capital na atividade × meses) ÷ 12, rendendo CDI líquido. Se o capital na atividade passar do capital menos a reserva, a atividade não cabe e tudo fica no CDI.
+- **Equilíbrio**: preço e produtividade que zeram o resultado antes de IR.
+- Limites: não considera clima, solo, janela de plantio, duas safras seguidas nem valorização da terra.
+
 ## Testes executados
 `npm test` (em `plataforma/`): 138 testes, todos aprovados em 03/11/2026. Cobrem conversões, exemplo manual, fechamento da DRE (sem dupla contagem), modos de cobrança, dimensionamento e reserva, equilíbrio (fórmula fechada × bisseção), prejuízo, mortalidade de 100%, capital zero, atraso de recebimento, validação de entradas, IR, CDI, hedge (piso calculado à mão), Black-76 (paridade), cenários, tornado, Monte Carlo reprodutível, modelos A/B/C, conservação e reconciliação do patrimônio, compra forçada com alerta, caminhos e interpolação de preços.

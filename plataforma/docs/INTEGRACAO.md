@@ -37,6 +37,8 @@ Se o CLI do Firebase travar ao iniciar (aconteceu nesta máquina: até `firebase
 ## Preços de boi gordo e de reposição
 A plataforma não embute essas cotações: CEPEA (CC BY-NC) e CONAB autorizam só uso sem fins lucrativos e a Scot proíbe a reprodução sem autorização, e a plataforma é paga. O usuário consulta pelos links e digita nas premissas. Para embutir preços por região seria preciso autorização por escrito ou licença de dados.
 
+No estudo de plantio (`plantio.html`), nenhum custo, produtividade ou preço vem embutido; só há links. Consulta aos catálogos oficiais em 03/11/2026: Zarc e Agrofit (MAPA) em CC BY e Sicor (Banco Central) em ODbL permitem uso comercial com citação (a ODbL pode exigir compartilhar a base derivada). A licença da PAM (IBGE) não foi confirmada, porque a página de termos não abriu. A Conab tem informação conflitante: o rodapé do site gov.br indica CC BY-ND 3.0 e o registro acima, uso sem fins lucrativos. Só embuta depois de confirmar com a fonte.
+
 ## Caminhos e alternativas para avaliar (em ordem de impacto)
 1. **Conseguir cotação real do boitel** (preço por @ produzida e RC de entrada). Hoje o modelo usa o custo ICBC como piso, e o preço real tende a ser maior.
 2. **Comprar melhor**: preço por kg menor, compra na safra ou em outra região, frete negociado. Cada R$ 100/cab a menos melhora o lote em R$ 100 × número de cabeças (mais a comissão).

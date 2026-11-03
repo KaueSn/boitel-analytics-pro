@@ -37,7 +37,8 @@ export const CONHECIMENTO = [
     id: 'outrasAtividades', aba: 'estudo',
     palavras: ['plantio', 'plantar', 'lavoura', 'soja', 'milho', 'cafe', 'cana', 'graos', 'hortifruti', 'outras atividades', 'outras opcoes', 'outra atividade', 'ilp', 'integracao lavoura'],
     exemplos: ['e se eu plantar soja', 'outras opções do agro dão mais lucro', 'vale mais a pena lavoura'],
-    resposta: () => 'Outras atividades do agro, como grãos, café, cana, hortifrúti ou integração lavoura-pecuária, podem dar lucro maior conforme a região e o capital, mas têm outras exigências: máquinas, janela de plantio, clima, crédito e comercialização. Esta plataforma compara só pecuária e renda fixa, então não tenho números para essas atividades. Um estudo próprio para plantio pode ser feito em uma nova página aqui no site.',
+    resposta: () => 'Outras atividades do agro, como grãos, café, cana, hortifrúti ou integração lavoura-pecuária, podem dar lucro maior conforme a região e o capital, mas têm outras exigências: máquinas, janela de plantio, clima, crédito e comercialização. Na página de estudo de plantio você informa a cultura, a região, a área e os seus custos e preços, e ela calcula o resultado por hectare e compara com a pecuária e o CDI, no mesmo capital e prazo. Não tenho custos nem preços dessas culturas: os números são sempre os seus.',
+    link: { href: 'plantio.html', rotulo: 'Abrir o estudo de plantio →' },
     seguintes: ['melhorOpcao', 'limites']
   },
   {
