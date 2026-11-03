@@ -80,8 +80,7 @@ test('Brasil inteiro: cidades, frigoríficos e terra', () => {
 
 test('produto não reproduz cotações do CEPEA nem da Scot', () => {
   const pasta = new URL('../src/', import.meta.url);
-  const proibido = /(CEPEA|Scot)[^
-]{0,60}R$ ?d|scot-[a-z]|cepea-[a-z]/;
+  const proibido = /(CEPEA|Scot)[^\n]{0,60}R\$ ?\d|scot-[a-z]|cepea-[a-z]/;
   const arquivos = [...fs.readdirSync(new URL('engine/', pasta)).map(f => 'engine/' + f), ...fs.readdirSync(new URL('ui/', pasta)).map(f => 'ui/' + f)];
   for (const f of arquivos) {
     if (/municipios|terra|frigorificos/.test(f)) continue; // só códigos e coordenadas
